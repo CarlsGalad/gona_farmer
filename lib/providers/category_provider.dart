@@ -1,20 +1,16 @@
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/category.dart';
 import '../models/subcategory.dart';
 import '../services/firestore_service.dart';
 
 class CategoryProvider with ChangeNotifier {
-  List<Category> _category = [];
+  List<Category> _categories = [];
   bool _isLoading = false;
 
-  List<Category> get categories => _category;
+  List<Category> get categories => _categories;
   bool get isLoading => _isLoading;
-
-  StreamSubscription<QuerySnapshot>? _categoriesSubscription;
 
   // Method to update data from Firestore
   Future<void> updateFromFirestore(FirestoreService firestoreService) async {
@@ -22,23 +18,24 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners(); // Notify about loading state change
     try {
       final categoriesCollection =
-          FirebaseFirestore.instance.collection('Category');
-      final snapshot = await categoriesCollection.get();
-      _category = [];
-      for (final doc in snapshot.docs) {
+          FirebaseFirestore.instance.collection('Categories');
+      final querySnapshot = await categoriesCollection.get();
+      _categories = querySnapshot.docs.map((doc) {
         final categoryData = doc.data();
-        final subcategoriesSnapshot =
-            await doc.reference.collection('Subcategories').get();
-        final subcategories = subcategoriesSnapshot.docs
-            .map((subcatDoc) => Subcategory.fromMap(subcatDoc.data()))
-            .toList();
-        _category.add(Category(
+        final subcategories =
+            (categoryData['subcategories'] as List<dynamic>).map((subcatData) {
+          return Subcategory(
+            id: subcatData['id'] as int,
+            name: subcatData['name'] as String,
+          );
+        }).toList();
+        return Category(
           id: categoryData['id'] as int,
           name: categoryData['name'] as String,
           imagePath: categoryData['imagePath'] as String,
           subcategories: subcategories,
-        ));
-      }
+        );
+      }).toList();
       notifyListeners(); // Notify about categories update
     } catch (error) {
       // Handle errors appropriately
@@ -49,7 +46,7 @@ class CategoryProvider with ChangeNotifier {
     }
   }
 
-  // Fetch items and categories
+  // Fetch categories
   Future<void> fetchCategories(FirestoreService firestoreService) async {
     // Use updateFromFirestore to fetch categories
     await updateFromFirestore(firestoreService);
@@ -58,14 +55,12 @@ class CategoryProvider with ChangeNotifier {
   // Dispose of subscriptions (optional)
   @override
   void dispose() {
-    _categoriesSubscription?.cancel();
     super.dispose();
-    notifyListeners();
   }
 
-  // Define the method to get subcategories by category name
+  // Define a method to get subcategories by category name
   List<Subcategory> getSubcategoriesByCategoryName(String categoryName) {
-    final category = _category.firstWhere(
+    final category = _categories.firstWhere(
       (category) => category.name == categoryName,
       orElse: () => Category(
         id: -1,

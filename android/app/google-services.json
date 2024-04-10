@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "649622728671",
+    "firebase_url": "https://gona-d5e94-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "gona-d5e94",
+    "storage_bucket": "gona-d5e94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649622728671:android:d45f8ea55c4bc18bdede6a",
+        "android_client_info": {
+          "package_name": "com.example.gona"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649622728671-e2phphvbe8n3ecihfscpqu7r3itif4de.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gona",
+            "certificate_hash": "87c424bdceaa7fa484337d6879ef3263f15cb583"
+          }
+        },
+        {
+          "client_id": "649622728671-udqj56suf3q3aumign2is0084j3o87lr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPT5InHcy8c65KCn9EYXNEKTnfbHgbGeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649622728671-udqj56suf3q3aumign2is0084j3o87lr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "649622728671-g9qqp1av3djgp4snd7ug7bgvs15k3o8n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gonaVendor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649622728671:android:d570bdb681d60b6edede6a",
+        "android_client_info": {
+          "package_name": "com.example.gona_vendor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649622728671-udqj56suf3q3aumign2is0084j3o87lr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPT5InHcy8c65KCn9EYXNEKTnfbHgbGeE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649622728671-udqj56suf3q3aumign2is0084j3o87lr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "649622728671-g9qqp1av3djgp4snd7ug7bgvs15k3o8n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gonaVendor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -49,36 +49,41 @@ class DefaultFirebaseOptions {
     messagingSenderId: '649622728671',
     projectId: 'gona-d5e94',
     authDomain: 'gona-d5e94.firebaseapp.com',
+    databaseURL: 'https://gona-d5e94-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gona-d5e94.appspot.com',
+    measurementId: 'G-SX1EPN0RVC',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAPT5InHcy8c65KCn9EYXNEKTnfbHgbGeE',
-    appId: '1:649622728671:android:d45f8ea55c4bc18bdede6a',
+    appId: '1:649622728671:android:d570bdb681d60b6edede6a',
     messagingSenderId: '649622728671',
     projectId: 'gona-d5e94',
+    databaseURL: 'https://gona-d5e94-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gona-d5e94.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCg1mSbyKsuF3gwONtMUzZL-H6qzgMABDA',
-    appId: '1:649622728671:ios:92ab75bec5a34e2adede6a',
+    appId: '1:649622728671:ios:a35d33d7f08f8e10dede6a',
     messagingSenderId: '649622728671',
     projectId: 'gona-d5e94',
+    databaseURL: 'https://gona-d5e94-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gona-d5e94.appspot.com',
     androidClientId: '649622728671-e2phphvbe8n3ecihfscpqu7r3itif4de.apps.googleusercontent.com',
-    iosClientId: '649622728671-n9bk5pc4gvl6tmjciuh64ialppfpdrbi.apps.googleusercontent.com',
-    iosBundleId: 'com.example.gona',
+    iosClientId: '649622728671-g9qqp1av3djgp4snd7ug7bgvs15k3o8n.apps.googleusercontent.com',
+    iosBundleId: 'com.example.gonaVendor',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyCg1mSbyKsuF3gwONtMUzZL-H6qzgMABDA',
-    appId: '1:649622728671:ios:009e062a02074c88dede6a',
+    appId: '1:649622728671:ios:b18bd8e209fff988dede6a',
     messagingSenderId: '649622728671',
     projectId: 'gona-d5e94',
+    databaseURL: 'https://gona-d5e94-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'gona-d5e94.appspot.com',
     androidClientId: '649622728671-e2phphvbe8n3ecihfscpqu7r3itif4de.apps.googleusercontent.com',
-    iosClientId: '649622728671-ji0tuvg847e8o58spns1r44s7stin9rn.apps.googleusercontent.com',
-    iosBundleId: 'com.example.gona.RunnerTests',
+    iosClientId: '649622728671-2tgm4m5vqhkdf7l4urldf649pvndtvcv.apps.googleusercontent.com',
+    iosBundleId: 'com.example.gonaVendor.RunnerTests',
   );
 }

@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -320,7 +320,7 @@ class _HomepageState extends State<Homepage> {
                                           fontSize: 20),
                                     ),
                                     Text(
-                                      'Manage sale data',
+                                      'Manage sales data',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -328,12 +328,80 @@ class _HomepageState extends State<Homepage> {
                                   ],
                                 ),
                               ],
-                            )
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 15.0,
+                              ),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Colors.limeAccent),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Text(
+                                            'Manage Order',
+                                            style: TextStyle(fontSize: 15),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: 10.0, top: 15),
+                                      child: Text(
+                                        'Farm City',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17),
+                                      ),
+                                    ),
+                                  ]),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 15.0),
+                              child: Row(
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Inventory',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      Text(
+                                        'Manage sales data',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
+
+                  const SizedBox(
+                    height: 30,
+                  )
                 ],
               ),
             ),

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>649622728671-2tgm4m5vqhkdf7l4urldf649pvndtvcv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.649622728671-2tgm4m5vqhkdf7l4urldf649pvndtvcv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>649622728671-e2phphvbe8n3ecihfscpqu7r3itif4de.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCg1mSbyKsuF3gwONtMUzZL-H6qzgMABDA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>649622728671</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.gonaVendor.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>gona-d5e94</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gona-d5e94.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:649622728671:ios:b18bd8e209fff988dede6a</string>
+	<key>DATABASE_URL</key>
+	<string>https://gona-d5e94-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>
