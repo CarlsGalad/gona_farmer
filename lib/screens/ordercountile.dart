@@ -23,25 +23,16 @@ class OrderCountTileState extends State<OrderCountTile> {
     // Get the current user's UID from Firebase Authentication
     String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
-      // Fetch orders from Firestore
-      QuerySnapshot ordersSnapshot =
-          await FirebaseFirestore.instance.collection('orders').get();
-
-      // Iterate through the orders and count the ones with matching farmId
-      int count = 0;
-      for (QueryDocumentSnapshot orderDoc in ordersSnapshot.docs) {
-        List<Map<String, dynamic>> orderItems =
-            List<Map<String, dynamic>>.from(orderDoc['orderItems']);
-        for (Map<String, dynamic> orderItem in orderItems) {
-          if (orderItem['farmId'] == userId) {
-            count++;
-            break; // Break the loop after finding a matching farmId for efficiency
-          }
-        }
-      }
+      // Fetch orders from Firestore where farmId matches the current user's UID and order status is "placed"
+      QuerySnapshot<Map<String, dynamic>> ordersSnapshot =
+          await FirebaseFirestore.instance
+              .collection('orders')
+              .where('farmId', isEqualTo: userId)
+              .where('status', isEqualTo: 'placed')
+              .get();
 
       setState(() {
-        _orderCount = count; // Set the order count
+        _orderCount = ordersSnapshot.size; // Set the order count
       });
     }
   }
@@ -53,38 +44,36 @@ class OrderCountTileState extends State<OrderCountTile> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderListScreen(),
+            builder: (context) => const OrderListScreen(),
           ),
         );
       },
-      child: Expanded(
-        child: Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 137, 247, 143),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    _orderCount.toString(), // Display the order count
-                    style: const TextStyle(fontSize: 45),
-                    textAlign: TextAlign.start,
-                  ),
+      child: Container(
+        width: 120,
+        height: 120,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 137, 247, 143),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  _orderCount.toString(), // Display the order count
+                  style: const TextStyle(fontSize: 45),
+                  textAlign: TextAlign.start,
                 ),
-                const Text(
-                  'Orders',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
+              ),
+              const Text(
+                'Orders',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+            ],
           ),
         ),
       ),

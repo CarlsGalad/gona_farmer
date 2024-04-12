@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:gona_vendor/screens/ordercountile.dart';
+import 'package:gona_vendor/screens/process_count_tile.dart';
 import 'package:gona_vendor/screens/welcomemsg.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -62,46 +63,16 @@ class _HomepageState extends State<Homepage> {
                 children: [
                   // welcome msg
                   const WelcomeBackWidget(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 15.0, right: 15),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         OrderCountTile(),
-                        const SizedBox(
+                        SizedBox(
                           width: 8,
                         ),
-                        Expanded(
-                          child: Container(
-                            width: 240,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 137, 247, 143),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Text(
-                                        '16',
-                                        style: TextStyle(fontSize: 45),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Processed Order's",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ]),
-                            ),
-                          ),
-                        ),
+                        ProcessedTile()
                       ],
                     ),
                   ),

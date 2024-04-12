@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gona_vendor/screens/order_detail.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart'; // Import intl package for date formatting
 
@@ -44,29 +45,39 @@ class OrderListScreen extends StatelessWidget {
                 // Format the DateTime object
                 String formattedDate =
                     DateFormat('yyyy-MM-dd HH:mm').format(orderDate);
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 137, 247, 143),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Order ID: ${order['order_id']}',
-                            style: GoogleFonts.sansita(fontSize: 17),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ItemDetailPage(
+                                orderId: order['order_id'])));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 137, 247, 143),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Order ID: ${order['order_id']}',
+                              style: GoogleFonts.sansita(fontSize: 17),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                          child: Text('Order Date: $formattedDate'),
-                        ), // Display formatted date
-                      ],
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 8),
+                            child: Text('Order Date: $formattedDate'),
+                          ), // Display formatted date
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -87,6 +98,7 @@ class OrderListScreen extends StatelessWidget {
           await FirebaseFirestore.instance
               .collection('orderItems')
               .where('farmId', isEqualTo: userId)
+              .where('status', isEqualTo: 'pending')
               .get();
 
       // Extract and return the list of order items
