@@ -1,6 +1,7 @@
-
 import 'package:flutter/material.dart';
-
+import 'package:flutter/widgets.dart';
+import 'package:gona_vendor/screens/ordercountile.dart';
+import 'package:gona_vendor/screens/welcomemsg.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -29,12 +30,17 @@ class _HomepageState extends State<Homepage> {
             'Gona Farmers',
             style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 30),
           ),
-          actions: const [
+          actions: [
             Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: Icon(
-                Icons.menu,
-                size: 40,
+              padding: const EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Drawer;
+                },
+                child: const Icon(
+                  Icons.menu,
+                  size: 40,
+                ),
               ),
             )
           ],
@@ -54,51 +60,14 @@ class _HomepageState extends State<Homepage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(30.0),
-                      child: Text(
-                        'Welcome back Farmer',
-                        style: TextStyle(fontSize: 25),
-                      ),
-                    ),
-                  ),
+                  // welcome msg
+                  const WelcomeBackWidget(),
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0, right: 15),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 137, 247, 143),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Text(
-                                        '7',
-                                        style: TextStyle(fontSize: 45),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Orders',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ]),
-                            ),
-                          ),
-                        ),
+                        OrderCountTile(),
                         const SizedBox(
                           width: 8,
                         ),
