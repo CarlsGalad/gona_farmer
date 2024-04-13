@@ -34,6 +34,40 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
         _deliveredCount =
             deliveredOrderItemsSnapshot.size; // Set the delivered count
       });
+
+      // Increment totalSales in the farms collection
+      await _incrementTotalSales(_deliveredCount);
+
+      // Update totalEarnings in the farms collection
+      await _updateTotalEarnings(deliveredOrderItemsSnapshot.docs);
+    }
+  }
+
+  Future<void> _incrementTotalSales(int incrementBy) async {
+    // Get the current user's UID from Firebase Authentication
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      // Increment totalSales by the provided value
+      await FirebaseFirestore.instance.collection('farms').doc(userId).update({
+        'totalSales': FieldValue.increment(incrementBy),
+      });
+    }
+  }
+
+  Future<void> _updateTotalEarnings(List<DocumentSnapshot> orderItems) async {
+    // Get the current user's UID from Firebase Authentication
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      // Calculate total earnings from order items
+      int totalEarnings = orderItems.fold(0, (sum, orderItem) {
+        //The price field is cast to an integer before adding
+        return sum + (orderItem['price'] as int? ?? 0);
+      });
+
+      // Update totalEarnings in the farms collection
+      await FirebaseFirestore.instance.collection('farms').doc(userId).update({
+        'totalEarnings': FieldValue.increment(totalEarnings),
+      });
     }
   }
 
