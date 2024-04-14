@@ -1,16 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class EditItemDetailsPage extends StatefulWidget {
+class EditPromoDetailsPage extends StatefulWidget {
   final String itemId;
 
-  const EditItemDetailsPage({super.key, required this.itemId});
+  const EditPromoDetailsPage({super.key, required this.itemId});
 
   @override
-  EditItemDetailsPageState createState() => EditItemDetailsPageState();
+  EditPromoDetailsPageState createState() => EditPromoDetailsPageState();
 }
 
-class EditItemDetailsPageState extends State<EditItemDetailsPage> {
+class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -26,7 +28,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
-          .collection('Items')
+          .collection('promotions')
           .doc(widget.itemId)
           .get();
 
@@ -46,7 +48,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
   Future<void> _updateItemDetails() async {
     try {
       await FirebaseFirestore.instance
-          .collection('items')
+          .collection('promotions')
           .doc(widget.itemId)
           .update({
         'name': _nameController.text.trim(),
@@ -65,7 +67,14 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Item Details'),
+        leading: IconButton(
+          icon: const Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Edit Promo Item Details',
+          style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),

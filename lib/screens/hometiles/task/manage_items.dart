@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../edit_items.dart';
+import 'edit_items.dart';
 
 class InventoryManagementPage extends StatefulWidget {
   const InventoryManagementPage({super.key});
@@ -98,49 +98,66 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                   document.data() as Map<String, dynamic>; // Cast here
               return GestureDetector(
                   onTap: () {},
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              EditItemDetailsPage(itemId: document.id),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(color: Colors.green),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EditItemDetailsPage(itemId: document.id),
+                            ),
+                          );
+                        },
+                        title: Text(
+                          itemData['name'],
+                          style: TextStyle(color: Colors.white),
                         ),
-                      );
-                    },
-                    title: Text(itemData['name']),
-                    subtitle: Text('Price: ${itemData['price']}'),
-                    // Add more details as needed
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Confirm Delete'),
-                              content: const Text(
-                                  'Are you sure you want to delete this item?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    // Perform delete operation
-                                    _deleteItem(document.id);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Delete'),
-                                ),
-                              ],
+                        subtitle: Text(
+                          'Price: ${itemData['price']}',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        // Add more details as needed
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Color.fromARGB(255, 88, 3, 3),
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Confirm Delete'),
+                                  content: const Text(
+                                      'Are you sure you want to delete this item?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        // Perform delete operation
+                                        _deleteItem(document.id);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
+                        ),
+                      ),
                     ),
                   ));
             }).toList(),

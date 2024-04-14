@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gona_vendor/screens/add_promo.dart';
+import 'package:gona_vendor/screens/hometiles/task/add_promo.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../edit_items.dart';
+import 'edit_items.dart';
 
 class PromoManagementPage extends StatefulWidget {
   const PromoManagementPage({super.key});

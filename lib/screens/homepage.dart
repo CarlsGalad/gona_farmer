@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:gona_vendor/screens/add_promo.dart';
+
+import 'package:gona_vendor/screens/hometiles/task/add_promo.dart';
 import 'package:gona_vendor/screens/hometiles/deliveredtile.dart';
-import 'package:gona_vendor/screens/hometiles/manage_items.dart';
-import 'package:gona_vendor/screens/hometiles/manage_promo.dart';
+import 'package:gona_vendor/screens/hometiles/task/manage_items.dart';
+import 'package:gona_vendor/screens/hometiles/task/manage_promo.dart';
 
 import 'package:gona_vendor/screens/hometiles/ordercountile.dart';
 import 'package:gona_vendor/screens/hometiles/process_count_tile.dart';
@@ -12,9 +11,10 @@ import 'package:gona_vendor/screens/welcomemsg.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'add_item.dart';
+import 'hometiles/appbaritems.dart';
+import 'hometiles/task/add_item.dart';
 import 'hometiles/earnings_tile.dart';
-import 'hometiles/farmcty.dart';
+import 'hometiles/task/farmcty.dart';
 import 'hometiles/farmname.dart';
 import 'hometiles/total_salestile.dart';
 
@@ -43,20 +43,7 @@ class _HomepageState extends State<Homepage> {
             'Gona Farmers',
             style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 30),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  Drawer;
-                },
-                child: const Icon(
-                  Icons.menu,
-                  size: 40,
-                ),
-              ),
-            )
-          ],
+          actions: const [DropdownMenuWidget()],
           centerTitle: true,
         ),
         body: Container(
