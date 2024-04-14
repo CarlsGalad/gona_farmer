@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../edit_items.dart';
+
 class InventoryManagementPage extends StatefulWidget {
   const InventoryManagementPage({super.key});
 
@@ -28,7 +30,7 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
       });
       // Fetch inventory items for the current user's farmId
       _inventoryStream = FirebaseFirestore.instance
-          .collection('items')
+          .collection('Items')
           .where('farmId', isEqualTo: _farmId)
           .snapshots();
     }
@@ -63,10 +65,22 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> itemData =
                   document.data() as Map<String, dynamic>; // Cast here
-              return ListTile(
-                title: Text(itemData['name']),
-                subtitle: Text('Price: ${itemData['price']}'),
-                // Add more details as needed
+              return GestureDetector(
+                onTap: () {},
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditItemDetailsPage(itemId: document.id),
+                      ),
+                    );
+                  },
+                  title: Text(itemData['name']),
+                  subtitle: Text('Price: ${itemData['price']}'),
+                  // Add more details as needed
+                ),
               );
             }).toList(),
           );
