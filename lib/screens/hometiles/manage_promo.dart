@@ -2,20 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gona_vendor/screens/add_promo.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../edit_items.dart';
 
-class InventoryManagementPage extends StatefulWidget {
-  const InventoryManagementPage({super.key});
+class PromoManagementPage extends StatefulWidget {
+  const PromoManagementPage({super.key});
 
   @override
-  InventoryManagementPageState createState() => InventoryManagementPageState();
+  PromoManagementPageState createState() => PromoManagementPageState();
 }
 
-class InventoryManagementPageState extends State<InventoryManagementPage> {
+class PromoManagementPageState extends State<PromoManagementPage> {
   late String _farmId;
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _inventoryStream;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _promoStream;
 
   @override
   void initState() {
@@ -52,8 +53,8 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
         _farmId = userId;
       });
       // Fetch inventory items for the current user's farmId
-      _inventoryStream = FirebaseFirestore.instance
-          .collection('Items')
+      _promoStream = FirebaseFirestore.instance
+          .collection('promotions')
           .where('farmId', isEqualTo: _farmId)
           .snapshots();
     }
@@ -67,14 +68,14 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
           icon: const Icon(CupertinoIcons.back),
           onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: true,
         title: Text(
-          'Inventory Management',
-          style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
+          'Promotions Management',
+          style: GoogleFonts.aboreto(fontWeight: FontWeight.bold, fontSize: 20),
         ),
+        centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: _inventoryStream,
+        stream: _promoStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -88,7 +89,7 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
-              child: Text('No inventory items found.'),
+              child: Text('No promotions items found.'),
             );
           }
           // Display inventory items
@@ -97,52 +98,53 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
               Map<String, dynamic> itemData =
                   document.data() as Map<String, dynamic>; // Cast here
               return GestureDetector(
-                  onTap: () {},
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              EditItemDetailsPage(itemId: document.id),
-                        ),
+                onTap: () {},
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditItemDetailsPage(itemId: document.id),
+                      ),
+                    );
+                  },
+                  title: Text(itemData['name']),
+                  subtitle: Text('Price: ${itemData['price']}'),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Confirm Delete'),
+                            content: const Text(
+                                'Are you sure you want to delete this item?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  // Perform delete operation
+                                  _deleteItem(document.id);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
-                    title: Text(itemData['name']),
-                    subtitle: Text('Price: ${itemData['price']}'),
-                    // Add more details as needed
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Confirm Delete'),
-                              content: const Text(
-                                  'Are you sure you want to delete this item?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    // Perform delete operation
-                                    _deleteItem(document.id);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Delete'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ));
+                  ),
+                  // Add more details as needed
+                ),
+              );
             }).toList(),
           );
         },
@@ -150,13 +152,12 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
       // Add FloatingActionButton to add new inventory items
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to a screen to add new inventory items
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => AddInventoryItemPage(farmId: _farmId),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddPromoScreen(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),

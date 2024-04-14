@@ -10,19 +10,19 @@ import 'package:image_picker/image_picker.dart';
 
 import 'conditional.dart';
 
-class AddItemScreen extends StatefulWidget {
-  const AddItemScreen({super.key});
+class AddPromoScreen extends StatefulWidget {
+  const AddPromoScreen({super.key});
 
   @override
-  AddItemScreenState createState() => AddItemScreenState();
+  AddPromoScreenState createState() => AddPromoScreenState();
 }
 
-class AddItemScreenState extends State<AddItemScreen> {
+class AddPromoScreenState extends State<AddPromoScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-
+  final TextEditingController _oldPriceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _farmingYearController = TextEditingController();
 
@@ -106,7 +106,7 @@ class AddItemScreenState extends State<AddItemScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Add Item',
+          'Add Promotions',
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -134,6 +134,22 @@ class AddItemScreenState extends State<AddItemScreen> {
               controller: _priceController,
               decoration: const InputDecoration(
                   labelText: 'Price',
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green),
+                      borderRadius: BorderRadius.all(Radius.circular(15)))),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a price';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 15.0),
+            TextFormField(
+              controller: _oldPriceController,
+              decoration: const InputDecoration(
+                  labelText: 'Old Price',
                   border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.green),
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
@@ -250,7 +266,7 @@ class AddItemScreenState extends State<AddItemScreen> {
             TextFormField(
               controller: _quantityController,
               decoration: const InputDecoration(
-                  labelText: 'Quantity',
+                  labelText: 'Availabe Quantity',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               keyboardType: TextInputType.number,
@@ -370,7 +386,7 @@ class AddItemScreenState extends State<AddItemScreen> {
     try {
       final firebaseStorageRef = FirebaseStorage.instance
           .ref()
-          .child('item_images')
+          .child('promotions')
           .child(DateTime.now().millisecondsSinceEpoch.toString());
       await firebaseStorageRef.putFile(imageFile);
       final downloadURL = await firebaseStorageRef.getDownloadURL();
@@ -434,10 +450,15 @@ class AddItemScreenState extends State<AddItemScreen> {
           await _fetchFarmName();
           // Get a reference to a new document with an auto-generated ID
           DocumentReference newItemRef =
-              FirebaseFirestore.instance.collection('items').doc();
+              FirebaseFirestore.instance.collection('promotions').doc();
           await newItemRef.set({
             'name': _nameController.text.trim(),
-            'price': int.parse(_priceController.text.trim()),
+            'price': int.parse(
+              _priceController.text.trim(),
+            ),
+            'oldPrice': int.parse(
+              _oldPriceController.text.trim(),
+            ),
             'description': _descriptionController.text.trim(),
             'itemLocation': _userCity,
             'categoryId': _selectedCategoryId?.toInt(),

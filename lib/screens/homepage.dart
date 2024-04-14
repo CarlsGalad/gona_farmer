@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gona_vendor/screens/add_promo.dart';
 import 'package:gona_vendor/screens/hometiles/deliveredtile.dart';
 import 'package:gona_vendor/screens/hometiles/manage_items.dart';
+import 'package:gona_vendor/screens/hometiles/manage_promo.dart';
 
 import 'package:gona_vendor/screens/hometiles/ordercountile.dart';
 import 'package:gona_vendor/screens/hometiles/process_count_tile.dart';
@@ -170,25 +172,34 @@ class _HomepageState extends State<Homepage> {
                                   const Spacer(),
                                   const FarmNameWidget(),
                                 ]),
-                            const Row(
+                            Row(
                               children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Inventory',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
-                                    ),
-                                    Text(
-                                      'Manage sales data',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                GestureDetector(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const InventoryManagementPage(),
+                                      )),
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Inventory',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
                                       ),
-                                    )
-                                  ],
+                                      Text(
+                                        "Manage items' data",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -200,19 +211,31 @@ class _HomepageState extends State<Homepage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 5.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Colors.limeAccent),
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(4.0),
-                                          child: Text(
-                                            'Manage Order',
-                                            style: TextStyle(fontSize: 15),
-                                            textAlign: TextAlign.start,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const AddPromoScreen(),
+                                          ),
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 5.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.limeAccent),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(4.0),
+                                            child: Text(
+                                              'Add Promo Item',
+                                              style: TextStyle(fontSize: 15),
+                                              textAlign: TextAlign.start,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -231,7 +254,7 @@ class _HomepageState extends State<Homepage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const InventoryManagementPage()));
+                                                  const PromoManagementPage()));
                                     },
                                     child: const Column(
                                       mainAxisAlignment:
@@ -240,13 +263,13 @@ class _HomepageState extends State<Homepage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Inventory',
+                                          'Promotions',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 20),
                                         ),
                                         Text(
-                                          'Manage sales data',
+                                          'Manage promotions item data',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
