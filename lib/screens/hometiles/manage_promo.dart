@@ -26,7 +26,10 @@ class PromoManagementPageState extends State<PromoManagementPage> {
 
   Future<void> _deleteItem(String itemId) async {
     try {
-      await FirebaseFirestore.instance.collection('Items').doc(itemId).delete();
+      await FirebaseFirestore.instance
+          .collection('ptomotions')
+          .doc(itemId)
+          .delete();
       // Show success message or navigate to a different screen if needed
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
