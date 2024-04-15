@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'add_item.dart';
 import 'edit_items.dart';
 
 class InventoryManagementPage extends StatefulWidget {
@@ -102,8 +103,8 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 4),
                     child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(color: Colors.green),
+                      padding: const EdgeInsets.all(8),
+                      decoration: const BoxDecoration(color: Colors.green),
                       child: ListTile(
                         onTap: () {
                           Navigator.push(
@@ -116,13 +117,20 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                         },
                         title: Text(
                           itemData['name'],
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
-                        subtitle: Text(
-                          'Price: ${itemData['price']}',
-                          style: TextStyle(color: Colors.white),
+                        subtitle: Row(
+                          children: [
+                            Text(
+                              'Price: ${itemData['price']}',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text('${itemData['sellingMethod'] ?? ''}')
+                          ],
                         ),
-                        // Add more details as needed
                         trailing: IconButton(
                           icon: const Icon(
                             Icons.delete,
@@ -168,12 +176,12 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to a screen to add new inventory items
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => AddInventoryItemPage(farmId: _farmId),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddItemScreen(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),

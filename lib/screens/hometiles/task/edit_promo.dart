@@ -9,16 +9,16 @@ import 'package:image_picker/image_picker.dart';
 
 import 'conditional.dart';
 
-class EditItemDetailsPage extends StatefulWidget {
+class EditPromoDetailsPage extends StatefulWidget {
   final String itemId;
 
-  const EditItemDetailsPage({super.key, required this.itemId});
+  const EditPromoDetailsPage({super.key, required this.itemId});
 
   @override
-  EditItemDetailsPageState createState() => EditItemDetailsPageState();
+  EditPromoDetailsPageState createState() => EditPromoDetailsPageState();
 }
 
-class EditItemDetailsPageState extends State<EditItemDetailsPage> {
+class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -38,38 +38,38 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _fetchItemDetails();
-    _fetchCategories();
+    _fetchPromoItemDetails();
   }
 
-  Future<void> _fetchItemDetails() async {
+  Future<void> _fetchPromoItemDetails() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
-          .collection('Items')
+          .collection('promotions')
           .doc(widget.itemId)
           .get();
 
-      Map<String, dynamic> itemData = snapshot.data() ?? {};
+      Map<String, dynamic> promoData = snapshot.data() ?? {};
 
       setState(() {
-        _nameController.text = itemData['name'] ?? '';
-        _priceController.text = (itemData['price'] ?? 0).toString();
-        _descriptionController.text = itemData['description'] ?? '';
-        _farmingYearController.text = (itemData['farmingYear'] ?? 0).toString();
+        _nameController.text = promoData['name'] ?? '';
+        _priceController.text = (promoData['price'] ?? 0).toString();
+        _descriptionController.text = promoData['description'] ?? '';
+        _farmingYearController.text =
+            (promoData['farmingYear'] ?? 0).toString();
         _availQuantityController.text =
-            (itemData['availQuantity'] ?? 0).toString();
-        itemPath = itemData['itemPath'];
+            (promoData['availQuantity'] ?? 0).toString();
+        itemPath = promoData['itemPath'];
       });
     } catch (error) {
       print('Error fetching item details: $error');
     }
   }
 
-  Future<void> _updateItemDetails() async {
+  Future<void> _updatePromoDetails() async {
     try {
       await FirebaseFirestore.instance
-          .collection('items')
+          .collection('promotions')
           .doc(widget.itemId)
           .update({
         'name': _nameController.text.trim(),
@@ -95,14 +95,13 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(CupertinoIcons.back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Edit Item Details',
+          'Edit Details',
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -170,9 +169,13 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               TextField(
                 controller: _priceController,
                 decoration: const InputDecoration(
-                    labelText: 'Price',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  labelText: 'Price',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                  ),
+                ),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(
@@ -181,11 +184,14 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               TextField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                  ),
+                ),
                 maxLines: null,
-                keyboardType: TextInputType.multiline,
               ),
               const SizedBox(
                 height: 15,
@@ -368,7 +374,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
           child: GestureDetector(
-            onTap: _updateItemDetails,
+            onTap: _updatePromoDetails,
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.green, borderRadius: BorderRadius.circular(15)),
@@ -411,7 +417,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
     try {
       final firebaseStorageRef = FirebaseStorage.instance
           .ref()
-          .child('items')
+          .child('promo_items')
           .child(DateTime.now().millisecondsSinceEpoch.toString());
       await firebaseStorageRef.putFile(imageFile);
       final downloadURL = await firebaseStorageRef.getDownloadURL();

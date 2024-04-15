@@ -169,7 +169,7 @@ class AddItemScreenState extends State<AddItemScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a location';
+                  return 'Please enter a Farming year';
                 }
                 return null;
               },
@@ -250,7 +250,7 @@ class AddItemScreenState extends State<AddItemScreen> {
             TextFormField(
               controller: _quantityController,
               decoration: const InputDecoration(
-                  labelText: 'Quantity',
+                  labelText: 'Available Quantity',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               keyboardType: TextInputType.number,
@@ -444,7 +444,7 @@ class AddItemScreenState extends State<AddItemScreen> {
             'subcategoryId': _selectedSubcategory!['id'] as int,
             'availQuantity': int.parse(_quantityController.text.trim()),
             'sellingMethod': _selectedSellingMethod,
-            'farmingYear': _farmingYearController,
+            'farmingYear': int.parse(_farmingYearController.text.trim()) ,
             'farmId': userId,
             'itemPath': imageURL,
             'id': newItemRef.id,

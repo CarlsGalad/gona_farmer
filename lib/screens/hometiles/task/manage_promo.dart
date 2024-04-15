@@ -113,7 +113,15 @@ class PromoManagementPageState extends State<PromoManagementPage> {
                     );
                   },
                   title: Text(itemData['name']),
-                  subtitle: Text('Price: ${itemData['price']}'),
+                  subtitle: Row(
+                    children: [
+                      Text('Price: ${itemData['price']}'),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text('${itemData['sellingMethod'] ?? ''}')
+                    ],
+                  ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
@@ -145,14 +153,13 @@ class PromoManagementPageState extends State<PromoManagementPage> {
                       );
                     },
                   ),
-                  // Add more details as needed
                 ),
               );
             }).toList(),
           );
         },
       ),
-      // Add FloatingActionButton to add new inventory items
+      //  FloatingActionButton to add new inventory items
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

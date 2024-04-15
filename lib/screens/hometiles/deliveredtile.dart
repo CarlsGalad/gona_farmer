@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gona_vendor/screens/hometiles/delivered_screen.dart';
 
 class DeliveredCountTile extends StatefulWidget {
   const DeliveredCountTile({super.key});
@@ -74,32 +75,40 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        width: 240,
-        height: 120,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 137, 247, 143),
-          borderRadius: BorderRadius.circular(10),
+      child: GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DeliveredOrdersScreen(),
+          ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  _deliveredCount.toString(), // Display the delivered count
-                  style: const TextStyle(fontSize: 45),
-                  textAlign: TextAlign.start,
+        child: Container(
+          width: 240,
+          height: 120,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 137, 247, 143),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    _deliveredCount.toString(), // Display the delivered count
+                    style: const TextStyle(fontSize: 45),
+                    textAlign: TextAlign.start,
+                  ),
                 ),
-              ),
-              const Text(
-                'Delivered',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )
-            ],
+                const Text(
+                  'Delivered',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
           ),
         ),
       ),

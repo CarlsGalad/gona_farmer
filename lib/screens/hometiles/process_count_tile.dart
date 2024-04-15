@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gona_vendor/screens/hometiles/proccessed.dart';
 
 class ProcessedTile extends StatefulWidget {
   const ProcessedTile({super.key});
@@ -30,34 +31,40 @@ class _ProcessedTileState extends State<ProcessedTile> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             int processedOrdersCount = snapshot.data?.length ?? 0;
-            return Container(
-              width: 240,
-              height: 120,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 137, 247, 143),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Text(
-                        '$processedOrdersCount',
-                        style: const TextStyle(fontSize: 45),
-                        textAlign: TextAlign.start,
+            return GestureDetector(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProcessedOrdersScreen())),
+              child: Container(
+                width: 240,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 137, 247, 143),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          '$processedOrdersCount',
+                          style: const TextStyle(fontSize: 45),
+                          textAlign: TextAlign.start,
+                        ),
                       ),
-                    ),
-                    const Text(
-                      "Processed Order's",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                      const Text(
+                        "Processed Order's",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
