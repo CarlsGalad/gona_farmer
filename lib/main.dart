@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/item_provider.dart';
 import 'screens/notifications.dart';
+import 'screens/watcher.dart';
 import 'services/auth_page.dart';
 import 'services/auth_service.dart';
 
@@ -26,6 +27,10 @@ void main() async {
   // Initialize Firebase before running the app
   final FirebaseApi firebaseApi = FirebaseApi();
   await firebaseApi.initNotifications();
+
+  // Start watching for order item changes
+  final orderItemWatcher = OrderItemWatcher();
+  orderItemWatcher.startWatching();
 
   runApp(
     MultiProvider(

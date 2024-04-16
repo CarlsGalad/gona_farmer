@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserCityWidget extends StatefulWidget {
-  const UserCityWidget({Key? key}) : super(key: key);
+  const UserCityWidget({super.key});
 
   @override
   _UserCityWidgetState createState() => _UserCityWidgetState();

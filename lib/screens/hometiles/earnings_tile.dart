@@ -12,6 +12,7 @@ class TotalEarningsDisplay extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20.0, right: 15),
       child: Container(
         width: MediaQuery.of(context).size.width - 30,
+        height: 150,
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 137, 247, 143),
           borderRadius: BorderRadius.circular(10),
@@ -35,7 +36,7 @@ class TotalEarningsDisplay extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                      padding: const EdgeInsets.only(top: 30.0),
                       child: Text(
                         '₦$formattedTotalEarnings',
                         style: const TextStyle(fontSize: 45),

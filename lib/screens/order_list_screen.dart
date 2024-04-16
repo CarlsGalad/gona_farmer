@@ -50,17 +50,16 @@ class OrderListScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ItemDetailPage(
-                                orderId: order['order_id'])));
+                            builder: (context) =>
+                                ItemDetailPage(orderId: order['order_id'])));
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15.0, vertical: 4),
                     child: Container(
                       decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 137, 247, 143),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey)),
+                          color: Colors.green,
+                          border: Border.all(color: Colors.grey),),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -98,7 +97,7 @@ class OrderListScreen extends StatelessWidget {
           await FirebaseFirestore.instance
               .collection('orderItems')
               .where('farmId', isEqualTo: userId)
-              .where('status', isEqualTo: 'pending')
+              .where('status', isEqualTo: 'placed')
               .get();
 
       // Extract and return the list of order items

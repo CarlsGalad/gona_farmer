@@ -35,6 +35,8 @@ class AddItemScreenState extends State<AddItemScreen> {
   String? _selectedSellingMethod;
   String? _userCity;
   String? _farmName;
+  File? _uploadedImage;
+  bool _uploadingImage = false;
 
   @override
   void initState() {
@@ -113,191 +115,213 @@ class AddItemScreenState extends State<AddItemScreen> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 15.0),
-            TextFormField(
-              controller: _priceController,
-              decoration: const InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green),
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a price';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 15.0),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-              maxLines: null,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a description';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 15.0),
-            TextFormField(
-              controller: _farmingYearController,
-              decoration: const InputDecoration(
-                  labelText: 'Farming Year',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a Farming year';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 15.0),
-            ConditionalWidget(
-              condition: _categories.isNotEmpty,
-              fallback: _buildLoadingIndicator(),
-              child: DropdownButtonFormField<int>(
-                value: _selectedCategoryId,
-                items: _categories.map((category) {
-                  return DropdownMenuItem<int>(
-                    value: category['id']?.toInt(),
-                    child: Text(category['name'] as String? ?? ''),
-                  );
-                }).toList(),
-                onChanged: (value) async {
-                  if (value != null) {
-                    // Perform asynchronous work outside of setState
-                    await _fetchSubcategories(value);
-                    setState(() {
-                      // Update the state synchronously after the asynchronous work is done
-                      _selectedCategoryId = value;
-                    });
-                  } else {
-                    setState(() {
-                      _selectedCategoryId = null;
-                      _subcategories.clear();
-                      _subcategories.add({});
-                      _selectedSubcategory = null;
-                    });
-                  }
-                },
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextFormField(
+                controller: _nameController,
                 decoration: const InputDecoration(
-                    labelText: 'Select Category',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a category';
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const SizedBox(height: 15.0),
-            ConditionalWidget(
-              condition:
-                  _subcategories.isNotEmpty && _selectedCategoryId != null,
-              fallback: _buildLoadingIndicator(),
-              // Only show subcategories dropdown and loading indicator if subcategories exist and a category is selected
-              child: DropdownButtonFormField<Map<String, dynamic>>(
-                value: _selectedSubcategory,
-                items: _subcategories.map((subcategory) {
-                  return DropdownMenuItem<Map<String, dynamic>>(
-                    value: subcategory,
-                    child: Text(subcategory['name'] as String? ?? ''),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedSubcategory = value;
-                  });
-                },
-                decoration: const InputDecoration(
-                    labelText: 'Select Subcategory',
+                    labelText: 'Name',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please select a subcategory';
+                    return 'Please enter a name';
                   }
                   return null;
                 },
               ),
-            ),
-            const SizedBox(height: 15.0),
-            TextFormField(
-              controller: _quantityController,
-              decoration: const InputDecoration(
-                  labelText: 'Available Quantity',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a quantity';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 15.0),
-            DropdownButtonFormField<String>(
-              value: _selectedSellingMethod,
-              items: [
-                'Per Pack',
-                'Per Gallon',
-                'Per Head',
-                'Per Kilo',
-                'Per Bag',
-              ].map((method) {
-                return DropdownMenuItem<String>(
-                  value: method,
-                  child: Text(method),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedSellingMethod = value;
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: 'Selling Method',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  ),
+              const SizedBox(height: 15.0),
+              TextFormField(
+                controller: _priceController,
+                decoration: const InputDecoration(
+                    labelText: 'Price',
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a price';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15.0),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                maxLines: null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15.0),
+              TextFormField(
+                controller: _farmingYearController,
+                decoration: const InputDecoration(
+                    labelText: 'Farming Year',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Farming year';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15.0),
+              ConditionalWidget(
+                condition: _categories.isNotEmpty,
+                fallback: _buildLoadingIndicator(),
+                child: DropdownButtonFormField<int>(
+                  value: _selectedCategoryId,
+                  items: _categories.map((category) {
+                    return DropdownMenuItem<int>(
+                      value: category['id']?.toInt(),
+                      child: Text(category['name'] as String? ?? ''),
+                    );
+                  }).toList(),
+                  onChanged: (value) async {
+                    if (value != null) {
+                      // Perform asynchronous work outside of setState
+                      await _fetchSubcategories(value);
+                      setState(() {
+                        // Update the state synchronously after the asynchronous work is done
+                        _selectedCategoryId = value;
+                      });
+                    } else {
+                      setState(() {
+                        _selectedCategoryId = null;
+                        _subcategories.clear();
+                        _subcategories.add({});
+                        _selectedSubcategory = null;
+                      });
+                    }
+                  },
+                  decoration: const InputDecoration(
+                      labelText: 'Select Category',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a category';
+                    }
+                    return null;
+                  },
                 ),
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please select a selling method';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 20.0),
-          ],
+              const SizedBox(height: 15.0),
+              ConditionalWidget(
+                condition:
+                    _subcategories.isNotEmpty && _selectedCategoryId != null,
+                fallback: _buildLoadingIndicator(),
+                child: DropdownButtonFormField<int>(
+                  value: _selectedSubcategory != null
+                      ? _selectedSubcategory!['id']
+                      : null,
+                  items: _subcategories.map((subcategory) {
+                    return DropdownMenuItem<int>(
+                      value: subcategory['id'] as int?,
+                      child: Text(subcategory['name'] as String? ?? ''),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      // Find the selected subcategory from the list of subcategories
+                      var selectedSubcategory = _subcategories.firstWhere(
+                        (subcategory) => subcategory['id'] == value,
+                        orElse: () => <String, dynamic>{},
+                      );
+
+                      setState(() {
+                        // Update the selected subcategory with the entire map
+                        _selectedSubcategory = selectedSubcategory;
+                      });
+                    } else {
+                      setState(() {
+                        // If no subcategory is selected, set it to null
+                        _selectedSubcategory = null;
+                      });
+                    }
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 15.0),
+              TextFormField(
+                controller: _quantityController,
+                decoration: const InputDecoration(
+                    labelText: 'Available Quantity',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a quantity';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 15.0),
+              DropdownButtonFormField<String>(
+                value: _selectedSellingMethod,
+                items: [
+                  'Per Pack',
+                  'Per Gallon',
+                  'Per Head',
+                  'Per Kilo',
+                  'Per Bag',
+                ].map((method) {
+                  return DropdownMenuItem<String>(
+                    value: method,
+                    child: Text(method),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedSellingMethod = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Selling Method',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select a selling method';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20.0),
+
+              // Display uploaded image or loading indicator
+              if (_uploadedImage != null)
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20.0),
+                  child:
+                      _uploadingImage // Display loading indicator if uploading
+                          ? const CircularProgressIndicator()
+                          : Image.file(
+                              _uploadedImage!,
+                              fit: BoxFit.cover,
+                            ),
+                ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: Container(
@@ -348,18 +372,20 @@ class AddItemScreenState extends State<AddItemScreen> {
               }
             },
             child: Container(
-                width: 250,
-                height: 60,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 137, 247, 143),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Center(
-                    child: Text(
+              width: 250,
+              height: 60,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 137, 247, 143),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text(
                   'Submit',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ))),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -367,6 +393,9 @@ class AddItemScreenState extends State<AddItemScreen> {
   }
 
   Future<String?> _uploadImage(File imageFile) async {
+    setState(() {
+      _uploadingImage = true; // Set uploading image state to true
+    });
     try {
       final firebaseStorageRef = FirebaseStorage.instance
           .ref()
@@ -374,9 +403,19 @@ class AddItemScreenState extends State<AddItemScreen> {
           .child(DateTime.now().millisecondsSinceEpoch.toString());
       await firebaseStorageRef.putFile(imageFile);
       final downloadURL = await firebaseStorageRef.getDownloadURL();
+
+      // Set the uploaded image file
+      setState(() {
+        _uploadedImage = imageFile;
+        _uploadingImage = false;
+      });
+
       return downloadURL;
     } catch (error) {
       print('Error uploading image: $error');
+      setState(() {
+        _uploadingImage = false; // Reset uploading image state on error
+      });
       return null;
     }
   }
@@ -418,7 +457,10 @@ class AddItemScreenState extends State<AddItemScreen> {
   }
 
   Future<void> _addItem() async {
-    if (_formKey.currentState!.validate()) {
+    print('Adding item...');
+    print('_selectedCategoryId: $_selectedCategoryId');
+    print('_selectedSubcategory: $_selectedSubcategory');
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
@@ -427,28 +469,28 @@ class AddItemScreenState extends State<AddItemScreen> {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId != null) {
         try {
-          // get the farmer city or location
+          // Get the farmer city or location
           await _fetchUserCity();
 
-          // get the farm name
+          // Get the farm name
           await _fetchFarmName();
           // Get a reference to a new document with an auto-generated ID
           DocumentReference newItemRef =
-              FirebaseFirestore.instance.collection('items').doc();
+              FirebaseFirestore.instance.collection('Items').doc();
           await newItemRef.set({
             'name': _nameController.text.trim(),
             'price': int.parse(_priceController.text.trim()),
             'description': _descriptionController.text.trim(),
             'itemLocation': _userCity,
             'categoryId': _selectedCategoryId?.toInt(),
-            'subcategoryId': _selectedSubcategory!['id'] as int,
+            'subcategoryId': _selectedSubcategory?['id'],
             'availQuantity': int.parse(_quantityController.text.trim()),
             'sellingMethod': _selectedSellingMethod,
-            'farmingYear': int.parse(_farmingYearController.text.trim()) ,
+            'farmingYear': int.parse(_farmingYearController.text.trim()),
             'farmId': userId,
             'itemPath': imageURL,
             'id': newItemRef.id,
-            'farmName': _farmName,
+            'itemFarm': _farmName,
           });
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -459,7 +501,6 @@ class AddItemScreenState extends State<AddItemScreen> {
           _nameController.clear();
           _priceController.clear();
           _descriptionController.clear();
-
           _quantityController.clear();
 
           // Reset dropdowns
@@ -467,6 +508,9 @@ class AddItemScreenState extends State<AddItemScreen> {
             _selectedCategoryId = _categories.first as int?;
             _selectedSubcategory = _subcategories.first;
           });
+
+          // Pop the screen
+          Navigator.pop(context);
         } catch (error) {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
