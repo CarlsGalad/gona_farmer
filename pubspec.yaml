@@ -51,6 +51,8 @@ dependencies:
     sdk: flutter
   intl: ^0.18.1
   connectivity: ^3.0.6
+  fl_chart: ^0.67.0
+ 
 
 dev_dependencies:
   flutter_test:

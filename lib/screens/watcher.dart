@@ -25,11 +25,16 @@ class OrderItemWatcher {
             await _incrementTotalEarnings(itemPrice);
             // Increment totalSales by 1
             await _incrementTotalSales(1);
+             // Add sale data to the sales collection
+            await _addSaleToSalesCollection(change.doc['itemId'], 1);
           }
         });
       });
+
+      
     }
   }
+
 
   Future<void> _incrementTotalEarnings(int incrementBy) async {
     // Increment totalEarnings by the provided value
@@ -42,6 +47,19 @@ class OrderItemWatcher {
     // Increment totalSales by the provided value
     await FirebaseFirestore.instance.collection('farms').doc(_farmId).update({
       'totalSales': FieldValue.increment(incrementBy),
+    });
+  }
+
+  Future<void> _addSaleToSalesCollection(String itemId, int quantity) async {
+    // Get the current date and time
+    Timestamp saleDate = Timestamp.now();
+
+    // Add the sale to the sales collection
+    await FirebaseFirestore.instance.collection('sales').add({
+      'farmId': _farmId,
+      'itemId': itemId,
+      'quantity': quantity,
+      'saleDate': saleDate,
     });
   }
 }
