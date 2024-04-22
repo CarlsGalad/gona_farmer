@@ -7,7 +7,7 @@ import 'package:gona_vendor/screens/hometiles/task/manage_promo.dart';
 
 import 'package:gona_vendor/screens/hometiles/ordercountile.dart';
 import 'package:gona_vendor/screens/hometiles/process_count_tile.dart';
-import 'package:gona_vendor/screens/welcomemsg.dart';
+import 'package:gona_vendor/screens/hometiles/welcomemsg.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 

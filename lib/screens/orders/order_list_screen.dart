@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gona_vendor/screens/order_detail.dart';
+import 'package:gona_vendor/screens/orders/order_detail.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart'; // Import intl package for date formatting
 

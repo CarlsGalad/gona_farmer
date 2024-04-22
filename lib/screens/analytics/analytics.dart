@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
-import 'package:gona_vendor/screens/monthlist.dart';
+import 'package:gona_vendor/screens/analytics/monthlist.dart';
 
-import '../linechart.dart';
-import '../weekline.dart';
+import 'linechart.dart';
+import 'weekline.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});

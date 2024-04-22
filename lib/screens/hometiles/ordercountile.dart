@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gona_vendor/screens/order_list_screen.dart';
+import 'package:gona_vendor/screens/orders/order_list_screen.dart';
 
 class OrderCountTile extends StatefulWidget {
   const OrderCountTile({super.key});

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/item_provider.dart';
 import 'screens/notifications.dart';
-import 'screens/watcher.dart';
+import 'services/watcher.dart';
 import 'services/auth_page.dart';
 import 'services/auth_service.dart';
 

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gona_vendor/screens/homepage.dart';
 
 import '../accountCreation/signin_or_register.dart';
+import '../screens/home_nav.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -15,7 +15,7 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           // user is logged in
           if (snapshot.hasData) {
-            return const Homepage();
+            return const VenGonaHomePage();
           }
 
           // if user is not logged in

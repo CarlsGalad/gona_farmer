@@ -52,6 +52,7 @@ dependencies:
   intl: ^0.18.1
   connectivity: ^3.0.6
   fl_chart: ^0.67.0
+  google_nav_bar: ^5.0.6
  
 
 dev_dependencies:
