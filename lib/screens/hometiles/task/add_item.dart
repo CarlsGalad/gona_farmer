@@ -1,14 +1,19 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:gona_vendor/methods/add_item_methods.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+
+import 'package:image_cropper/image_cropper.dart';
 
 import 'conditional.dart';
+
+final imageHelper = ImageHelper();
 
 class AddItemScreen extends StatefulWidget {
   const AddItemScreen({super.key});
@@ -35,8 +40,9 @@ class AddItemScreenState extends State<AddItemScreen> {
   String? _selectedSellingMethod;
   String? _userCity;
   String? _farmName;
-  File? _uploadedImage;
-  bool _uploadingImage = false;
+  // File? _uploadedImage;
+  bool uploadingImage = false;
+  File? _image;
 
   @override
   void initState() {
@@ -44,14 +50,41 @@ class AddItemScreenState extends State<AddItemScreen> {
     _fetchCategories();
   }
 
-  Future<File?> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
-  }
+  // Future<File?> _pickImage() async {
+  //   final picker = ImagePicker();
+
+  //   try {
+  //     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+  //     if (pickedFile != null) {
+  //       // Crop image to 1:1 aspect ratio
+  //       final croppedFile = await ImageCropper().cropImage(
+  //           sourcePath: pickedFile.path,
+  //           aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+  //           compressQuality: 100, // Maintain quality
+  //           maxWidth: 512,
+  //           maxHeight: 512,
+  //           uiSettings: [
+  //             AndroidUiSettings(
+  //               toolbarColor: Colors.green,
+  //               toolbarTitle: 'Crop Image',
+  //               statusBarColor: Colors.green.shade900,
+  //               backgroundColor: Colors.white,
+  //             ),
+  //             IOSUiSettings(
+  //               minimumAspectRatio: 1.0,
+  //             ),
+  //           ]);
+
+  //       return croppedFile != null ? File(croppedFile.path) : null;
+  //     }
+  //   } catch (e) {
+  //     print('Error picking/cropping image: $e');
+  //     // Handle the error as needed
+  //   }
+
+  //   return null;
+  // }
 
   Future<void> _fetchCategories() async {
     // Fetch categories from Firestore
@@ -89,7 +122,7 @@ class AddItemScreenState extends State<AddItemScreen> {
         _selectedSubcategory = null;
       });
     } catch (error) {
-      print('Error fetching subcategories: $error');
+      rethrow;
     }
   }
 
@@ -120,6 +153,84 @@ class AddItemScreenState extends State<AddItemScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Container(
+                width: 200,
+                height: 200,
+                color: Colors.grey,
+                child: _image != null
+                    ? Image.file(
+                        _image!,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      )
+                    : const Center(
+                        child: Icon(Icons.image),
+                      ),
+              ),
+              // Pick image button for the image to be picked
+              GestureDetector(
+                onTap: () async {
+                  final files = await imageHelper.pickImage();
+                  if (files.isNotEmpty) {
+                    final croppedFile = await imageHelper.crop(
+                        file: files.first, cropStyle: CropStyle.rectangle);
+                    if (croppedFile != null) {
+                      setState(() {
+                        _image = File(croppedFile.path);
+                      });
+
+                      // Upload the cropped image
+                      setState(() {
+                        uploadingImage = true;
+                      });
+                      try {
+                        final downloadURL = await imageHelper
+                            .uploadImageToFirebaseStorage(croppedFile);
+                        setState(() {
+                          uploadingImage = false;
+                        });
+
+                        if (downloadURL != null) {
+                          // Add the item with the imageURL
+                          _addItem(downloadURL);
+                        } else {
+                          // Handle error uploading image
+                        }
+                      } catch (error) {
+                        setState(() {
+                          uploadingImage = false;
+                        }); // Handle error uploading image
+                      }
+                    }
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  width: 100,
+                  height: 30,
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text('Add Image'),
+                        ),
+                        Spacer(),
+                        Icon(
+                          Icons.image,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15.0),
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -312,53 +423,53 @@ class AddItemScreenState extends State<AddItemScreen> {
               ),
               const SizedBox(height: 20.0),
 
-              // Display uploaded image or loading indicator
-              if (_uploadedImage != null)
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20.0),
-                  child:
-                      _uploadingImage // Display loading indicator if uploading
-                          ? const CircularProgressIndicator()
-                          : Image.file(
-                              _uploadedImage!,
-                              fit: BoxFit.cover,
-                            ),
-                ),
+              // // Display uploaded image or loading indicator
+              // if (_uploadedImage != null)
+              //   Container(
+              //     margin: const EdgeInsets.symmetric(vertical: 20.0),
+              //     child:
+              //         _uploadingImage // Display loading indicator if uploading
+              //             ? const CircularProgressIndicator()
+              //             : Image.file(
+              //                 _uploadedImage!,
+              //                 fit: BoxFit.cover,
+              //               ),
+              //   ),
             ],
           ),
         ),
       ),
-      floatingActionButton: Container(
-        color: Colors.white,
-        width: 120,
-        child: FloatingActionButton(
-          onPressed: () async {
-            final pickedImage = await _pickImage();
-            if (pickedImage != null) {
-              final downloadURL = await _uploadImage(pickedImage);
-              setState(() {
-                imageURL = downloadURL;
-              });
-            }
-          },
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Text('Add Image'),
-                ),
-                Spacer(),
-                Icon(
-                  Icons.image,
-                  color: Colors.green,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      // floatingActionButton: Container(
+      //   color: Colors.white,
+      //   width: 120,
+      //   child: FloatingActionButton(
+      //     onPressed: () async {
+      //       final pickedImage = await _pickImage();
+      //       if (pickedImage != null) {
+      //         final downloadURL = await _uploadImage(pickedImage);
+      //         setState(() {
+      //           imageURL = downloadURL;
+      //         });
+      //       }
+      //     },
+      //     child: const Padding(
+      //       padding: EdgeInsets.all(8.0),
+      //       child: Row(
+      //         children: [
+      //           Padding(
+      //             padding: EdgeInsets.only(left: 8.0),
+      //             child: Text('Add Image'),
+      //           ),
+      //           Spacer(),
+      //           Icon(
+      //             Icons.image,
+      //             color: Colors.green,
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ),
+      // ),
       bottomNavigationBar: SizedBox(
         height: 100,
         child: Center(
@@ -395,34 +506,34 @@ class AddItemScreenState extends State<AddItemScreen> {
       ),
     );
   }
+// old code without cropping image
+  // Future<String?> _uploadImage(File imageFile) async {
+  //   setState(() {
+  //     _uploadingImage = true; // Set uploading image state to true
+  //   });
+  //   try {
+  //     final firebaseStorageRef = FirebaseStorage.instance
+  //         .ref()
+  //         .child('item_images')
+  //         .child(DateTime.now().millisecondsSinceEpoch.toString());
+  //     await firebaseStorageRef.putFile(imageFile);
+  //     final downloadURL = await firebaseStorageRef.getDownloadURL();
 
-  Future<String?> _uploadImage(File imageFile) async {
-    setState(() {
-      _uploadingImage = true; // Set uploading image state to true
-    });
-    try {
-      final firebaseStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('item_images')
-          .child(DateTime.now().millisecondsSinceEpoch.toString());
-      await firebaseStorageRef.putFile(imageFile);
-      final downloadURL = await firebaseStorageRef.getDownloadURL();
+  //     // Set the uploaded image file
+  //     setState(() {
+  //       _uploadedImage = imageFile;
+  //       _uploadingImage = false;
+  //     });
 
-      // Set the uploaded image file
-      setState(() {
-        _uploadedImage = imageFile;
-        _uploadingImage = false;
-      });
-
-      return downloadURL;
-    } catch (error) {
-      print('Error uploading image: $error');
-      setState(() {
-        _uploadingImage = false; // Reset uploading image state on error
-      });
-      return null;
-    }
-  }
+  //     return downloadURL;
+  //   } catch (error) {
+  //     print('Error uploading image: $error');
+  //     setState(() {
+  //       _uploadingImage = false; // Reset uploading image state on error
+  //     });
+  //     return null;
+  //   }
+  // }
 
   Future<void> _fetchUserCity() async {
     // Get the current user's UID from Firebase Authentication
@@ -460,10 +571,7 @@ class AddItemScreenState extends State<AddItemScreen> {
     }
   }
 
-  Future<void> _addItem() async {
-    print('Adding item...');
-    print('_selectedCategoryId: $_selectedCategoryId');
-    print('_selectedSubcategory: $_selectedSubcategory');
+  Future<void> _addItem([String? imageURL]) async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
@@ -481,6 +589,7 @@ class AddItemScreenState extends State<AddItemScreen> {
           // Get a reference to a new document with an auto-generated ID
           DocumentReference newItemRef =
               FirebaseFirestore.instance.collection('Items').doc();
+
           await newItemRef.set({
             'name': _nameController.text.trim(),
             'price': int.parse(_priceController.text.trim()),
