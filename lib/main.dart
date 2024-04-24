@@ -6,7 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:provider/provider.dart';
 
-import 'providers/category_provider.dart';
+// import 'providers/category_provider.dart';
 import 'providers/item_provider.dart';
 import 'screens/notifications.dart';
 import 'services/watcher.dart';
@@ -64,23 +64,23 @@ void main() async {
           },
         ),
 
-        // Use ChangeNotifierProxyProvider for CategoryProvider to synchronize with Firebase
-        ChangeNotifierProxyProvider<FirestoreService, CategoryProvider>(
-          create: (_) => CategoryProvider(),
-          update: (_, firestoreService, categoryProvider) {
-            // Check if categoryProvider is null
-            if (categoryProvider != null) {
-              // Update the existing categoryProvider
-              categoryProvider.updateFromFirestore(firestoreService);
-              return categoryProvider;
-            } else {
-              // Create a new CategoryProvider and update it
-              final newCategoryProvider = CategoryProvider();
-              newCategoryProvider.updateFromFirestore(firestoreService);
-              return newCategoryProvider;
-            }
-          },
-        ),
+        // // Use ChangeNotifierProxyProvider for CategoryProvider to synchronize with Firebase
+        // ChangeNotifierProxyProvider<FirestoreService, CategoryProvider>(
+        //   create: (_) => CategoryProvider(),
+        //   update: (_, firestoreService, categoryProvider) {
+        //     // Check if categoryProvider is null
+        //     if (categoryProvider != null) {
+        //       // Update the existing categoryProvider
+        //       categoryProvider.updateFromFirestore(firestoreService);
+        //       return categoryProvider;
+        //     } else {
+        //       // Create a new CategoryProvider and update it
+        //       final newCategoryProvider = CategoryProvider();
+        //       newCategoryProvider.updateFromFirestore(firestoreService);
+        //       return newCategoryProvider;
+        //     }
+        //   },
+        // ),
       ],
       child: const GonaVendor(),
     ),

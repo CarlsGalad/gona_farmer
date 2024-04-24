@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:gona_vendor/screens/analytics/monthlist.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'linechart.dart';
 import 'weekline.dart';
@@ -26,7 +28,17 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Analytics'),
+        leading: IconButton(
+          icon: const Icon(
+            CupertinoIcons.back,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Analytics',
+          style: GoogleFonts.aboreto(fontSize: 25),
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -126,5 +138,3 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
     return topTenItems;
   }
 }
-
-

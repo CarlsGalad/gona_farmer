@@ -1,18 +1,21 @@
-class UserProfile {
-  final String name;
+class FarmProfile {
+  final String farmName;
+  final String ownersName;
+  final String mobile;
   final String email;
-  final String imagePath;
-  final String phoneNumber;
   final String address;
-  final Map<String, dynamic>?
-      billingInfo; // Update type to Map<String, dynamic>?
+  final String imagePath;
+  final String state;
+  final String city;
 
-  UserProfile({
-    required this.name,
+  FarmProfile({
+    required this.farmName,
+    required this.ownersName,
+    required this.mobile,
     required this.email,
-    required this.imagePath,
-    required this.phoneNumber,
     required this.address,
-    this.billingInfo, // Update type to Map<String, dynamic>?
+    required this.imagePath,
+    required this.state,
+    required this.city,
   });
 }

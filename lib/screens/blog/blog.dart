@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,15 +18,15 @@ class _BlogState extends State<Blog> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 15.0),
-          child: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(CupertinoIcons.back),
-          ),
-        ),
+        // leading: Padding(
+        //   padding: const EdgeInsets.only(left: 15.0),
+        //   child: IconButton(
+        //     onPressed: () {
+        //       Navigator.popUntil(context, (route) => true);
+        //     },
+        //     icon: const Icon(CupertinoIcons.back),
+        //   ),
+        // ),
         title: Text(
           'News',
           style: GoogleFonts.aboreto(fontSize: 30),

@@ -153,9 +153,13 @@ class AddItemScreenState extends State<AddItemScreen> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                  ),
+                ),
                 maxLines: null,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

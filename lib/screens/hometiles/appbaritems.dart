@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../help_center/helpcenter.dart';
+import '../notifications.dart';
+import '../profile/profilescreen.dart';
+import '../settings.dart';
+
 class DropdownMenuWidget extends StatelessWidget {
-  const DropdownMenuWidget({Key? key}) : super(key: key);
+  const DropdownMenuWidget({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +22,40 @@ class DropdownMenuWidget extends StatelessWidget {
           // You can navigate to different screens based on the selected item
           switch (result) {
             case 'Profile':
-              // Navigate to Profile screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ),
+              ); // Navigate to Profile screen
               break;
             case 'Notifications':
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationScreen(),
+                ),
+              );
               // Navigate to Notifications screen
               break;
             case 'Messages':
               // Navigate to Messages screen
               break;
             case 'Help Centre':
-              // Navigate to Help Centre screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HelpCenterScreen(),
+                ),
+              ); // Navigate to Help Centre screen
+              break;
+            case 'Settings':
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPrivacyPage(),
+                ),
+              ); // Navigate to Help Centre screen
               break;
             case 'About':
               // Navigate to About screen
@@ -36,25 +65,101 @@ class DropdownMenuWidget extends StatelessWidget {
           }
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'Profile',
-            child: Text('Profile'),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text('Profile'),
+                    Spacer(),
+                    Icon(Icons.person),
+                  ],
+                ),
+              ),
+            ),
           ),
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'Notifications',
-            child: Text('Notifications'),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text('Notifications'),
+                    Spacer(),
+                    Icon(Icons.notifications),
+                  ],
+                ),
+              ),
+            ),
           ),
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'Messages',
-            child: Text('Messages'),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text('Messages'),
+                    Spacer(),
+                    Icon(Icons.message),
+                  ],
+                ),
+              ),
+            ),
           ),
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
             value: 'Help Centre',
-            child: Text('Help Centre'),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text('Help Centre'),
+                    Spacer(),
+                    Icon(Icons.help),
+                  ],
+                ),
+              ),
+            ),
           ),
-          const PopupMenuItem<String>(
+          PopupMenuItem<String>(
+            value: 'Settings',
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text('Settings'),
+                    Spacer(),
+                    Icon(Icons.settings),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          PopupMenuItem<String>(
             value: 'About',
-            child: Text('About'),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text('About'),
+                    Spacer(),
+                    Icon(Icons.info),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),

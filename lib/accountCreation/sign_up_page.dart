@@ -80,7 +80,7 @@ class _SingUpPageState extends State<SingUpPage> {
           'ownersName': ownerNameController.text,
           'mobile': mobileController.text,
           'address': addressController.text,
-          'country': stateController.text,
+          'state': stateController.text,
           'city': cityController.text,
           'farmName': farmNameController.text,
           'userId': user.uid,

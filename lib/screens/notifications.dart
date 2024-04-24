@@ -28,7 +28,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ),
         title: Text(
           'Notifications',
-          style: GoogleFonts.bebasNeue(fontSize: 30),
+          style: GoogleFonts.aboreto(fontSize: 25),
         ),
         centerTitle: true,
       ),

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:gona_vendor/screens/hometiles/task/add_promo.dart';
@@ -51,6 +53,10 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    String? uid = user?.uid;
+
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -58,7 +64,46 @@ class _HomepageState extends State<Homepage> {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(30)),
             child: Container(
-              color: Colors.blueAccent,
+              color: Colors.green,
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('farms')
+                    .doc(uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return const Icon(
+                      Icons.person,
+                      size: 30,
+                      color: Colors.grey,
+                    );
+                  }
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return const Icon(
+                      Icons.person,
+                      size: 30,
+                      color: Colors.grey,
+                    );
+                  }
+                  var farmData = snapshot.data!.data() as Map<String, dynamic>;
+                  var imagePath = farmData['imagePath'] ?? '';
+                  return imagePath.isNotEmpty
+                      ? Image.network(
+                          imagePath,
+                          width: 60, // Adjust the width as needed
+                          height: 60, // Adjust the height as needed
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(
+                          Icons.person,
+                          size: 30,
+                          color: Colors.white,
+                        );
+                },
+              ),
             ),
           ),
         ),
