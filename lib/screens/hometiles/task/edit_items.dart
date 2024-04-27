@@ -5,9 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
+import '../../../methods/add_item_Image_methods.dart';
 import 'conditional.dart';
+
+final imageHelper = ImageHelper();
 
 class EditItemDetailsPage extends StatefulWidget {
   final String itemId;
@@ -31,9 +34,12 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
   Map<String, dynamic>? _selectedSubcategory;
   final List<Map<String, dynamic>> _categories = [{}];
   final List<Map<String, dynamic>> _subcategories = [{}];
-  String? imageURL;
+
   String? itemPath;
   String? _selectedSellingMethod;
+  File? _image;
+  bool uploadingImage = false;
+  String? _downloadURL;
 
   @override
   void initState() {
@@ -62,30 +68,61 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
         itemPath = itemData['itemPath'];
       });
     } catch (error) {
-      print('Error fetching item details: $error');
+      rethrow;
     }
   }
 
   Future<void> _updateItemDetails() async {
+    setState(() {
+      isLoading = true; // Show loading indicator
+    });
+
     try {
-      await FirebaseFirestore.instance
-          .collection('items')
-          .doc(widget.itemId)
-          .update({
+      // Construct the update data object
+      Map<String, dynamic> updateData = {
         'name': _nameController.text.trim(),
         'price': int.parse(_priceController.text.trim()),
         'description': _descriptionController.text.trim(),
         'farmingYear': int.parse(_farmingYearController.text.trim()),
         'availQuantity': int.parse(_availQuantityController.text.trim()),
-        'itemPath': imageURL,
-        'categoryId': _selectedCategoryId?.toInt(),
+        'categoryId': _selectedCategoryId,
         'subcategoryId': _selectedSubcategory!['id'] as int,
         'sellingMethod': _selectedSellingMethod,
-      });
+      };
+
+      // Check if downloadUrl is not null and not empty
+      if (_downloadURL != null && _downloadURL!.isNotEmpty) {
+        updateData['itemPath'] = _downloadURL;
+      }
+
+      // Update the document in Firestore
+      await FirebaseFirestore.instance
+          .collection(
+              'Items') // Make sure the collection name matches your Firestore structure
+          .doc(widget.itemId)
+          .update(updateData);
+
       // Show a success message or navigate back to the previous screen
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Item details updated successfully'),
+        ),
+      );
+
+      // Navigate back to the previous screen
+      Navigator.pop(context);
     } catch (error) {
       print('Error updating item details: $error');
       // Show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error updating item details: $error'),
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false; // Hide loading indicator
+      });
     }
   }
 
@@ -111,42 +148,174 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SizedBox(
-                  height: 100,
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(10)),
+                  height: 200,
                   width: 200,
-                  child: FutureBuilder(
-                    future: FirebaseStorage.instance
-                        .refFromURL(itemPath!)
-                        .getDownloadURL(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
+                  child: _image != null
+                      ? Image.file(
+                          _image!,
                           width: 200,
-                          height: 100,
-                          child: Center(child: CircularProgressIndicator()),
-                        ); // Loading indicator
-                      } else if (snapshot.hasError) {
-                        return const SizedBox(
-                          width: 200,
-                          height: 100,
-                          child: Center(
-                            child: Text('Error!'),
-                          ),
-                        ); // Error message
-                      } else {
-                        return SizedBox(
-                          width: 200,
-                          height: 100,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.network(
-                              snapshot.data!,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        )
+                      : FutureBuilder(
+                          future: () async {
+                            if (itemPath != null) {
+                              return await FirebaseStorage.instance
+                                  .refFromURL(itemPath!);
+                            }
+                            return null;
+                          }(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<Reference?> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const SizedBox(
+                                width: 200,
+                                height: 100,
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              ); // Loading indicator
+                            } else if (snapshot.hasError) {
+                              return const SizedBox(
+                                width: 200,
+                                height: 100,
+                                child: Center(
+                                  child: Text('Error!'),
+                                ),
+                              ); // Error message
+                            } else {
+                              if (snapshot.data != null) {
+                                return FutureBuilder<String>(
+                                  future: snapshot.data!.getDownloadURL(),
+                                  builder: (context, urlSnapshot) {
+                                    if (urlSnapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const SizedBox(
+                                        width: 200,
+                                        height: 100,
+                                        child: Center(
+                                            child: CircularProgressIndicator()),
+                                      ); // Loading indicator for download URL
+                                    } else if (urlSnapshot.hasError) {
+                                      return const SizedBox(
+                                        width: 200,
+                                        height: 100,
+                                        child: Center(
+                                          child: Text(
+                                              'Error fetching download URL!'),
+                                        ),
+                                      ); // Error message for download URL
+                                    } else {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width: 200,
+                                        height: 200,
+                                        child: Image.network(
+                                          urlSnapshot.data!,
+                                          fit: BoxFit
+                                              .cover, // Adjust according to your requirement
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
+                              } else {
+                                return const SizedBox(
+                                  width: 200,
+                                  height: 100,
+                                  child: Center(
+                                    child: Text('Invalid URL!'),
+                                  ),
+                                ); // Error message for invalid URL
+                              }
+                            }
+                          },
+                        ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              // Pick image button for the image to be picked
+              Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    final files = await imageHelper.pickImage();
+                    if (files.isNotEmpty) {
+                      final croppedFile = await imageHelper.crop(
+                          file: files.first, cropStyle: CropStyle.rectangle);
+                      if (croppedFile != null) {
+                        setState(() {
+                          _image = File(croppedFile.path);
+                        });
+
+                        // Upload the cropped image
+                        setState(() {
+                          uploadingImage = true;
+                        });
+                        try {
+                          final downloadURL = await imageHelper
+                              .uploadImageToFirebaseStorage(croppedFile);
+                          setState(() {
+                            uploadingImage = false;
+                          });
+
+                          if (downloadURL != null) {
+                            // Store the download URL in a state variable
+                            setState(() {
+                              _downloadURL = downloadURL;
+                            });
+                          } else {
+                            // Handle error uploading image
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Error uploading image'),
+                              ),
+                            );
+                          }
+                        } catch (error) {
+                          setState(() {
+                            uploadingImage = false;
+                          }); // Handle error uploading image
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error uploading image: $error'),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       }
-                    },
+                    }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5)),
+                    width: 150,
+                    height: 50,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Change Image'),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.image,
+                            color: Colors.green,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -325,39 +494,6 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               const SizedBox(
                 height: 15,
               ),
-              Center(
-                child: Container(
-                  color: Colors.white,
-                  width: 150,
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      final pickedImage = await _pickImage();
-                      if (pickedImage != null) {
-                        final downloadURL = await _uploadImage(pickedImage);
-                        setState(() {
-                          imageURL = downloadURL;
-                        });
-                      }
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Change Image'),
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.image,
-                            color: Colors.green,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -394,32 +530,6 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
         ),
       ),
     );
-  }
-
-  Future<File?> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
-  }
-
-  Future<String?> _uploadImage(File imageFile) async {
-    try {
-      final firebaseStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('items')
-          .child(DateTime.now().millisecondsSinceEpoch.toString());
-      await firebaseStorageRef.putFile(imageFile);
-      final downloadURL = await firebaseStorageRef.getDownloadURL();
-      return downloadURL;
-    } catch (error) {
-      print('Error uploading image: $error');
-      return null;
-    }
   }
 
   Future<void> _fetchCategories() async {

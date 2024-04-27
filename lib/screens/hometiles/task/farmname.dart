@@ -40,7 +40,7 @@ class FarmNameWidgetState extends State<FarmNameWidget> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0, top: 15),
       child: Text(
-        _farmName ?? 'Loading...', // Display farm name or loading message
+        _farmName, // Display farm name or loading message
         style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 17,

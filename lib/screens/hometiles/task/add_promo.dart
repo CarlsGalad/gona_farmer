@@ -1,14 +1,18 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
+
+import '../../../methods/add_promo_image.dart';
 import 'conditional.dart';
+
+final imageHelper = ImageHelperPromo();
 
 class AddPromoScreen extends StatefulWidget {
   const AddPromoScreen({super.key});
@@ -31,24 +35,18 @@ class AddPromoScreenState extends State<AddPromoScreen> {
   Map<String, dynamic>? _selectedSubcategory;
   final List<Map<String, dynamic>> _categories = [{}];
   final List<Map<String, dynamic>> _subcategories = [{}];
-  String? imageURL;
+  String? _downloadURL;
   String? _selectedSellingMethod;
   String? _userCity;
   String? _farmName;
+
+  bool uploadingImage = false;
+  File? _image;
 
   @override
   void initState() {
     super.initState();
     _fetchCategories();
-  }
-
-  Future<File?> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
   }
 
   Future<void> _fetchCategories() async {
@@ -116,6 +114,101 @@ class AddPromoScreenState extends State<AddPromoScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(15)),
+              width: 200,
+              height: 200,
+              child: _image != null
+                  ? Image.file(
+                      _image!,
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    )
+                  : const Center(
+                      child: Icon(Icons.image),
+                    ),
+            ),
+            const SizedBox(height: 15.0),
+            // Pick image button for the image to be picked
+            GestureDetector(
+              onTap: () async {
+                final files = await imageHelper.pickImage();
+                if (files.isNotEmpty) {
+                  final croppedFile = await imageHelper.crop(
+                      file: files.first, cropStyle: CropStyle.rectangle);
+                  if (croppedFile != null) {
+                    setState(() {
+                      _image = File(croppedFile.path);
+                    });
+
+                    // Upload the cropped image
+                    setState(() {
+                      uploadingImage = true;
+                    });
+                    try {
+                      final downloadURL = await imageHelper
+                          .uploadImageToFirebaseStorage(croppedFile);
+                      setState(() {
+                        uploadingImage = false;
+                      });
+
+                      if (downloadURL != null) {
+                        // Store the download URL in a state variable
+                        setState(() {
+                          _downloadURL = downloadURL;
+                        });
+                      } else {
+                        // Handle error uploading image
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Error uploading image'),
+                          ),
+                        );
+                      }
+                    } catch (error) {
+                      setState(() {
+                        uploadingImage = false;
+                      }); // Handle error uploading image
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error uploading image: $error'),
+                        ),
+                      );
+                    }
+                  }
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5)),
+                width: 100,
+                height: 50,
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Text('Add Image'),
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.image,
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 15.0),
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
@@ -316,44 +409,13 @@ class AddPromoScreenState extends State<AddPromoScreen> {
           ],
         ),
       ),
-      floatingActionButton: Container(
-        color: Colors.white,
-        width: 120,
-        child: FloatingActionButton(
-          onPressed: () async {
-            final pickedImage = await _pickImage();
-            if (pickedImage != null) {
-              final downloadURL = await _uploadImage(pickedImage);
-              setState(() {
-                imageURL = downloadURL;
-              });
-            }
-          },
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Text('Add Image'),
-                ),
-                Spacer(),
-                Icon(
-                  Icons.image,
-                  color: Colors.green,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
       bottomNavigationBar: SizedBox(
         height: 100,
         child: Center(
           child: GestureDetector(
             onTap: () {
               if (_selectedCategoryId != null && _selectedSubcategory != null) {
-                _addItem();
+                _addItem(_downloadURL);
               } else {
                 // Show error message if no category or subcategory is selected
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -380,21 +442,6 @@ class AddPromoScreenState extends State<AddPromoScreen> {
         ),
       ),
     );
-  }
-
-  Future<String?> _uploadImage(File imageFile) async {
-    try {
-      final firebaseStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('promotions')
-          .child(DateTime.now().millisecondsSinceEpoch.toString());
-      await firebaseStorageRef.putFile(imageFile);
-      final downloadURL = await firebaseStorageRef.getDownloadURL();
-      return downloadURL;
-    } catch (error) {
-      print('Error uploading image: $error');
-      return null;
-    }
   }
 
   Future<void> _fetchUserCity() async {
@@ -433,7 +480,7 @@ class AddPromoScreenState extends State<AddPromoScreen> {
     }
   }
 
-  Future<void> _addItem() async {
+  Future<void> _addItem(String? imageURL) async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
@@ -467,7 +514,7 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             'sellingMethod': _selectedSellingMethod,
             'farmingYear': _farmingYearController,
             'farmId': userId,
-            'itemPath': imageURL,
+            'itemPath': _downloadURL,
             'id': newItemRef.id,
             'farmName': _farmName,
           });

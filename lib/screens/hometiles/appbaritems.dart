@@ -1,12 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../help_center/helpcenter.dart';
+
+import '../messages/message_list.dart';
 import '../notifications.dart';
 import '../profile/profilescreen.dart';
 import '../settings.dart';
 
 class DropdownMenuWidget extends StatelessWidget {
-  const DropdownMenuWidget({Key? key});
+  const DropdownMenuWidget({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +44,17 @@ class DropdownMenuWidget extends StatelessWidget {
               // Navigate to Notifications screen
               break;
             case 'Messages':
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    String? userId = FirebaseAuth.instance.currentUser?.uid;
+                    return MessagesScreen(
+                      recipientId: userId!,
+                    );
+                  },
+                ),
+              );
               // Navigate to Messages screen
               break;
             case 'Help Centre':
