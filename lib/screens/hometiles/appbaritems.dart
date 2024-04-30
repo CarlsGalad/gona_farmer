@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../help_center/helpcenter.dart';
 
-import '../messages/message_list.dart';
 import '../notifications.dart';
 import '../profile/profilescreen.dart';
 import '../settings.dart';
@@ -43,20 +41,7 @@ class DropdownMenuWidget extends StatelessWidget {
               );
               // Navigate to Notifications screen
               break;
-            case 'Messages':
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    String? userId = FirebaseAuth.instance.currentUser?.uid;
-                    return MessagesScreen(
-                      recipientId: userId!,
-                    );
-                  },
-                ),
-              );
-              // Navigate to Messages screen
-              break;
+
             case 'Help Centre':
               Navigator.push(
                 context,
@@ -74,6 +59,12 @@ class DropdownMenuWidget extends StatelessWidget {
               ); // Navigate to Help Centre screen
               break;
             case 'About':
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HelpCenterScreen(),
+                ),
+              );
               // Navigate to About screen
               break;
             default:
@@ -108,38 +99,6 @@ class DropdownMenuWidget extends StatelessWidget {
                     Text('Notifications'),
                     Spacer(),
                     Icon(Icons.notifications),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          PopupMenuItem<String>(
-            value: 'Messages',
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text('Messages'),
-                    Spacer(),
-                    Icon(Icons.message),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          PopupMenuItem<String>(
-            value: 'Help Centre',
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text('Help Centre'),
-                    Spacer(),
-                    Icon(Icons.help),
                   ],
                 ),
               ),

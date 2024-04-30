@@ -62,11 +62,9 @@ class ImageHelper {
         ],
       );
 
-
-      Future<String?> uploadImageToFirebaseStorage(CroppedFile croppedImage) async {
-
+  Future<String?> uploadImageToFirebaseStorage(CroppedFile croppedImage) async {
     try {
-       // Convert CroppedFile to File
+      // Convert CroppedFile to File
       File croppedImageFile = File(croppedImage.path);
       // Generate a unique file name for the image
       String fileName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -85,7 +83,6 @@ class ImageHelper {
       return downloadURL;
     } catch (error) {
       // Handle any errors that occur during the upload process
-      print('Error uploading image to Firebase Storage: $error');
       return null;
     }
   }

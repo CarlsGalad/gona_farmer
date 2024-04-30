@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-import '../../../methods/add_item_Image_methods.dart';
+import '../../../methods/add_item_image_methods.dart';
 import 'conditional.dart';
 
 final imageHelper = ImageHelper();
