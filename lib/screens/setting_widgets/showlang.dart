@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gona_vendor/models/languges.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-// import '../../providers/category_provider.dart';
+
 import '../../providers/item_provider.dart';
 import '../../services/auth_page.dart';
 import '../../services/auth_service.dart';
@@ -16,13 +17,15 @@ class LanguageDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      
       title: Center(
         child: Text(
           'Select Language',
           style: GoogleFonts.bebasNeue(),
         ),
       ),
-      content: Column(
+      content:  
+     Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           LanguageOption(
