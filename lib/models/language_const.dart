@@ -39,6 +39,7 @@ Locale _locale(String languageCode) {
   }
 }
 
-AppLocalizations translate(BuildContext, context) {
-  return AppLocalizations.of(context)!;
-}
+// // TODO: implement this
+// AppLocalizations translate(BuildContext, context) {
+//   return AppLocalizations.of(context)!;
+// }

@@ -10,7 +10,7 @@ import 'package:gona_vendor/screens/hometiles/task/manage_promo.dart';
 import 'package:gona_vendor/screens/hometiles/ordercountile.dart';
 import 'package:gona_vendor/screens/hometiles/process_count_tile.dart';
 import 'package:gona_vendor/screens/hometiles/welcomemsg.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'hometiles/appbaritems.dart';
@@ -108,7 +108,7 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         title: Text(
-          'Gona Farmers',
+          AppLocalizations.of(context)!.welcome_back,
           style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         actions: const [DropdownMenuWidget()],

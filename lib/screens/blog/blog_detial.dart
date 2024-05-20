@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../../models/blog_model.dart';
 
 class BlogPostDetailScreen extends StatelessWidget {

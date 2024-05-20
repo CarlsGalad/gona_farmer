@@ -1,55 +1,41 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gona_vendor/models/language_const.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-
-// import 'providers/category_provider.dart';
-import 'providers/item_provider.dart';
-import 'screens/notifications.dart';
-import 'services/watcher.dart';
-import 'services/auth_page.dart';
+import 'models/language_const.dart';
 import 'services/auth_service.dart';
-
 import 'services/firebase_options.dart';
+import 'providers/item_provider.dart';
 import 'services/firestore_service.dart';
+import 'services/watcher.dart';
 import 'services/notificationservice.dart';
+import 'screens/notifications.dart';
+import 'services/auth_page.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  // Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize Firebase before running the app
   final FirebaseApi firebaseApi = FirebaseApi();
   await firebaseApi.initNotifications();
 
-  // Start watching for order item changes
   final orderItemWatcher = OrderItemWatcher();
   orderItemWatcher.startWatching();
 
   runApp(
     MultiProvider(
       providers: [
-        // Provide the authentication service
         Provider<AuthService>(
           create: (_) => AuthService(),
         ),
-
-        // Add the provider for notifications here
         Provider<List<RemoteMessage>>.value(value: firebaseApi.notifications),
-
-        // Provide the Firestore service
         Provider<FirestoreService>(
           create: (_) => FirestoreService(),
         ),
-
-        // the item provider
         ChangeNotifierProxyProvider<FirestoreService, ItemProvider>(
           create: (_) => ItemProvider(),
           update: (_, firestoreService, itemProvider) {
@@ -58,9 +44,8 @@ void main() async {
               return itemProvider;
             } else {
               final newItemProvider = ItemProvider();
-              // Handle the case where itemProvider is null
               newItemProvider.updateFromFirestore(firestoreService);
-              return newItemProvider; // Creating a new instance
+              return newItemProvider;
             }
           },
         ),
@@ -71,9 +56,7 @@ void main() async {
 }
 
 class GonaVendor extends StatefulWidget {
-  const GonaVendor({
-    super.key,
-  });
+  const GonaVendor({super.key});
 
   @override
   State<GonaVendor> createState() => _GonaVendorState();
@@ -105,22 +88,17 @@ class _GonaVendorState extends State<GonaVendor> {
     return MaterialApp(
       navigatorKey: navigatorKey,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        //  AppLocalizationDelegate(),
       ],
+      supportedLocales: AppLocalizations.supportedLocales,
       locale: _locale,
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('ar', ''),
-        Locale('fr', ''),
-      ],
       debugShowCheckedModeBanner: false,
       home: const AuthPage(),
       routes: {
-        '/'
-            '/notification_screen': (context) => const NotificationScreen(),
+        '/notification_screen': (context) => const NotificationScreen(),
       },
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/auth_service.dart';
 import 'reset_passwd.dart';
 
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (context) {
           return const Center(
-            child: CircularProgressIndicator(),
+            child: LinearProgressIndicator(),
           );
         });
 // sign in user
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 25,
                   ),
                   // welcome message
-                  Text('Welcome to Gona Market place',
+                  Text(AppLocalizations.of(context)!.welcomeMessage,
                       style: GoogleFonts.bebasNeue(
                           fontSize: 30, color: Colors.white)),
                   const SizedBox(

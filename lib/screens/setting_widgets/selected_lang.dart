@@ -60,11 +60,9 @@ class _SelectLangState extends State<SelectLang> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                  child: Text(
-                    getSelectedLanguage(context),
-                  ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
+                  child: LanguageDialog(),
                 )
               ],
             ),
