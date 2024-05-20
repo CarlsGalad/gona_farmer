@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gona_vendor/models/language_const.dart';
 
 import 'package:provider/provider.dart';
 
@@ -63,34 +64,41 @@ void main() async {
             }
           },
         ),
-
-        // // Use ChangeNotifierProxyProvider for CategoryProvider to synchronize with Firebase
-        // ChangeNotifierProxyProvider<FirestoreService, CategoryProvider>(
-        //   create: (_) => CategoryProvider(),
-        //   update: (_, firestoreService, categoryProvider) {
-        //     // Check if categoryProvider is null
-        //     if (categoryProvider != null) {
-        //       // Update the existing categoryProvider
-        //       categoryProvider.updateFromFirestore(firestoreService);
-        //       return categoryProvider;
-        //     } else {
-        //       // Create a new CategoryProvider and update it
-        //       final newCategoryProvider = CategoryProvider();
-        //       newCategoryProvider.updateFromFirestore(firestoreService);
-        //       return newCategoryProvider;
-        //     }
-        //   },
-        // ),
       ],
       child: const GonaVendor(),
     ),
   );
 }
 
-class GonaVendor extends StatelessWidget {
+class GonaVendor extends StatefulWidget {
   const GonaVendor({
     super.key,
   });
+
+  @override
+  State<GonaVendor> createState() => _GonaVendorState();
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _GonaVendorState? state =
+        context.findAncestorStateOfType<_GonaVendorState>();
+    state?.setLocale(newLocale);
+  }
+}
+
+class _GonaVendorState extends State<GonaVendor> {
+  Locale? _locale;
+
+  setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    getLocale().then((locale) => setLocale(locale));
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +110,7 @@ class GonaVendor extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
         //  AppLocalizationDelegate(),
       ],
+      locale: _locale,
       supportedLocales: const [
         Locale('en', ''),
         Locale('ar', ''),
