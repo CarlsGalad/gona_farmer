@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 
 class ResetPassWPage extends StatefulWidget {
@@ -22,6 +22,7 @@ class _ResetPassWPageState extends State<ResetPassWPage> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
+
       showDialog(
           context: context,
           builder: (context) {

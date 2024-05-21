@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   void signUserIn() async {
     // show loading circle
     showDialog(
-        context: context,
+        context: context as BuildContext,
         builder: (context) {
           return const Center(
             child: LinearProgressIndicator(),
@@ -38,9 +40,9 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       if (!mounted) return;
-      Navigator.pop(context);
+      Navigator.pop(context as BuildContext);
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
+      Navigator.pop(context as BuildContext);
       //if wrong email
       if (e.code == 'user=not-found') {
         //show error to user
@@ -51,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // show error snackbar
   void showErrorMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
+    ScaffoldMessenger.of(context as BuildContext).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 4),
@@ -122,8 +124,10 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.only(left: 20.0),
                         child: TextField(
                           controller: emailController,
-                          decoration: const InputDecoration(
-                              border: InputBorder.none, hintText: 'Email'),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText:
+                                  AppLocalizations.of(context)!.emailHint),
                         ),
                       ),
                     ),
@@ -145,8 +149,10 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextField(
                           controller: passwordController,
                           obscureText: true,
-                          decoration: const InputDecoration(
-                              border: InputBorder.none, hintText: 'Password'),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText:
+                                  AppLocalizations.of(context)!.passwordHint),
                         ),
                       ),
                     ),
@@ -166,9 +172,9 @@ class _LoginPageState extends State<LoginPage> {
                               return const ResetPassWPage();
                             }));
                           },
-                          child: const Text(
-                            'forgot password?',
-                            style: TextStyle(
+                          child: Text(
+                            AppLocalizations.of(context)!.forgotPassword,
+                            style: const TextStyle(
                                 color: Colors.blue,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -191,10 +197,10 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: BoxDecoration(
                             color: const Color.fromARGB(255, 49, 105, 11),
                             borderRadius: BorderRadius.circular(20)),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'Sign In',
-                            style: TextStyle(
+                            AppLocalizations.of(context)!.signIn,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
@@ -219,11 +225,11 @@ class _LoginPageState extends State<LoginPage> {
                             thickness: 0.6,
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text(
-                            'Or continue with',
-                            style: TextStyle(color: Colors.white),
+                            AppLocalizations.of(context)!.orContinueWith,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         Expanded(
@@ -264,16 +270,16 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Dont have an account?',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.dontHaveAccount,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       GestureDetector(
                         onTap: widget.onTap,
-                        child: const Text(
-                          '  Sign up now',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.signUpNow,
+                          style: const TextStyle(
                               color: Colors.blue, fontWeight: FontWeight.bold),
                         ),
                       )

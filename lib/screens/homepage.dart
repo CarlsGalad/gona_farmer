@@ -108,7 +108,7 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         title: Text(
-          AppLocalizations.of(context)!.welcome_back,
+          'Gona Farmers',
           style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         actions: const [DropdownMenuWidget()],
@@ -178,7 +178,7 @@ class _HomepageState extends State<Homepage> {
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Text(
-                          "Today's Task",
+                          AppLocalizations.of(context)!.todays_task,
                           style: GoogleFonts.sansita(fontSize: 20),
                           textAlign: TextAlign.start,
                         ),
@@ -217,11 +217,15 @@ class _HomepageState extends State<Homepage> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 color: Colors.limeAccent),
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(4.0),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              //Add Item
                                               child: Text(
-                                                'Add Item',
-                                                style: TextStyle(fontSize: 15),
+                                                AppLocalizations.of(context)!
+                                                    .add_item,
+                                                style: const TextStyle(
+                                                    fontSize: 15),
                                                 textAlign: TextAlign.start,
                                               ),
                                             ),
@@ -240,21 +244,23 @@ class _HomepageState extends State<Homepage> {
                                             builder: (context) =>
                                                 const InventoryManagementPage(),
                                           )),
-                                      child: const Column(
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Inventory',
-                                            style: TextStyle(
+                                            AppLocalizations.of(context)!
+                                                .inventory,
+                                            style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 20),
                                           ),
                                           Text(
-                                            "Manage items' data",
-                                            style: TextStyle(
+                                            AppLocalizations.of(context)!
+                                                .manage_items_data,
+                                            style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           )
@@ -292,12 +298,14 @@ class _HomepageState extends State<Homepage> {
                                                   borderRadius:
                                                       BorderRadius.circular(10),
                                                   color: Colors.limeAccent),
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(4.0),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
                                                 child: Text(
-                                                  'Add Promo Item',
-                                                  style:
-                                                      TextStyle(fontSize: 15),
+                                                  AppLocalizations.of(context)!
+                                                      .add_promo_item,
+                                                  style: const TextStyle(
+                                                      fontSize: 15),
                                                   textAlign: TextAlign.start,
                                                 ),
                                               ),
@@ -320,21 +328,23 @@ class _HomepageState extends State<Homepage> {
                                                   builder: (context) =>
                                                       const PromoManagementPage()));
                                         },
-                                        child: const Column(
+                                        child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Promotions',
-                                              style: TextStyle(
+                                              AppLocalizations.of(context)!
+                                                  .promotions,
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 20),
                                             ),
                                             Text(
-                                              'Manage promotions item data',
-                                              style: TextStyle(
+                                              AppLocalizations.of(context)!
+                                                  .manage_promotions_data,
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             )
@@ -370,9 +380,9 @@ class _HomepageState extends State<Homepage> {
                         color: Colors.red,
                       ),
                       const SizedBox(height: 20),
-                      const Text(
-                        'No Internet Connection',
-                        style: TextStyle(fontSize: 20),
+                      Text(
+                        AppLocalizations.of(context)!.no_internet_connection,
+                        style: const TextStyle(fontSize: 20),
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
@@ -381,7 +391,7 @@ class _HomepageState extends State<Homepage> {
                             _isConnected = true;
                           });
                         },
-                        child: const Text('Retry'),
+                        child: Text(AppLocalizations.of(context)!.retry),
                       ),
                     ],
                   ),
