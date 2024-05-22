@@ -24,5 +24,10 @@
   "promotions": "الترقيات",
   "manage_promotions_data": "إدارة بيانات الترويج",
   "no_internet_connection": "لا اتصال بالإنترنت",
-  "retry": "إعادة المحاولة"
+  "retry": "إعادة المحاولة",
+  "profile": "الملف الشخصي",
+  "notifications": "الإشعارات",
+  "settings": "الإعدادات",
+  "about": "حول",
+  "help_center": "مركز المساعدة"
 }

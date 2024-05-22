@@ -24,5 +24,10 @@
   "promotions": "Promotions",
   "manage_promotions_data": "Gérer les données des promotions",
   "no_internet_connection": "Pas de connexion Internet",
-  "retry": "Réessayer"
+  "retry": "Réessayer",
+  "profile": "Profil",
+  "notifications": "Notifications",
+  "settings": "Paramètres",
+  "about": "À propos",
+  "help_center": "Centre d'aide"
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../help_center/helpcenter.dart';
 
 import '../notifications.dart';
@@ -76,13 +76,13 @@ class DropdownMenuWidget extends StatelessWidget {
             value: 'Profile',
             child: Container(
               width: MediaQuery.of(context).size.width * 0.6,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Text('Profile'),
-                    Spacer(),
-                    Icon(Icons.person),
+                    Text(AppLocalizations.of(context)!.profile),
+                    const Spacer(),
+                    const Icon(Icons.person),
                   ],
                 ),
               ),
@@ -92,13 +92,13 @@ class DropdownMenuWidget extends StatelessWidget {
             value: 'Notifications',
             child: Container(
               width: MediaQuery.of(context).size.width * 0.6,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Text('Notifications'),
-                    Spacer(),
-                    Icon(Icons.notifications),
+                    Text(AppLocalizations.of(context)!.notifications),
+                    const Spacer(),
+                    const Icon(Icons.notifications),
                   ],
                 ),
               ),
@@ -108,13 +108,13 @@ class DropdownMenuWidget extends StatelessWidget {
             value: 'Settings',
             child: Container(
               width: MediaQuery.of(context).size.width * 0.6,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Text('Settings'),
-                    Spacer(),
-                    Icon(Icons.settings),
+                    Text(AppLocalizations.of(context)!.settings),
+                    const Spacer(),
+                    const Icon(Icons.settings),
                   ],
                 ),
               ),
@@ -124,13 +124,13 @@ class DropdownMenuWidget extends StatelessWidget {
             value: 'About',
             child: Container(
               width: MediaQuery.of(context).size.width * 0.6,
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Text('About'),
-                    Spacer(),
-                    Icon(Icons.info),
+                    Text(AppLocalizations.of(context)!.about),
+                    const Spacer(),
+                    const Icon(Icons.info),
                   ],
                 ),
               ),

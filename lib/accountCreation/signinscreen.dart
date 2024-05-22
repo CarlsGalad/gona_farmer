@@ -1,4 +1,4 @@
-import 'dart:js';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   void signUserIn() async {
     // show loading circle
     showDialog(
-        context: context as BuildContext,
+        context: context,
         builder: (context) {
           return const Center(
             child: LinearProgressIndicator(),
@@ -40,9 +40,9 @@ class _LoginPageState extends State<LoginPage> {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       if (!mounted) return;
-      Navigator.pop(context as BuildContext);
+      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      Navigator.pop(context as BuildContext);
+      Navigator.pop(context);
       //if wrong email
       if (e.code == 'user=not-found') {
         //show error to user
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // show error snackbar
   void showErrorMessage(String message) {
-    ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: const Duration(seconds: 4),

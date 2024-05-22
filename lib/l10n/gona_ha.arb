@@ -24,5 +24,10 @@
   "promotions": "Gajeren",
   "manage_promotions_data": "Yin bayanin data na gajeren",
   "no_internet_connection": "Babu tallafi na intanet",
-  "retry": "Duba"
+  "retry": "Duba",
+  "profile": "Bayanin martaba",
+  "notifications": "Sanarwar",
+  "settings": "Saituna",
+  "about": "Game da",
+  "help_center": "Cibiyar Taimako"
 }

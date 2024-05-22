@@ -11,6 +11,7 @@ const String ARABIC = 'ar';
 const String HAUSA = 'ha';
 const String YORUBA = 'yr';
 const String IGBO = 'ig';
+const String FRENCH = 'fr';
 
 Future<Locale> setLocale(String languageCode) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,6 +37,8 @@ Locale _locale(String languageCode) {
       return const Locale(YORUBA, 'NG');
     case IGBO:
       return const Locale(IGBO, 'NG');
+    case FRENCH:
+      return const Locale(FRENCH, 'FR');
     default:
       return const Locale(ENGLISH, 'US');
   }

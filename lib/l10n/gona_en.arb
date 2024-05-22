@@ -25,5 +25,10 @@
   "promotions": "Promotions",
   "manage_promotions_data": "Manage promotions item data",
   "no_internet_connection": "No Internet Connection",
-  "retry": "Retry"
+  "retry": "Retry",
+  "profile": "Profile",
+  "notifications": "Notifications",
+  "settings": "Settings",
+  "about": "About",
+  "help_center": "Help Centre"
 }
