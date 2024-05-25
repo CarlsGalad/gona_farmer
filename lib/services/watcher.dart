@@ -22,19 +22,20 @@ class OrderItemWatcher {
           if (change.doc['status'] == 'delivered') {
             // Get the item price and increment totalEarnings by the item price
             int itemPrice = change.doc['price'] ?? 0;
+
             await _incrementTotalEarnings(itemPrice);
-            // Increment totalSales by 1
-            await _incrementTotalSales(1);
-             // Add sale data to the sales collection
-            await _addSaleToSalesCollection(change.doc['itemId'], 1);
+
+            // Increment totalSales by quantity
+            int itemQuantity = change.doc['quantity'] ?? 0;
+            await _incrementTotalSales(itemQuantity);
+            // Add sale data to the sales collection
+            await _addSaleToSalesCollection(
+                change.doc['itemId'], itemQuantity, change.doc['itemFarm']);
           }
         });
       });
-
-      
     }
   }
-
 
   Future<void> _incrementTotalEarnings(int incrementBy) async {
     // Increment totalEarnings by the provided value
@@ -50,7 +51,8 @@ class OrderItemWatcher {
     });
   }
 
-  Future<void> _addSaleToSalesCollection(String itemId, int quantity) async {
+  Future<void> _addSaleToSalesCollection(
+      String itemId, int quantity, String itemFarm) async {
     // Get the current date and time
     Timestamp saleDate = Timestamp.now();
 
@@ -60,6 +62,7 @@ class OrderItemWatcher {
       'itemId': itemId,
       'quantity': quantity,
       'saleDate': saleDate,
+      'itemFarm': itemFarm,
     });
   }
 }
