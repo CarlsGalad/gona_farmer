@@ -1,4 +1,5 @@
 {
+  "@@locale": "ar",
   "welcome_message": "مرحبا بكم في سوق جونا",
   "email_hint": "البريد الإلكتروني",
   "password_hint": "كلمة المرور",

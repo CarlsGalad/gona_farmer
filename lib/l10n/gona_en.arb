@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "appName": "Gona Market Place",
   "welcomeMessage": "Welcome to Gona Market place",
   "emailHint": "Email",

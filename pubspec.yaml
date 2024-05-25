@@ -55,6 +55,7 @@ dependencies:
   google_nav_bar: ^5.0.6
   url_launcher: ^6.2.6
   image_cropper:
+  intl_translation: ^0.20.0
  
 
 dev_dependencies:

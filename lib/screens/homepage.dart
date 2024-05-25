@@ -108,7 +108,7 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
         title: Text(
-          'Gona Farmers',
+          AppLocalizations.of(context)!.appName,
           style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 30),
         ),
         actions: const [DropdownMenuWidget()],

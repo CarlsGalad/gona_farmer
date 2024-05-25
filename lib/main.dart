@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'ha_intl.dart';
-import 'ig_intl.dart';
-import 'yo_intl.dart';
 import 'models/language_const.dart';
 import 'services/auth_service.dart';
 import 'services/firebase_options.dart';
@@ -72,7 +69,7 @@ class GonaVendor extends StatefulWidget {
 }
 
 class _GonaVendorState extends State<GonaVendor> {
-  Locale? _locale;
+  Locale? _locale = const Locale('en');
 
   setLocale(Locale locale) {
     setState(() {
@@ -87,7 +84,7 @@ class _GonaVendorState extends State<GonaVendor> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
       localizationsDelegates: const [
@@ -95,34 +92,20 @@ class _GonaVendorState extends State<GonaVendor> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-        YoMaterialLocalizations.delegate,
-        IgMaterialLocalizations.delegate,
-        HaMaterialLocalizations.delegate,
       ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        for (var supportedLocale in supportedLocales) {
-          if (supportedLocale.languageCode == locale?.languageCode &&
-              supportedLocale.countryCode == locale?.countryCode) {
-            return supportedLocale;
-          }
-        }
-        return supportedLocales.first;
-      },
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('ar', 'SA'),
-        Locale('ha', 'NG'),
-        Locale('yo', 'NG'),
-        Locale('ig', 'NG'),
-        Locale('fr', 'FR'),
-      ],
+      // localeResolutionCallback: (locale, supportedLocales) {
+      //   for (var supportedLocale in supportedLocales) {
+      //     if (supportedLocale.languageCode == locale?.languageCode) {
+      //       return supportedLocale;
+      //     }
+      //   }
+      //   return supportedLocales.first;
+      // },
+      supportedLocales: AppLocalizations.supportedLocales,
 
       //
 
-      locale:
-          // const Locale('en', ''),
-
-          _locale,
+      locale: _locale,
       debugShowCheckedModeBanner: false,
       home: const AuthPage(),
       routes: {

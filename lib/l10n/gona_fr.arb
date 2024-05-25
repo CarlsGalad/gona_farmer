@@ -1,4 +1,5 @@
 {
+  "@@locale": "fr",
   "welcome_message": "Bienvenue sur le marché de Gona",
   "email_hint": "Email",
   "password_hint": "Mot de passe",

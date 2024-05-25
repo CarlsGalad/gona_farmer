@@ -1,23 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 
 import 'showlang.dart';
 
-class SelectLang extends StatefulWidget {
+class SelectLang extends StatelessWidget {
   const SelectLang({super.key});
 
   @override
-  State<SelectLang> createState() => _SelectLangState();
-}
-
-class _SelectLangState extends State<SelectLang> {
-  @override
   Widget build(BuildContext context) {
-    return
-        // language setting starts here
-        Padding(
+    String _getLanguageName(Locale locale) {
+      switch (locale.languageCode) {
+        case 'en':
+          return 'English';
+        case 'fr':
+          return 'Français';
+        case 'ar':
+          return 'العربية';
+        case 'af':
+          return 'Hausa';
+        case 'zu':
+          return 'Yoruba';
+        case 'sw':
+          return 'Igbo';
+        default:
+          return 'Unknown';
+      }
+    }
+
+    void _showLocaleDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return LanguageDialog();
+        },
+      );
+    }
+
+    Locale currentLocale = Localizations.localeOf(context);
+
+    return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16, top: 16, bottom: 8),
       child: Container(
         decoration: BoxDecoration(
@@ -60,19 +82,18 @@ class _SelectLangState extends State<SelectLang> {
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
-                  child: LanguageDialog(),
-                )
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                  child: Text(_getLanguageName(currentLocale)),
+                ),
               ],
             ),
             const Spacer(),
-            // change language
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: GestureDetector(
                 onTap: () {
-                  _showLanguageDialog(context);
+                  _showLocaleDialog(context);
                 },
                 child: const Icon(
                   CupertinoIcons.forward,
@@ -85,13 +106,4 @@ class _SelectLangState extends State<SelectLang> {
       ),
     );
   }
-}
-
-void _showLanguageDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return const LanguageDialog(); // Show language selection dialog
-    },
-  );
 }

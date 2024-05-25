@@ -11,7 +11,9 @@ import 'setting_widgets/selected_lang.dart';
 import 'setting_widgets/service_terms.dart';
 
 class SettingsPrivacyPage extends StatelessWidget {
-  const SettingsPrivacyPage({super.key});
+  const SettingsPrivacyPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

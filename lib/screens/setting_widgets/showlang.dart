@@ -1,30 +1,42 @@
 import 'package:flutter/material.dart';
-
-import 'package:gona_vendor/main.dart';
-import 'package:gona_vendor/models/language_const.dart';
-import 'package:gona_vendor/models/languges.dart';
+import '../../main.dart';
+import '../../models/languges.dart';
 
 class LanguageDialog extends StatelessWidget {
   const LanguageDialog({super.key});
 
+  Future<void> _changeLanguage(BuildContext context, Language language) async {
+    Locale _locale = Locale(language.languagCode);
+    GonaVendor.setLocale(
+        context, _locale); // Ensure you have this method to update the locale
+    Navigator.of(context).pop(); // Close the dialog
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<Language>(
-      hint: const Text('Change Language'),
-      onChanged: (Language? language) async {
-        if (language != null) {
-          Locale _locale = await setLocale(language.languagCode);
-          GonaVendor.setLocale(context, _locale);
-        }
-      },
-      items: Language.languageList()
-          .map<DropdownMenuItem<Language>>(
-            (e) => DropdownMenuItem<Language>(
-              value: e,
-              child: Text(e.name),
-            ),
-          )
-          .toList(),
+    return AlertDialog(
+      title: const Text('Select Language'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: Language.languageList().map((language) {
+            return GestureDetector(
+              onTap: () => _changeLanguage(context, language),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Center(child: Text(language.name)),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }

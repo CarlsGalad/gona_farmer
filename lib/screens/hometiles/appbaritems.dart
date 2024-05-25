@@ -54,7 +54,8 @@ class DropdownMenuWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SettingsPrivacyPage(),
+                  builder: (context) => const SettingsPrivacyPage(
+                     ),
                 ),
               ); // Navigate to Help Centre screen
               break;

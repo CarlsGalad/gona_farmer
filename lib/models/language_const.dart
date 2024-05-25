@@ -1,11 +1,7 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// Import the generated localization files
-import 'package:gona_vendor/ha_intl.dart';
-import 'package:gona_vendor/ig_intl.dart';
-import 'package:gona_vendor/yo_intl.dart';
-
-
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
