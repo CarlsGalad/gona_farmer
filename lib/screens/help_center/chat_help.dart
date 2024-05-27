@@ -178,8 +178,9 @@ class LiveChatScreenState extends State<LiveChatScreen> {
                                   return;
                                 }
                                 final user = FirebaseAuth.instance.currentUser;
-                                if (user == null || selectedChatId == null)
+                                if (user == null || selectedChatId == null) {
                                   return;
+                                }
 
                                 await FirebaseFirestore.instance
                                     .collection('liveChats')
