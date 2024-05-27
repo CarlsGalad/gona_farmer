@@ -24,7 +24,7 @@ class _BlogState extends State<Blog> {
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('blogs').snapshots(),
+        stream: FirebaseFirestore.instance.collection('news').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -32,86 +32,58 @@ class _BlogState extends State<Blog> {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          final blogDocs = snapshot.data!.docs;
+          final newsDocs = snapshot.data!.docs;
+          return ListView.builder(
+            itemCount: newsDocs.length,
+            itemBuilder: (context, index) {
+              final newsItem = NewsItem.fromMap(
+                  newsDocs[index].data() as Map<String, dynamic>);
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 300,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(12),
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: blogDocs.length > 7 ? 7 : blogDocs.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromRGBO(184, 181, 181, 1),
-                                offset: Offset(5, 2),
-                                blurRadius: 6.0,
-                                spreadRadius: 3.0,
-                                blurStyle: BlurStyle.normal,
-                              ),
-                              BoxShadow(
-                                color: Color.fromRGBO(255, 255, 255, 0.9),
-                                offset: Offset(-6, -2),
-                                blurRadius: 5.0,
-                                spreadRadius: 3.0,
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          height: 300,
-                          width: 200,
-                          child: const Center(child: Text('we dey here')),
-                        ),
-                      );
-                    },
-                  ),
+              return ListTile(
+                leading: Image.network(
+                  newsItem.image,
+                  width: 100,
+                  height: 100,
                 ),
-                const SizedBox(height: 10),
-                Container(
-                  height: MediaQuery.of(context).size.height - 390,
-                  child: ListView.builder(
-                    itemCount: blogDocs.length,
-                    itemBuilder: (context, index) {
-                      final blogData =
-                          blogDocs[index].data() as Map<String, dynamic>;
-                      final blogPost = BlogPost(
-                        title: blogData['title'],
-                        publisher: blogData['publisher'],
-                        datePublished:
-                            (blogData['datePublished'] as Timestamp).toDate(),
-                        content: blogData['content'],
-                      );
-                      return ListTile(
-                        title: Text(blogPost.title),
-                        subtitle: Text(
-                            '${blogPost.publisher}, ${blogPost.datePublished.toString()}'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  BlogPostDetailScreen(post: blogPost),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                title: Text(
+                  newsItem.title,
+                  style: const TextStyle(fontSize: 25),
                 ),
-              ],
-            ),
+                subtitle: Row(
+                  children: [
+                    const Icon(
+                      Icons.person_2_rounded,
+                      color: Colors.grey,
+                    ),
+                    Text(
+                      ' ${newsItem.publisher}',
+                      style: const TextStyle(fontSize: 15, color: Colors.grey),
+                    ),
+                    const Text(
+                      ' • ',
+                      style: TextStyle(fontSize: 15, color: Colors.grey),
+                    ),
+                    const Icon(
+                      Icons.access_time,
+                      color: Colors.grey,
+                    ),
+                    Text(
+                      newsItem.datePublished,
+                      style: const TextStyle(fontSize: 15, color: Colors.grey),
+                    )
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          BlogPostDetailScreen(post: newsItem),
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),

@@ -1,194 +1,234 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+class LiveChatScreen extends StatefulWidget {
+  const LiveChatScreen({super.key});
 
   @override
-  ChatScreenState createState() => ChatScreenState();
+  LiveChatScreenState createState() => LiveChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
+class LiveChatScreenState extends State<LiveChatScreen> {
+  String? selectedChatId;
+  String? selectedChatTitle;
   final TextEditingController _messageController = TextEditingController();
+
+  Future<void> _createNewChat() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final chatData = {
+      'title': 'Chat with Admin',
+      'senderName': user.displayName ?? 'Anonymous',
+      'senderId': user.uid,
+      'adminId': 'live_chat', // Set the admin ID to 'live_chat'
+      'timestamp': FieldValue.serverTimestamp(),
+    };
+
+    final newChat =
+        await FirebaseFirestore.instance.collection('liveChats').add(chatData);
+    setState(() {
+      selectedChatId = newChat.id;
+      selectedChatTitle = chatData['title'] as String?;
+    });
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(CupertinoIcons.back)),
-        title: Text(
-          'Chat',
-          style: GoogleFonts.bebasNeue(fontSize: 30),
-        ),
-        centerTitle: true,
+        title: const Text('Live Chat with Admin'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _createNewChat,
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Expanded(child: ChatMessages()),
-            BottomAppBar(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                height: 50.0,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: _messageController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter your message...',
+      body: Row(
+        children: [
+          Flexible(
+            flex: 2,
+            child: Container(
+              color: Colors.black12,
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('liveChats')
+                        .where('senderId',
+                            isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final chats = snapshot.data!.docs;
+                      if (chats.isEmpty) {
+                        return const Center(child: Text('No chats available'));
+                      }
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: chats.length,
+                          itemBuilder: (context, index) {
+                            final chat = chats[index];
+                            return ListTile(
+                              title: Text(chat['title']),
+                              subtitle: Text(chat['senderName']),
+                              onTap: () {
+                                setState(() {
+                                  selectedChatId = chat.id;
+                                  selectedChatTitle = chat['title'];
+                                });
+                              },
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: () {
-                        String message = _messageController.text;
-                        if (message.isNotEmpty) {
-                          // Get recipient's user ID (for example, hardcoding it here)
-                          String recipientId = 'scg0NQ8alasA6Rkt9d1R';
-                          addMessage(message, recipientId);
-                          _messageController.clear();
-                        }
-                      },
-                    ),
-                  ],
-                ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          const VerticalDivider(
+            thickness: 1,
+            width: 2,
+            color: Color.fromARGB(255, 26, 25, 25),
+          ),
+          Flexible(
+            flex: 3,
+            child: selectedChatId == null
+                ? const Center(
+                    child: Text('Please select a chat'),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          selectedChatTitle ?? 'Message Title',
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        Expanded(
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('liveChats')
+                                .doc(selectedChatId)
+                                .collection('messages')
+                                .orderBy('timestamp', descending: true)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              final messages = snapshot.data!.docs;
+                              if (messages.isEmpty) {
+                                return const Center(
+                                    child: Text('No messages in this chat'));
+                              }
+                              return ListView.builder(
+                                reverse: true,
+                                itemCount: messages.length,
+                                itemBuilder: (context, index) {
+                                  final message = messages[index];
+                                  return ChatBubble(
+                                    message: message['content'],
+                                    isSender: message['senderId'] ==
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _messageController,
+                                decoration: InputDecoration(
+                                  hintText: 'Type a message...',
+                                  fillColor: Colors.black12,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            IconButton(
+                              icon: const Icon(Icons.send),
+                              onPressed: () async {
+                                if (_messageController.text.trim().isEmpty) {
+                                  return;
+                                }
+                                final user = FirebaseAuth.instance.currentUser;
+                                if (user == null || selectedChatId == null)
+                                  return;
+
+                                await FirebaseFirestore.instance
+                                    .collection('liveChats')
+                                    .doc(selectedChatId)
+                                    .collection('messages')
+                                    .add({
+                                  'content': _messageController.text.trim(),
+                                  'senderId': user.uid,
+                                  'timestamp': FieldValue.serverTimestamp(),
+                                });
+                                _messageController.clear();
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }
-
-  Future<void> addMessage(String message, String userId) async {
-    try {
-      String? senderId = FirebaseAuth.instance.currentUser?.uid;
-      if (senderId != null) {
-        String recipientId = 'scg0NQ8alasA6Rkt9d1R';
-        DocumentReference documentReference =
-            await FirebaseFirestore.instance.collection('messages').add({
-          'senderId': senderId,
-          'recipientId': recipientId,
-          'message': message,
-          'timestamp': DateTime.now(),
-        });
-        print('Message added with ID: ${documentReference.id}');
-      } else {
-        print('User not authenticated');
-      }
-    } catch (e) {
-      print('Error adding message: $e');
-    }
-  }
 }
 
-class ChatMessages extends StatelessWidget {
-  const ChatMessages({super.key});
+class ChatBubble extends StatelessWidget {
+  final String message;
+  final bool isSender;
+
+  const ChatBubble({super.key, required this.message, required this.isSender});
 
   @override
   Widget build(BuildContext context) {
-    String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
-
-    if (currentUserId == null) {
-      // If user is not authenticated, return a placeholder widget
-      return const Center(
-        child: Text('User not authenticated'),
-      );
-    }
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('messages')
-          .where('senderId',
-              isEqualTo: currentUserId) // Filter by senderId for current user
-          .where('recipientId',
-              isEqualTo:
-                  'scg0NQ8alasA6Rkt9d1R') // Filter by recipientId for customer care
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (snapshot.hasError) {
-          return const Center(
-            child: Text('Error loading messages'),
-          );
-        }
-
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(
-            child: Text('No messages'),
-          );
-        }
-
-        // Also fetch messages where current user is the recipient and customer care is the sender
-        // ignore: unused_local_variable
-        var secondStream = FirebaseFirestore.instance
-            .collection('messages')
-            .where('senderId',
-                isEqualTo:
-                    'scg0NQ8alasA6Rkt9d1R') // Filter by senderId for customer care
-            .where('recipientId',
-                isEqualTo:
-                    currentUserId) // Filter by recipientId for current user
-            .snapshots();
-
-        return ListView.builder(
-          itemCount: snapshot.data!.docs.length,
-          itemBuilder: (context, index) {
-            DocumentSnapshot document = snapshot.data!.docs[index];
-            Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-            return Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 50, top: 4, bottom: 4),
-              child: Container(
-                decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color.fromRGBO(184, 181, 181, 1),
-                      offset: Offset(5, 2),
-                      blurRadius: 6.0,
-                      spreadRadius: 3.0,
-                      blurStyle: BlurStyle.normal,
-                    ),
-                    BoxShadow(
-                      color: Color.fromRGBO(255, 255, 255, 0.9),
-                      offset: Offset(-6, -2),
-                      blurRadius: 5.0,
-                      spreadRadius: 3.0,
-                    ),
-                  ],
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white),
-                ),
-                child: ListTile(
-                  title: Text(
-                    data['message'],
-                    style: GoogleFonts.abel(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
+    return Container(
+      alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isSender ? Colors.blue : Colors.grey[300],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          message,
+          style: TextStyle(
+            color: isSender ? Colors.white : Colors.black,
+          ),
+        ),
+      ),
     );
   }
 }

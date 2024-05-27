@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+
 import 'chat_help.dart';
 
 class HelpCenterScreen extends StatelessWidget {
@@ -226,7 +227,7 @@ class HelpCenterScreen extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ChatScreen(),
+                    builder: (context) => const LiveChatScreen(),
                   ));
             },
             backgroundColor: Colors.white,

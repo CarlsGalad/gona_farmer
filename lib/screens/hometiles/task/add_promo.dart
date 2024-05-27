@@ -507,16 +507,16 @@ class AddPromoScreenState extends State<AddPromoScreen> {
               _oldPriceController.text.trim(),
             ),
             'description': _descriptionController.text.trim(),
-            'itemLocation': _userCity,
+            'promotionLocation': _userCity,
             'categoryId': _selectedCategoryId?.toInt(),
             'subcategoryId': _selectedSubcategory!['id'] as int,
             'availQuantity': int.parse(_quantityController.text.trim()),
             'sellingMethod': _selectedSellingMethod,
             'farmingYear': _farmingYearController,
             'farmId': userId,
-            'itemPath': _downloadURL,
+            'imagePath': _downloadURL,
             'id': newItemRef.id,
-            'farmName': _farmName,
+            'promotionFarm': _farmName,
           });
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
