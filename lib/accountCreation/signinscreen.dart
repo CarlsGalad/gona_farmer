@@ -1,5 +1,3 @@
-
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -128,6 +126,10 @@ class _LoginPageState extends State<LoginPage> {
                               border: InputBorder.none,
                               hintText:
                                   AppLocalizations.of(context)!.emailHint),
+                          autofillHints: const [
+                            AutofillHints.email,
+                          ],
+                          keyboardType: TextInputType.emailAddress,
                         ),
                       ),
                     ),
@@ -153,6 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                               border: InputBorder.none,
                               hintText:
                                   AppLocalizations.of(context)!.passwordHint),
+                          autofillHints: const [AutofillHints.password],
                         ),
                       ),
                     ),
