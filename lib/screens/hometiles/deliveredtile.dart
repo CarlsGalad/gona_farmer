@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gona_vendor/screens/hometiles/delivered_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeliveredCountTile extends StatefulWidget {
   const DeliveredCountTile({super.key});
@@ -103,9 +104,9 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
                     textAlign: TextAlign.start,
                   ),
                 ),
-                const Text(
-                  'Delivered',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.delivered_label,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 )
               ],
             ),
