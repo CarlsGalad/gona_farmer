@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gona_vendor/screens/hometiles/proccessed.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProcessedTile extends StatefulWidget {
   const ProcessedTile({super.key});
@@ -28,7 +29,10 @@ class _ProcessedTileState extends State<ProcessedTile> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+                child: Text(
+                    '${AppLocalizations.of(context)!.processed_tile_error} '
+                    ' ${snapshot.error}'));
           } else {
             int processedOrdersCount = snapshot.data?.length ?? 0;
             return GestureDetector(
@@ -57,9 +61,9 @@ class _ProcessedTileState extends State<ProcessedTile> {
                           textAlign: TextAlign.start,
                         ),
                       ),
-                      const Text(
-                        "Processed Order's",
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.processed_orders_label,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
