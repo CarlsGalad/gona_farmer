@@ -93,14 +93,6 @@ class _GonaVendorState extends State<GonaVendor> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      // localeResolutionCallback: (locale, supportedLocales) {
-      //   for (var supportedLocale in supportedLocales) {
-      //     if (supportedLocale.languageCode == locale?.languageCode) {
-      //       return supportedLocale;
-      //     }
-      //   }
-      //   return supportedLocales.first;
-      // },
       supportedLocales: AppLocalizations.supportedLocales,
 
       //
