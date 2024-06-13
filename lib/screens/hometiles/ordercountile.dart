@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gona_vendor/screens/orders/order_list_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OrderCountTile extends StatefulWidget {
   const OrderCountTile({super.key});
@@ -28,7 +29,7 @@ class OrderCountTileState extends State<OrderCountTile> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError || snapshot.data == null) {
-          return const Center(child: Text('Error: Unable to fetch orders'));
+          return  Center(child: Text(AppLocalizations.of(context)!.order_count_tile_error));
         } else {
           int ordersCount = snapshot.data!.length;
           return GestureDetector(
@@ -61,9 +62,9 @@ class OrderCountTileState extends State<OrderCountTile> {
                         textAlign: TextAlign.start,
                       ),
                     ),
-                    const Text(
-                      'Orders',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                   Text(
+                      AppLocalizations.of(context)!.orders_label,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
