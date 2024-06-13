@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../analytics/analytics.dart';
 
 class TotalEarningsDisplay extends StatelessWidget {
@@ -28,7 +28,10 @@ class TotalEarningsDisplay extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return Center(
+                    child: Text(
+                        '${AppLocalizations.of(context)!.total_earnings_error} '
+                        ' ${snapshot.error}'));
               } else {
                 int totalEarnings = snapshot.data?['totalEarnings'] ??
                     0; // Retrieve total earnings
@@ -43,16 +46,16 @@ class TotalEarningsDisplay extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 30.0),
                         child: Text(
-                          '₦$formattedTotalEarnings',
+                          '${AppLocalizations.of(context)!.currency_symbol}$formattedTotalEarnings',
                           style: const TextStyle(fontSize: 45),
                           textAlign: TextAlign.start,
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 25.0),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 25.0),
                         child: Text(
-                          'Total Earnings',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          AppLocalizations.of(context)!.total_earnings_label,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       )
                     ],
