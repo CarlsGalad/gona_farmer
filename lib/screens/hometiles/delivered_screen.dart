@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeliveredOrdersScreen extends StatefulWidget {
   const DeliveredOrdersScreen({super.key});
@@ -48,7 +49,7 @@ class DeliveredOrdersScreenState extends State<DeliveredOrdersScreen> {
           ),
         ),
         title: Text(
-          'Delivered Orders',
+          AppLocalizations.of(context)!.delivered_items,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -73,6 +74,7 @@ class DeliveredOrdersScreenState extends State<DeliveredOrdersScreen> {
             return ListView(
               children: snapshot.data!.docs.map((document) {
                 Map<String, dynamic> orderData =
+                    // ignore: unnecessary_cast
                     document.data() as Map<String, dynamic>;
                 return Padding(
                   padding:
