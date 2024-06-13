@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../services/auth_service.dart';
@@ -48,7 +48,7 @@ class _SingUpPageState extends State<SingUpPage> {
         saveUserDetailsToFirestore();
       } else {
         // show error message, passwords dont't match
-        showErrorMessage("Passwords down't match!");
+        showErrorMessage(AppLocalizations.of(context)!.passwords_dont_match);
       }
       if (!mounted) {
         return;
@@ -59,9 +59,10 @@ class _SingUpPageState extends State<SingUpPage> {
       //pop progress indicator
       Navigator.pop(context);
       //if wrong email
-      if (e.code == 'user=not-found') {
+      if (e.code == AppLocalizations.of(context)!.userNotFound) {
         // Show error to user
-        showErrorMessage(e.message ?? 'Sign-up failed');
+        showErrorMessage(
+            e.message ?? AppLocalizations.of(context)!.sign_up_failed);
       }
     }
   }
@@ -93,7 +94,7 @@ class _SingUpPageState extends State<SingUpPage> {
         // Pop the progress indicator
         Navigator.pop(context);
         // Show error message
-        showErrorMessage('Failed to save user details');
+        showErrorMessage(AppLocalizations.of(context)!.save_details_failed);
       }
     }
   }
@@ -150,7 +151,7 @@ class _SingUpPageState extends State<SingUpPage> {
                   const SizedBox(
                     height: 25,
                   ),
-                  Text('Let\'s sign you up',
+                  Text(AppLocalizations.of(context)!.sign_up_title,
                       style: GoogleFonts.bebasNeue(
                           fontSize: 30, color: Colors.white)),
                   const SizedBox(
@@ -169,8 +170,10 @@ class _SingUpPageState extends State<SingUpPage> {
                         padding: const EdgeInsets.only(left: 20.0),
                         child: TextField(
                           controller: emailController,
-                          decoration: const InputDecoration(
-                              border: InputBorder.none, hintText: 'Email'),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText:
+                                  AppLocalizations.of(context)!.emailHint),
                         ),
                       ),
                     ),
@@ -195,9 +198,10 @@ class _SingUpPageState extends State<SingUpPage> {
                               padding: const EdgeInsets.only(left: 20.0),
                               child: TextField(
                                 controller: farmNameController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'Farm Name',
+                                  hintText: AppLocalizations.of(context)!
+                                      .farm_name_hint,
                                 ),
                               ),
                             ),
@@ -218,9 +222,10 @@ class _SingUpPageState extends State<SingUpPage> {
                               padding: const EdgeInsets.only(left: 20.0),
                               child: TextField(
                                 controller: ownerNameController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "Owner's Name",
+                                  hintText: AppLocalizations.of(context)!
+                                      .owner_name_hint,
                                 ),
                               ),
                             ),
@@ -245,9 +250,9 @@ class _SingUpPageState extends State<SingUpPage> {
                         child: TextField(
                           keyboardType: TextInputType.phone,
                           controller: mobileController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             border: InputBorder.none,
-                            hintText: 'Phone',
+                            hintText: AppLocalizations.of(context)!.phone_hint,
                           ),
                         ),
                       ),
@@ -268,9 +273,10 @@ class _SingUpPageState extends State<SingUpPage> {
                         child: TextField(
                           keyboardType: TextInputType.streetAddress,
                           controller: addressController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Farm Address'),
+                              hintText:
+                                  AppLocalizations.of(context)!.address_hint),
                         ),
                       ),
                     ),
@@ -295,9 +301,10 @@ class _SingUpPageState extends State<SingUpPage> {
                               padding: const EdgeInsets.only(left: 20.0),
                               child: TextField(
                                 controller: cityController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: 'City',
+                                  hintText:
+                                      AppLocalizations.of(context)!.city_hint,
                                 ),
                               ),
                             ),
@@ -318,9 +325,10 @@ class _SingUpPageState extends State<SingUpPage> {
                               padding: const EdgeInsets.only(left: 20.0),
                               child: TextField(
                                 controller: stateController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "State",
+                                  hintText:
+                                      AppLocalizations.of(context)!.state_hint,
                                 ),
                               ),
                             ),
@@ -345,8 +353,10 @@ class _SingUpPageState extends State<SingUpPage> {
                         child: TextField(
                           controller: passwordController,
                           obscureText: true,
-                          decoration: const InputDecoration(
-                              border: InputBorder.none, hintText: 'Password'),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText:
+                                  AppLocalizations.of(context)!.passwordHint),
                         ),
                       ),
                     ),
@@ -365,9 +375,10 @@ class _SingUpPageState extends State<SingUpPage> {
                         child: TextField(
                           controller: confirmPasswordController,
                           obscureText: true,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Confirm Password'),
+                              hintText: AppLocalizations.of(context)!
+                                  .confirm_password_hint),
                         ),
                       ),
                     ),
@@ -388,10 +399,10 @@ class _SingUpPageState extends State<SingUpPage> {
                         decoration: BoxDecoration(
                             color: const Color.fromARGB(255, 49, 105, 11),
                             borderRadius: BorderRadius.circular(20)),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'Sign Up',
-                            style: TextStyle(
+                            AppLocalizations.of(context)!.sign_up_button,
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
@@ -416,11 +427,11 @@ class _SingUpPageState extends State<SingUpPage> {
                             thickness: 0.6,
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text(
-                            'Or continue with',
-                            style: TextStyle(color: Colors.white),
+                            AppLocalizations.of(context)!.orContinueWith,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         Expanded(
@@ -461,16 +472,16 @@ class _SingUpPageState extends State<SingUpPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Already have an account?',
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(context)!.already_have_account,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                       GestureDetector(
                         onTap: widget.onTap,
-                        child: const Text(
-                          '  Sign In now',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.sign_in_now,
+                          style: const TextStyle(
                               color: Colors.blue, fontWeight: FontWeight.bold),
                         ),
                       )
