@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:gona_vendor/screens/analytics/monthlist.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,7 +35,7 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Analytics',
+          AppLocalizations.of(context)!.analytics,
           style: GoogleFonts.aboreto(fontSize: 25),
         ),
         centerTitle: true,
@@ -43,14 +43,15 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Top Ten Sold Items',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.top_ten_sold_items,
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
                 FutureBuilder<List<Map<String, dynamic>>>(
@@ -76,9 +77,10 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
                   },
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Performance Chart',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.performance_chart,
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 GestureDetector(
@@ -89,8 +91,8 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
                     color: Colors.blue,
                     child: Text(
                       showLastSixMonths
-                          ? 'Show This Week'
-                          : 'Show Last Six Months',
+                          ? AppLocalizations.of(context)!.show_this_week
+                          : AppLocalizations.of(context)!.show_last_six_months,
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -102,9 +104,10 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
                       : const WeekLineChartWidget(),
                 ),
                 const SizedBox(height: 15),
-                const Text(
-                  'Earnings in the last six months',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.earnings_last_six_months,
+                  style: const TextStyle(
+                      fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 400,
