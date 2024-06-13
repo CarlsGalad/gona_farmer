@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WelcomeBackWidget extends StatefulWidget {
   const WelcomeBackWidget({super.key});
@@ -41,8 +42,9 @@ class WelcomeBackWidgetState extends State<WelcomeBackWidget> {
             const EdgeInsets.only(top: 30.0, left: 30, right: 30, bottom: 10),
         child: Text(
           _farmerName.isNotEmpty
-              ? 'Welcome back ${_farmerName.split(' ').first}'
-              : 'Welcome back',
+              ? '${AppLocalizations.of(context)!.welcome_back} '
+                  ' ${_farmerName.split(' ').first}'
+              : AppLocalizations.of(context)!.welcome_back,
           style: const TextStyle(fontSize: 25),
         ),
       ),
