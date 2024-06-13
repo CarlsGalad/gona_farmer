@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TotalSalesTile extends StatefulWidget {
   const TotalSalesTile({super.key});
@@ -63,9 +64,9 @@ class TotalSalesTileState extends State<TotalSalesTile> {
                   textAlign: TextAlign.start,
                 ),
               ),
-              const Text(
-                'Total sales',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Text(
+                AppLocalizations.of(context)!.total_sales_label,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               )
             ],
           ),
