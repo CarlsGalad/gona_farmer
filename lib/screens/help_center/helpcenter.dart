@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'chat_help.dart';
@@ -66,7 +66,7 @@ class HelpCenterScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          'Help Center',
+          AppLocalizations.of(context)!.help_center,
           style: GoogleFonts.bebasNeue(fontSize: 25),
         ),
       ),
