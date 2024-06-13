@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WeekLineChartWidget extends StatefulWidget {
   const WeekLineChartWidget({super.key});
@@ -68,7 +69,7 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
-          axisNameWidget: const Text('This week'),
+          axisNameWidget: Text(AppLocalizations.of(context)!.this_week),
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, _) {
@@ -76,25 +77,25 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
               int day = value.toInt();
               switch (day) {
                 case 0:
-                  return const Text('Mon',
+                  return Text(AppLocalizations.of(context)!.mon,
                       style: TextStyle(color: Colors.black));
                 case 1:
-                  return const Text('Tue',
+                  return Text(AppLocalizations.of(context)!.tue,
                       style: TextStyle(color: Colors.black));
                 case 2:
-                  return const Text('Wed',
+                  return Text(AppLocalizations.of(context)!.wed,
                       style: TextStyle(color: Colors.black));
                 case 3:
-                  return const Text('Thu',
+                  return Text(AppLocalizations.of(context)!.thu,
                       style: TextStyle(color: Colors.black));
                 case 4:
-                  return const Text('Fri',
+                  return Text(AppLocalizations.of(context)!.fri,
                       style: TextStyle(color: Colors.black));
                 case 5:
-                  return const Text('Sat',
+                  return Text(AppLocalizations.of(context)!.sat,
                       style: TextStyle(color: Colors.black));
                 case 6:
-                  return const Text('Sun',
+                  return Text(AppLocalizations.of(context)!.sun,
                       style: TextStyle(color: Colors.black));
                 default:
                   return const SizedBox();
@@ -103,7 +104,8 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
           ),
         ),
         leftTitles: AxisTitles(
-          axisNameWidget: const Text('This weeks Earnings'),
+          axisNameWidget:
+              Text(AppLocalizations.of(context)!.this_weeks_earnings),
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (double value, _) {

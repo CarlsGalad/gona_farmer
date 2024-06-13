@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LineChartWidget extends StatefulWidget {
   const LineChartWidget({super.key});
@@ -98,7 +99,7 @@ class LineChartWidgetState extends State<LineChartWidget> {
       titlesData: FlTitlesData(
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
-          axisNameWidget: const Text('Last six Months'),
+          axisNameWidget: Text(AppLocalizations.of(context)!.last_six_months),
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (double value, _) {
@@ -112,7 +113,7 @@ class LineChartWidgetState extends State<LineChartWidget> {
           ),
         ),
         leftTitles: AxisTitles(
-          axisNameWidget: const Text('Monthly Earnings'),
+          axisNameWidget: Text(AppLocalizations.of(context)!.monthly_earnings),
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (double value, _) {
