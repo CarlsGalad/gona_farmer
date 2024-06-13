@@ -47,10 +47,10 @@ class ImageHelperPromo {
   }) async =>
       await _imageCropper.cropImage(
         sourcePath: file.path.toString(),
-        cropStyle: cropStyle,
         compressQuality: 100,
         uiSettings: [
           AndroidUiSettings(
+            cropStyle: cropStyle,
             toolbarColor: Colors.green,
             toolbarTitle: 'Crop Image',
             statusBarColor: Colors.green.shade900,
