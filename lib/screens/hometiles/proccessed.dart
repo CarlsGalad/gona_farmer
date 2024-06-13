@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProcessedOrdersScreen extends StatefulWidget {
   const ProcessedOrdersScreen({super.key});
@@ -48,7 +49,7 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
           ),
         ),
         title: Text(
-          'Processed Orders',
+          AppLocalizations.of(context)!.processed_orders,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -73,6 +74,7 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
             return ListView(
               children: snapshot.data!.docs.map((document) {
                 Map<String, dynamic> orderData =
+                    // ignore: unnecessary_cast
                     document.data() as Map<String, dynamic>;
                 return Padding(
                   padding:
@@ -89,7 +91,6 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
                         'Price: ${orderData['item_price'] ?? ''}',
                         style: const TextStyle(color: Colors.white),
                       ),
-                      // Add more details as needed
                     ),
                   ),
                 );
