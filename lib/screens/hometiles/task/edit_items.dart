@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import '../../../methods/add_item_image_methods.dart';
-import 'conditional.dart';
+import '../../../models/conditional.dart';
 
 final imageHelper = ImageHelper();
 
@@ -272,6 +272,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                               _downloadURL = downloadURL;
                             });
                           } else {
+                    
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
