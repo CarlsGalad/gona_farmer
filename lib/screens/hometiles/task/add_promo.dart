@@ -1,16 +1,15 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
-
 import '../../../methods/add_promo_image.dart';
-import 'conditional.dart';
+import '../../../models/conditional.dart';
 
 final imageHelper = ImageHelperPromo();
 
@@ -85,7 +84,7 @@ class AddPromoScreenState extends State<AddPromoScreen> {
         _selectedSubcategory = null;
       });
     } catch (error) {
-      print('Error fetching subcategories: $error');
+      rethrow;
     }
   }
 
@@ -104,7 +103,7 @@ class AddPromoScreenState extends State<AddPromoScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Add Promotions',
+          AppLocalizations.of(context)!.add_promotions,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -164,8 +163,9 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                       } else {
                         // Handle error uploading image
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Error uploading image'),
+                          SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .error_uploading_image),
                           ),
                         );
                       }
@@ -175,7 +175,8 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                       }); // Handle error uploading image
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Error uploading image: $error'),
+                          content: Text(AppLocalizations.of(context)!
+                              .error_uploading_image_with_error(error)),
                         ),
                       );
                     }
@@ -189,17 +190,17 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                     borderRadius: BorderRadius.circular(5)),
                 width: 100,
                 height: 50,
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 8.0),
-                        child: Text('Add Image'),
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(AppLocalizations.of(context)!.add_image),
                       ),
-                      Spacer(),
-                      Icon(
+                      const Spacer(),
+                      const Icon(
                         Icons.image,
                         color: Colors.green,
                       ),
@@ -211,13 +212,13 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             const SizedBox(height: 15.0),
             TextFormField(
               controller: _nameController,
-              decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.name,
+                  border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
+                  return AppLocalizations.of(context)!.please_enter_name;
                 }
                 return null;
               },
@@ -225,15 +226,15 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             const SizedBox(height: 15.0),
             TextFormField(
               controller: _priceController,
-              decoration: const InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.price,
+                  border: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.green),
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a price';
+                  return AppLocalizations.of(context)!.please_enter_price;
                 }
                 return null;
               },
@@ -241,15 +242,15 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             const SizedBox(height: 15.0),
             TextFormField(
               controller: _oldPriceController,
-              decoration: const InputDecoration(
-                  labelText: 'Old Price',
-                  border: OutlineInputBorder(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.old_price,
+                  border: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.green),
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a price';
+                  return AppLocalizations.of(context)!.please_enter_price;
                 }
                 return null;
               },
@@ -257,14 +258,14 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             const SizedBox(height: 15.0),
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.description,
+                  border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               maxLines: null,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a description';
+                  return AppLocalizations.of(context)!.please_enter_description;
                 }
                 return null;
               },
@@ -272,13 +273,14 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             const SizedBox(height: 15.0),
             TextFormField(
               controller: _farmingYearController,
-              decoration: const InputDecoration(
-                  labelText: 'Farming Year',
-                  border: OutlineInputBorder(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.farming_year,
+                  border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a location';
+                  return AppLocalizations.of(context)!
+                      .please_enter_farming_year;
                 }
                 return null;
               },
@@ -312,13 +314,13 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                     });
                   }
                 },
-                decoration: const InputDecoration(
-                    labelText: 'Select Category',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.select_category,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 validator: (value) {
                   if (value == null) {
-                    return 'Please select a category';
+                    return AppLocalizations.of(context)!.please_select_category;
                   }
                   return null;
                 },
@@ -343,13 +345,14 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                     _selectedSubcategory = value;
                   });
                 },
-                decoration: const InputDecoration(
-                    labelText: 'Select Subcategory',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.select_subcategory,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please select a subcategory';
+                    return AppLocalizations.of(context)!
+                        .please_select_subcategory;
                   }
                   return null;
                 },
@@ -358,14 +361,14 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             const SizedBox(height: 15.0),
             TextFormField(
               controller: _quantityController,
-              decoration: const InputDecoration(
-                  labelText: 'Availabe Quantity',
-                  border: OutlineInputBorder(
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.available_quantity,
+                  border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15)))),
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a quantity';
+                  return AppLocalizations.of(context)!.please_enter_quantity;
                 }
                 return null;
               },
@@ -374,11 +377,11 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             DropdownButtonFormField<String>(
               value: _selectedSellingMethod,
               items: [
-                'Per Pack',
-                'Per Gallon',
-                'Per Head',
-                'Per Kilo',
-                'Per Bag',
+                AppLocalizations.of(context)!.per_pack,
+                AppLocalizations.of(context)!.per_gallon,
+                AppLocalizations.of(context)!.per_head,
+                AppLocalizations.of(context)!.per_kilo,
+                AppLocalizations.of(context)!.per_bag,
               ].map((method) {
                 return DropdownMenuItem<String>(
                   value: method,
@@ -390,9 +393,9 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                   _selectedSellingMethod = value;
                 });
               },
-              decoration: const InputDecoration(
-                labelText: 'Selling Method',
-                border: OutlineInputBorder(
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.selling_method,
+                border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(15),
                   ),
@@ -400,7 +403,8 @@ class AddPromoScreenState extends State<AddPromoScreen> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please select a selling method';
+                  return AppLocalizations.of(context)!
+                      .please_select_selling_method;
                 }
                 return null;
               },
@@ -419,8 +423,9 @@ class AddPromoScreenState extends State<AddPromoScreen> {
               } else {
                 // Show error message if no category or subcategory is selected
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please select a category and subcategory'),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!
+                        .please_select_category_and_subcategory),
                   ),
                 );
               }
@@ -433,10 +438,11 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                   color: const Color.fromARGB(255, 137, 247, 143),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Center(
+                child: Center(
                     child: Text(
-                  'Submit',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  AppLocalizations.of(context)!.submit,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 20),
                 ))),
           ),
         ),
@@ -519,8 +525,9 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             'promotionFarm': _farmName,
           });
           // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Item added successfully'),
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.item_added_successfully),
             backgroundColor: Colors.green,
           ));
           // Clear text controllers
@@ -536,9 +543,11 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             _selectedSubcategory = _subcategories.first;
           });
         } catch (error) {
+          if (!mounted) return;
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Error adding item: $error'),
+            content:
+                Text(AppLocalizations.of(context)!.error_adding_item(error)),
             backgroundColor: Colors.red,
           ));
         } finally {
@@ -548,8 +557,8 @@ class AddPromoScreenState extends State<AddPromoScreen> {
         }
       } else {
         // Show error message if user is not logged in
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('User not logged in'),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(AppLocalizations.of(context)!.user_not_logged_in),
           backgroundColor: Colors.red,
         ));
       }
