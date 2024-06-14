@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LiveChatScreen extends StatefulWidget {
   const LiveChatScreen({super.key});
@@ -44,7 +45,7 @@ class LiveChatScreenState extends State<LiveChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Live Chat with Admin'),
+        title: Text(AppLocalizations.of(context)!.live_chat_with_admin),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -74,7 +75,9 @@ class LiveChatScreenState extends State<LiveChatScreen> {
                       }
                       final chats = snapshot.data!.docs;
                       if (chats.isEmpty) {
-                        return const Center(child: Text('No chats available'));
+                        return Center(
+                            child: Text(AppLocalizations.of(context)!
+                                .no_chats_available));
                       }
                       return Expanded(
                         child: ListView.builder(
@@ -108,8 +111,9 @@ class LiveChatScreenState extends State<LiveChatScreen> {
           Flexible(
             flex: 3,
             child: selectedChatId == null
-                ? const Center(
-                    child: Text('Please select a chat'),
+                ? Center(
+                    child: Text(
+                        AppLocalizations.of(context)!.please_select_a_chat),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -117,7 +121,8 @@ class LiveChatScreenState extends State<LiveChatScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          selectedChatTitle ?? 'Message Title',
+                          selectedChatTitle ??
+                              AppLocalizations.of(context)!.message_title,
                           style: const TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
@@ -136,8 +141,9 @@ class LiveChatScreenState extends State<LiveChatScreen> {
                               }
                               final messages = snapshot.data!.docs;
                               if (messages.isEmpty) {
-                                return const Center(
-                                    child: Text('No messages in this chat'));
+                                return Center(
+                                    child: Text(AppLocalizations.of(context)!
+                                        .no_messages_in_this_chat));
                               }
                               return ListView.builder(
                                 reverse: true,
@@ -161,7 +167,8 @@ class LiveChatScreenState extends State<LiveChatScreen> {
                               child: TextField(
                                 controller: _messageController,
                                 decoration: InputDecoration(
-                                  hintText: 'Type a message...',
+                                  hintText: AppLocalizations.of(context)!
+                                      .type_a_message,
                                   fillColor: Colors.black12,
                                   filled: true,
                                   border: OutlineInputBorder(
