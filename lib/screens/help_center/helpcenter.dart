@@ -3,59 +3,52 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../models/faq.dart';
 import 'chat_help.dart';
 
 class HelpCenterScreen extends StatelessWidget {
-  HelpCenterScreen({
-    super.key,
-  });
+  const HelpCenterScreen({super.key});
 
   final String hotlineNumber = '07080841335';
-  final List<FAQItem> faqItems = [
-    FAQItem(
-      question: 'What types of products can I sell on the app?',
-      answer:
-          'You can sell a wide range of farming products and supplies, including farm produce, livestock, farming equipment, pesticides, herbicides, fertilizers, and other agricultural-related items.',
-    ),
-    FAQItem(
-      question: 'How do I create a seller account?',
-      answer:
-          "To create a seller account, go to the app's registration page and select the option to register as a seller. Fill in the required information, including your contact details and business information. Once your account is verified, you can start listing your products for sale.",
-    ),
-    FAQItem(
-      question: 'Is there a fee for selling on the app?',
-      answer:
-          'Yes, there may be a nominal fee or commission charged for each successful sale made through the app. The fee structure may vary depending on the type of product and the pricing plan chosen by the seller.',
-    ),
-    FAQItem(
-      question: 'How do I list my products for sale?',
-      answer:
-          "To list your products for sale, log in to your seller account and navigate to the dashboard. From there, you can select the option to add a new product listing. Fill in the details of your product, including its name, description, price, and images. Once your listing is complete, it will be visible to potential buyers on the app.",
-    ),
-    FAQItem(
-      question: 'What marketing tools are available to promote my products?',
-      answer:
-          'The app provides various marketing tools and features to help sellers promote their products, including featured listings, sponsored ads, and promotional campaigns. Sellers can also leverage social media integration and email marketing to reach a wider audience.',
-    ),
-    FAQItem(
-      question: 'How do I manage orders and fulfillments?',
-      answer:
-          'You can manage orders and fulfillments through the seller dashboard. When a customer places an order, you will receive a notification, and the order details will be visible in your dashboard. You can then process the order, pack the items, and arrange for shipping or pickup.',
-    ),
-    FAQItem(
-      question: 'What support is available for sellers?',
-      answer:
-          "The app provides dedicated seller support to assist with any questions or issues you may encounter. You can contact seller support through the app's help center or by reaching out to our customer service team via email or phone.",
-    ),
-    FAQItem(
-      question: 'Can I sell internationally through the app?',
-      answer:
-          'Currently, the app only supports selling within the country. International selling capabilities may be added in the future, depending on market demand and regulatory considerations.',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    // Get localized FAQ items
+    final List<FAQItem> faqItems = [
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_1,
+        answer: AppLocalizations.of(context)!.faq_answer_1,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_2,
+        answer: AppLocalizations.of(context)!.faq_answer_2,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_3,
+        answer: AppLocalizations.of(context)!.faq_answer_3,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_4,
+        answer: AppLocalizations.of(context)!.faq_answer_4,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_5,
+        answer: AppLocalizations.of(context)!.faq_answer_5,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_6,
+        answer: AppLocalizations.of(context)!.faq_answer_6,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_7,
+        answer: AppLocalizations.of(context)!.faq_answer_7,
+      ),
+      FAQItem(
+        question: AppLocalizations.of(context)!.faq_question_8,
+        answer: AppLocalizations.of(context)!.faq_answer_8,
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,9 +68,9 @@ class HelpCenterScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'FAQ',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            Text(
+              AppLocalizations.of(context)!.faq_title,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               textAlign: TextAlign.center,
             ),
             Expanded(
@@ -157,7 +150,7 @@ class HelpCenterScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                     child: Center(
                       child: Text(
-                        'Gona Market Place By Carlson Galad',
+                        AppLocalizations.of(context)!.app_title,
                         style: GoogleFonts.abel(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -170,17 +163,17 @@ class HelpCenterScreen extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Customer Care',
-                            style: TextStyle(fontSize: 18),
+                            AppLocalizations.of(context)!.customer_care,
+                            style: const TextStyle(fontSize: 18),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 7,
                           ),
-                          Icon(
+                          const Icon(
                             Icons.headset_mic,
                             color: Colors.redAccent,
                           )
@@ -192,8 +185,8 @@ class HelpCenterScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Hotline: $hotlineNumber\n'
-                              ' Email: surport@gona.com',
+                              '${AppLocalizations.of(context)!.hotline_number} $hotlineNumber\n'
+                              '${AppLocalizations.of(context)!.email_support} support@gona.com',
                               style: const TextStyle(
                                 fontSize: 15,
                               ),
@@ -231,14 +224,14 @@ class HelpCenterScreen extends StatelessWidget {
                   ));
             },
             backgroundColor: Colors.white,
-            tooltip: 'Live Chat',
+            tooltip: AppLocalizations.of(context)!.live_chat,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Live chat 24/7',
+                    AppLocalizations.of(context)!.live_chat_24_7,
                     style: GoogleFonts.abel(
                         fontSize: 17, fontWeight: FontWeight.bold),
                   ),
@@ -257,11 +250,4 @@ class HelpCenterScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class FAQItem {
-  final String question;
-  final String answer;
-
-  FAQItem({required this.question, required this.answer});
 }
