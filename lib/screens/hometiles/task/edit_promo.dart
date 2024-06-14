@@ -9,7 +9,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../methods/add_promo_image.dart';
-import 'conditional.dart';
+import '../../../models/conditional.dart';
 
 final imageHelper = ImageHelperPromo();
 
