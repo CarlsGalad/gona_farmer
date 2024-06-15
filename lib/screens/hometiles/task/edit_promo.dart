@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-
+// import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../methods/add_promo_image.dart';
 import '../../../models/conditional.dart';
 
@@ -46,6 +46,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
   void initState() {
     super.initState();
     _fetchPromoItemDetails();
+    _fetchCategories();
   }
 
   Future<void> _fetchPromoItemDetails() async {
@@ -69,7 +70,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
         itemPath = promoData['itemPath'];
       });
     } catch (error) {
-      print('Error fetching item details: $error');
+      rethrow;
     }
   }
 
@@ -102,18 +103,20 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
           .doc(widget.itemId)
           .update(updateData);
 
+      if (!mounted) return;
       // Show a success message or navigate back to the previous screen
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Item details updated successfully'),
+        SnackBar(
+          content: Text(
+              AppLocalizations.of(context)!.item_details_updated_successfully),
         ),
       );
     } catch (error) {
-      print('Error updating item details: $error');
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error updating item details: $error'),
+          content: Text(AppLocalizations.of(context)!
+              .error_updating_item_details_with_error(error)),
         ),
       );
     } finally {
@@ -132,7 +135,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Edit Discount Details',
+          AppLocalizations.of(context)!.edit_discount_details,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -197,12 +200,13 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                                             child: CircularProgressIndicator()),
                                       ); // Loading indicator for download URL
                                     } else if (urlSnapshot.hasError) {
-                                      return const SizedBox(
+                                      return SizedBox(
                                         width: 200,
                                         height: 100,
                                         child: Center(
                                           child: Text(
-                                              'Error fetching download URL!'),
+                                              AppLocalizations.of(context)!
+                                                  .error_fetching_download_url),
                                         ),
                                       ); // Error message for download URL
                                     } else {
@@ -222,11 +226,12 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                                   },
                                 );
                               } else {
-                                return const SizedBox(
+                                return SizedBox(
                                   width: 200,
                                   height: 100,
                                   child: Center(
-                                    child: Text('Invalid URL!'),
+                                    child: Text(AppLocalizations.of(context)!
+                                        .invalid_url),
                                   ),
                                 ); // Error message for invalid URL
                               }
@@ -270,8 +275,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                           } else {
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Error uploading image'),
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .error_uploading_image),
                               ),
                             );
                           }
@@ -279,9 +285,11 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                           setState(() {
                             uploadingImage = false;
                           }); // Handle error uploading image
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Error uploading image: $error'),
+                              content: Text(AppLocalizations.of(context)!
+                                  .error_uploading_image_with_error(error)),
                             ),
                           );
                         }
@@ -295,17 +303,18 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                         borderRadius: BorderRadius.circular(5)),
                     width: 150,
                     height: 50,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Change Image'),
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                                AppLocalizations.of(context)!.change_image),
                           ),
-                          Spacer(),
-                          Icon(
+                          const Spacer(),
+                          const Icon(
                             Icons.image,
                             color: Colors.green,
                           ),
@@ -320,9 +329,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               ),
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.name,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
@@ -334,9 +343,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               ),
               TextField(
                 controller: _priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Price',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.price,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
@@ -349,9 +358,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               ),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.description,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
@@ -364,9 +373,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               ),
               TextField(
                 controller: _farmingYearController,
-                decoration: const InputDecoration(
-                    labelText: 'Farming year',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.farming_year,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 maxLines: null,
                 keyboardType: TextInputType.number,
@@ -402,13 +411,14 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                       });
                     }
                   },
-                  decoration: const InputDecoration(
-                      labelText: 'Select Category',
-                      border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.select_category,
+                      border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)))),
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select a category';
+                      return AppLocalizations.of(context)!
+                          .please_select_category;
                     }
                     return null;
                   },
@@ -433,13 +443,15 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                       _selectedSubcategory = value;
                     });
                   },
-                  decoration: const InputDecoration(
-                      labelText: 'Select Subcategory',
-                      border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                      labelText:
+                          AppLocalizations.of(context)!.select_subcategory,
+                      border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)))),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please select a subcategory';
+                      return AppLocalizations.of(context)!
+                          .please_select_subcategory;
                     }
                     return null;
                   },
@@ -450,9 +462,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               ),
               TextField(
                 controller: _availQuantityController,
-                decoration: const InputDecoration(
-                    labelText: 'Available Quantity',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.available_quantity,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 maxLines: null,
                 keyboardType: TextInputType.number,
@@ -463,11 +475,11 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               DropdownButtonFormField<String>(
                 value: _selectedSellingMethod,
                 items: [
-                  'Per Pack',
-                  'Per Gallon',
-                  'Per Head',
-                  'Per Kilo',
-                  'Per Bag',
+                  AppLocalizations.of(context)!.per_pack,
+                  AppLocalizations.of(context)!.per_gallon,
+                  AppLocalizations.of(context)!.per_head,
+                  AppLocalizations.of(context)!.per_kilo,
+                  AppLocalizations.of(context)!.per_bag,
                 ].map((method) {
                   return DropdownMenuItem<String>(
                     value: method,
@@ -479,9 +491,9 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                     _selectedSellingMethod = value;
                   });
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Selling Method',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.selling_method,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
@@ -489,7 +501,8 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please select a selling method';
+                    return AppLocalizations.of(context)!
+                        .please_select_selling_method;
                   }
                   return null;
                 },
@@ -511,18 +524,18 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.green, borderRadius: BorderRadius.circular(15)),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Submit Changes',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.submit_changes,
+                    style: const TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 7,
                   ),
-                  Icon(
+                  const Icon(
                     Icons.save,
                     color: Colors.white,
                   ),
@@ -535,31 +548,30 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
     );
   }
 
-  Future<File?> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
-  }
+  // Future<File?> _pickImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(
+  //     source: ImageSource.gallery,
+  //   );
+  //   if (pickedFile != null) {
+  //     return File(pickedFile.path);
+  //   }
+  //   return null;
+  // }
 
-  Future<String?> _uploadImage(File imageFile) async {
-    try {
-      final firebaseStorageRef = FirebaseStorage.instance
-          .ref()
-          .child('promo_items')
-          .child(DateTime.now().millisecondsSinceEpoch.toString());
-      await firebaseStorageRef.putFile(imageFile);
-      final downloadURL = await firebaseStorageRef.getDownloadURL();
-      return downloadURL;
-    } catch (error) {
-      print('Error uploading image: $error');
-      return null;
-    }
-  }
+  // Future<String?> _uploadImage(File imageFile) async {
+  //   try {
+  //     final firebaseStorageRef = FirebaseStorage.instance
+  //         .ref()
+  //         .child('promo_items')
+  //         .child(DateTime.now().millisecondsSinceEpoch.toString());
+  //     await firebaseStorageRef.putFile(imageFile);
+  //     final downloadURL = await firebaseStorageRef.getDownloadURL();
+  //     return downloadURL;
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // }
 
   Future<void> _fetchCategories() async {
     // Fetch categories from Firestore
@@ -597,13 +609,13 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
         _selectedSubcategory = null;
       });
     } catch (error) {
-      print('Error fetching subcategories: $error');
+      rethrow;
     }
   }
 
   Widget _buildLoadingIndicator() {
-    return const Center(
-      child: Text('Loading...'),
+    return Center(
+      child: Text(AppLocalizations.of(context)!.loading),
     );
   }
 }

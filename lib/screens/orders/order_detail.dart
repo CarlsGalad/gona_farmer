@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ItemDetailPage extends StatelessWidget {
   final String orderId;
@@ -19,7 +20,7 @@ class ItemDetailPage extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Order Items',
+          AppLocalizations.of(context)!.ordered_items,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
       ),
@@ -32,7 +33,9 @@ class ItemDetailPage extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(
+                      child: Text(
+                          '${AppLocalizations.of(context)!.error} ${snapshot.error}'));
                 } else {
                   List<Map<String, dynamic>> orderItemsData =
                       snapshot.data ?? [];
@@ -54,7 +57,7 @@ class ItemDetailPage extends StatelessWidget {
                               style: const TextStyle(color: Colors.white),
                             ),
                             subtitle: Text(
-                              'Quantity: ${orderItem['quantity']}, Price: \$${orderItem['item_price']}',
+                              '${AppLocalizations.of(context)!.quantity} ${orderItem['quantity']}, Price: \$${orderItem['item_price']}',
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
@@ -85,18 +88,19 @@ class ItemDetailPage extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(15)),
-                child: const Center(
+                child: Center(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Prepare Items for Shipping',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.prepare_items_for_shipping,
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           fontSize: 15),
                     ),
-                    SizedBox(width: 7),
+                    const SizedBox(width: 7),
+                    // ignore: prefer_const_constructors
                     Icon(
                       Icons.send,
                       color: Colors.white,
@@ -152,10 +156,8 @@ class ItemDetailPage extends StatelessWidget {
 
       // Commit the batch update
       await batch.commit();
-
-      print('Items prepared for shipping and inventory updated successfully.');
     } catch (error) {
-      print('Error preparing items for shipping: $error');
+      rethrow;
     }
   }
 
@@ -183,7 +185,6 @@ class ItemDetailPage extends StatelessWidget {
         print('Product with ID: $itemId not found in inventory.');
       }
     } catch (error) {
-      print('Error decreasing inventory for product with ID: $itemId');
       rethrow;
     }
   }

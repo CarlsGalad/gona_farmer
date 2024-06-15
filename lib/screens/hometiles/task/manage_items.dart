@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'add_item.dart';
 import 'edit_items.dart';
 
@@ -27,18 +27,22 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
   Future<void> _deleteItem(String itemId) async {
     try {
       await FirebaseFirestore.instance.collection('Items').doc(itemId).delete();
+      if (!mounted) return;
       // Show success message or navigate to a different screen if needed
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Item deleted successfully'),
+        SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.item_deleted_successfully),
           backgroundColor: Colors.green,
         ),
       );
     } catch (error) {
+      if (!mounted) return;
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error deleting item: $error'),
+          content: Text('${AppLocalizations.of(context)!.error_deleting_item} '
+              ' $error'),
           backgroundColor: Colors.red,
         ),
       );
@@ -70,7 +74,7 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
         ),
         centerTitle: true,
         title: Text(
-          'Inventory Management',
+          AppLocalizations.of(context)!.inventory_management,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
       ),
@@ -79,7 +83,8 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text('${AppLocalizations.of(context)!.error}: '
+                  ' ${snapshot.error}'),
             );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -88,8 +93,9 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
             );
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No inventory items found.'),
+            return Center(
+              child:
+                  Text(AppLocalizations.of(context)!.no_inventory_items_found),
             );
           }
           // Display inventory items
@@ -122,7 +128,7 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                         subtitle: Row(
                           children: [
                             Text(
-                              'Price: ${itemData['price']}',
+                              ' ${AppLocalizations.of(context)!.price_with_column} ${itemData['price']}',
                               style: const TextStyle(color: Colors.white),
                             ),
                             const SizedBox(
@@ -141,15 +147,17 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: const Text('Confirm Delete'),
-                                  content: const Text(
-                                      'Are you sure you want to delete this item?'),
+                                  title: Text(AppLocalizations.of(context)!
+                                      .confirm_delete),
+                                  content: Text(AppLocalizations.of(context)!
+                                      .confirm_delete_question),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: const Text('Cancel'),
+                                      child: Text(
+                                          AppLocalizations.of(context)!.cancel),
                                     ),
                                     TextButton(
                                       onPressed: () {
@@ -157,7 +165,8 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                                         _deleteItem(document.id);
                                         Navigator.of(context).pop();
                                       },
-                                      child: const Text('Delete'),
+                                      child: Text(
+                                          AppLocalizations.of(context)!.delete),
                                     ),
                                   ],
                                 );

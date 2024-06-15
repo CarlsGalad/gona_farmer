@@ -161,6 +161,7 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                           _downloadURL = downloadURL;
                         });
                       } else {
+                       
                         // Handle error uploading image
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -172,7 +173,10 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                     } catch (error) {
                       setState(() {
                         uploadingImage = false;
-                      }); // Handle error uploading image
+                      });
+                      
+                       // Handle error uploading image
+                       
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!
@@ -524,6 +528,8 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             'id': newItemRef.id,
             'promotionFarm': _farmName,
           });
+
+          if (!mounted) return;
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content:

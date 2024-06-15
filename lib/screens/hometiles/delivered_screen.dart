@@ -63,11 +63,13 @@ class DeliveredOrdersScreenState extends State<DeliveredOrdersScreen> {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text(
+                  '${AppLocalizations.of(context)!.error} ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No delivered orders found.'),
+            return Center(
+              child:
+                  Text(AppLocalizations.of(context)!.no_delivered_orders_found),
             );
           } else {
             // Display delivered order items
@@ -87,7 +89,9 @@ class DeliveredOrdersScreenState extends State<DeliveredOrdersScreen> {
                         orderData['item_mame'] ?? '',
                         style: const TextStyle(color: Colors.white),
                       ),
-                      subtitle: Text('Price: ${orderData['item_price'] ?? ''}',
+                      subtitle: Text(
+                          '${AppLocalizations.of(context)!.price_with_column} '
+                          ' ${orderData['item_price'] ?? ''}',
                           style: const TextStyle(color: Colors.white)),
                       // Add more details as needed
                     ),

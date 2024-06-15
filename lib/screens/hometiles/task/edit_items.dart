@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../methods/add_item_image_methods.dart';
 import '../../../models/conditional.dart';
 
@@ -101,11 +101,11 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               'Items') // Make sure the collection name matches your Firestore structure
           .doc(widget.itemId)
           .update(updateData);
-
+      if (!mounted) return;
       // Show a success message or navigate back to the previous screen
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Item details updated successfully'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.item_added_successfully),
         ),
       );
 
@@ -113,10 +113,11 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
       Navigator.pop(context);
     } catch (error) {
       print('Error updating item details: $error');
+      if (!mounted) return;
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error updating item details: $error'),
+          content: Text(AppLocalizations.of(context)!.error_adding_item(error)),
         ),
       );
     } finally {
@@ -137,7 +138,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
           },
         ),
         title: Text(
-          'Edit Item Details',
+          AppLocalizations.of(context)!.edit_item_details,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
       ),
@@ -180,11 +181,12 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                                     Center(child: CircularProgressIndicator()),
                               ); // Loading indicator
                             } else if (snapshot.hasError) {
-                              return const SizedBox(
+                              return SizedBox(
                                 width: 200,
                                 height: 100,
                                 child: Center(
-                                  child: Text('Error!'),
+                                  child:
+                                      Text(AppLocalizations.of(context)!.error),
                                 ),
                               ); // Error message
                             } else {
@@ -201,12 +203,13 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                                             child: CircularProgressIndicator()),
                                       ); // Loading indicator for download URL
                                     } else if (urlSnapshot.hasError) {
-                                      return const SizedBox(
+                                      return SizedBox(
                                         width: 200,
                                         height: 100,
                                         child: Center(
                                           child: Text(
-                                              'Error fetching download URL!'),
+                                              AppLocalizations.of(context)!
+                                                  .error_fetching_download_url),
                                         ),
                                       ); // Error message for download URL
                                     } else {
@@ -226,11 +229,12 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                                   },
                                 );
                               } else {
-                                return const SizedBox(
+                                return SizedBox(
                                   width: 200,
                                   height: 100,
                                   child: Center(
-                                    child: Text('Invalid URL!'),
+                                    child: Text(AppLocalizations.of(context)!
+                                        .invalid_url),
                                   ),
                                 ); // Error message for invalid URL
                               }
@@ -272,11 +276,11 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                               _downloadURL = downloadURL;
                             });
                           } else {
-                    
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Error uploading image'),
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .error_uploading_image),
                               ),
                             );
                           }
@@ -286,7 +290,8 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                           }); // Handle error uploading image
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Error uploading image: $error'),
+                              content: Text(AppLocalizations.of(context)!
+                                  .error_uploading_image_with_error(error)),
                             ),
                           );
                         }
@@ -300,17 +305,18 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                         borderRadius: BorderRadius.circular(5)),
                     width: 150,
                     height: 50,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(left: 8.0),
-                            child: Text('Change Image'),
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                                AppLocalizations.of(context)!.change_image),
                           ),
-                          Spacer(),
-                          Icon(
+                          const Spacer(),
+                          const Icon(
                             Icons.image,
                             color: Colors.green,
                           ),
@@ -325,9 +331,9 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               ),
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.name,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
@@ -339,9 +345,9 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               ),
               TextField(
                 controller: _priceController,
-                decoration: const InputDecoration(
-                    labelText: 'Price',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.price,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 keyboardType: TextInputType.number,
               ),
@@ -350,9 +356,9 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               ),
               TextField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.description,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
@@ -362,9 +368,9 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               ),
               TextField(
                 controller: _farmingYearController,
-                decoration: const InputDecoration(
-                    labelText: 'Farming year',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.farming_year,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 maxLines: null,
                 keyboardType: TextInputType.number,
@@ -400,13 +406,14 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                       });
                     }
                   },
-                  decoration: const InputDecoration(
-                      labelText: 'Select Category',
-                      border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.select_category,
+                      border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)))),
                   validator: (value) {
                     if (value == null) {
-                      return 'Please select a category';
+                      return AppLocalizations.of(context)!
+                          .please_select_category;
                     }
                     return null;
                   },
@@ -431,13 +438,15 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                       _selectedSubcategory = value;
                     });
                   },
-                  decoration: const InputDecoration(
-                      labelText: 'Select Subcategory',
-                      border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                      labelText:
+                          AppLocalizations.of(context)!.select_subcategory,
+                      border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)))),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please select a subcategory';
+                      return AppLocalizations.of(context)!
+                          .please_select_subcategory;
                     }
                     return null;
                   },
@@ -448,9 +457,9 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               ),
               TextField(
                 controller: _availQuantityController,
-                decoration: const InputDecoration(
-                    labelText: 'Available Quantity',
-                    border: OutlineInputBorder(
+                decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.available_quantity,
+                    border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15)))),
                 maxLines: null,
                 keyboardType: TextInputType.number,
@@ -461,11 +470,11 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               DropdownButtonFormField<String>(
                 value: _selectedSellingMethod,
                 items: [
-                  'Per Pack',
-                  'Per Gallon',
-                  'Per Head',
-                  'Per Kilo',
-                  'Per Bag',
+                  AppLocalizations.of(context)!.per_pack,
+                  AppLocalizations.of(context)!.per_gallon,
+                  AppLocalizations.of(context)!.per_head,
+                  AppLocalizations.of(context)!.per_kilo,
+                  AppLocalizations.of(context)!.per_bag,
                 ].map((method) {
                   return DropdownMenuItem<String>(
                     value: method,
@@ -477,9 +486,9 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                     _selectedSellingMethod = value;
                   });
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Selling Method',
-                  border: OutlineInputBorder(
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.selling_method,
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     ),
@@ -487,7 +496,8 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please select a selling method';
+                    return AppLocalizations.of(context)!
+                        .please_select_selling_method;
                   }
                   return null;
                 },
@@ -509,18 +519,18 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.green, borderRadius: BorderRadius.circular(15)),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Submit Changes',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.submit_changes,
+                    style: const TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 7,
                   ),
-                  Icon(
+                  const Icon(
                     Icons.save,
                     color: Colors.white,
                   ),
@@ -569,7 +579,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
         _selectedSubcategory = null;
       });
     } catch (error) {
-      print('Error fetching subcategories: $error');
+      rethrow;
     }
   }
 

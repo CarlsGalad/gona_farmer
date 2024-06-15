@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gona_vendor/screens/hometiles/task/add_promo.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'edit_items.dart';
 
 class PromoManagementPage extends StatefulWidget {
@@ -27,13 +27,15 @@ class PromoManagementPageState extends State<PromoManagementPage> {
   Future<void> _deleteItem(String itemId) async {
     try {
       await FirebaseFirestore.instance
-          .collection('ptomotions')
+          .collection('promotions')
           .doc(itemId)
           .delete();
+      if (!mounted) return;
       // Show success message or navigate to a different screen if needed
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Item deleted successfully'),
+        SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.item_deleted_successfully),
           backgroundColor: Colors.green,
         ),
       );
@@ -41,7 +43,8 @@ class PromoManagementPageState extends State<PromoManagementPage> {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error deleting item: $error'),
+          content: Text('${AppLocalizations.of(context)!.error_deleting_item} '
+              ' $error'),
           backgroundColor: Colors.red,
         ),
       );
@@ -72,7 +75,7 @@ class PromoManagementPageState extends State<PromoManagementPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Promotions Management',
+          AppLocalizations.of(context)!.promotions_management,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
@@ -82,7 +85,8 @@ class PromoManagementPageState extends State<PromoManagementPage> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text(
+                  '${AppLocalizations.of(context)!.error} ${snapshot.error}'),
             );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -91,8 +95,9 @@ class PromoManagementPageState extends State<PromoManagementPage> {
             );
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text('No promotions items found.'),
+            return Center(
+              child:
+                  Text(AppLocalizations.of(context)!.no_promotions_items_found),
             );
           }
           // Display inventory items
@@ -115,7 +120,8 @@ class PromoManagementPageState extends State<PromoManagementPage> {
                   title: Text(itemData['name']),
                   subtitle: Row(
                     children: [
-                      Text('Price: ${itemData['price']}'),
+                      Text('${AppLocalizations.of(context)!.price_with_column} '
+                          ' ${itemData['price']}'),
                       const SizedBox(
                         width: 6,
                       ),
@@ -129,23 +135,25 @@ class PromoManagementPageState extends State<PromoManagementPage> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Confirm Delete'),
-                            content: const Text(
-                                'Are you sure you want to delete this item?'),
+                            title: Text(
+                                AppLocalizations.of(context)!.confirm_delete),
+                            content: Text(AppLocalizations.of(context)!
+                                .confirm_delete_question),
                             actions: [
                               TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Cancel'),
-                              ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                      AppLocalizations.of(context)!.cancel)),
                               TextButton(
                                 onPressed: () {
                                   // Perform delete operation
                                   _deleteItem(document.id);
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text('Delete'),
+                                child:
+                                    Text(AppLocalizations.of(context)!.delete),
                               ),
                             ],
                           );

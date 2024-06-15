@@ -14,7 +14,7 @@ class ProcessedOrdersScreen extends StatefulWidget {
 
 class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
   late String _farmId;
-  late Future<QuerySnapshot<Map<String, dynamic>>> _deliveredOrdersFuture;
+  late Future<QuerySnapshot<Map<String, dynamic>>> _processedOrdersFuture;
 
   @override
   void initState() {
@@ -29,8 +29,8 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
       setState(() {
         _farmId = userId;
       });
-      // Fetch delivered order items for the current user's farmId
-      _deliveredOrdersFuture = FirebaseFirestore.instance
+      // Fetch Processed order items for the current user's farmId
+      _processedOrdersFuture = FirebaseFirestore.instance
           .collection('orderItems')
           .where('farmId', isEqualTo: _farmId)
           .where('status', isEqualTo: 'prepared')
@@ -55,7 +55,7 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
         centerTitle: true,
       ),
       body: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        future: _deliveredOrdersFuture,
+        future: _processedOrdersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -63,11 +63,12 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'),
+              child: Text(
+                  '${AppLocalizations.of(context)!.error} ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
-              child: Text('No delivered orders found.'),
+              child: Text('No Processed orders found.'),
             );
           } else {
             // Display delivered order items

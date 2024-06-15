@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gona_vendor/screens/orders/order_detail.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart'; // Import intl package for date formatting
+import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OrderListScreen extends StatelessWidget {
   const OrderListScreen({super.key});
@@ -20,7 +21,7 @@ class OrderListScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Ordered Items',
+          AppLocalizations.of(context)!.ordered_items,
           style: GoogleFonts.aboreto(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -31,9 +32,11 @@ class OrderListScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+                child: Text('${AppLocalizations.of(context)!.error} '
+                    '${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No orders found'));
+            return const Center(child: Icon(Icons.notifications_none));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -58,22 +61,25 @@ class OrderListScreen extends StatelessWidget {
                         horizontal: 15.0, vertical: 4),
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Colors.green,
-                          border: Border.all(color: Colors.grey),),
+                        color: Colors.green,
+                        border: Border.all(color: Colors.grey),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Order ID: ${order['order_id']}',
+                              '${AppLocalizations.of(context)!.order_id} '
+                              ' ${order['order_id']}',
                               style: GoogleFonts.sansita(fontSize: 17),
                             ),
                           ),
                           Padding(
                             padding:
                                 const EdgeInsets.only(left: 8.0, bottom: 8),
-                            child: Text('Order Date: $formattedDate'),
+                            child: Text(
+                                '${AppLocalizations.of(context)!.order_date} $formattedDate'),
                           ), // Display formatted date
                         ],
                       ),
