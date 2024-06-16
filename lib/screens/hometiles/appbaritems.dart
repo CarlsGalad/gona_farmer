@@ -46,7 +46,7 @@ class DropdownMenuWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HelpCenterScreen(),
+                  builder: (context) => const HelpCenterScreen(),
                 ),
               ); // Navigate to Help Centre screen
               break;
@@ -54,8 +54,7 @@ class DropdownMenuWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const SettingsPrivacyPage(
-                     ),
+                  builder: (context) => const SettingsPrivacyPage(),
                 ),
               ); // Navigate to Help Centre screen
               break;
@@ -63,7 +62,7 @@ class DropdownMenuWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HelpCenterScreen(),
+                  builder: (context) => const HelpCenterScreen(),
                 ),
               );
               // Navigate to About screen
@@ -75,7 +74,7 @@ class DropdownMenuWidget extends StatelessWidget {
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
             value: 'Profile',
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -91,7 +90,7 @@ class DropdownMenuWidget extends StatelessWidget {
           ),
           PopupMenuItem<String>(
             value: 'Notifications',
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -107,7 +106,7 @@ class DropdownMenuWidget extends StatelessWidget {
           ),
           PopupMenuItem<String>(
             value: 'Settings',
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -123,7 +122,7 @@ class DropdownMenuWidget extends StatelessWidget {
           ),
           PopupMenuItem<String>(
             value: 'About',
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.6,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
