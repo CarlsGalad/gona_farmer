@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -161,7 +163,6 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                           _downloadURL = downloadURL;
                         });
                       } else {
-                       
                         // Handle error uploading image
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -174,9 +175,9 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                       setState(() {
                         uploadingImage = false;
                       });
-                      
-                       // Handle error uploading image
-                       
+
+                      // Handle error uploading image
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(AppLocalizations.of(context)!
