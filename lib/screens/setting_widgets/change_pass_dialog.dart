@@ -34,7 +34,6 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
           const SnackBar(content: Text('Password changed successfully')),
         );
       } catch (error) {
-        print('Error changing password: $error');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to change password')),
         );
