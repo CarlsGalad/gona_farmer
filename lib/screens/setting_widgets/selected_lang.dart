@@ -32,7 +32,7 @@ class SelectLang extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return LanguageDialog();
+          return const LanguageDialog();
         },
       );
     }
