@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -112,7 +114,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
       // Navigate back to the previous screen
       Navigator.pop(context);
     } catch (error) {
-      print('Error updating item details: $error');
+    
       if (!mounted) return;
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
@@ -276,6 +278,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                               _downloadURL = downloadURL;
                             });
                           } else {
+                            
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
