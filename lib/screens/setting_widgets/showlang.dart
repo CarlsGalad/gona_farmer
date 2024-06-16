@@ -6,9 +6,9 @@ class LanguageDialog extends StatelessWidget {
   const LanguageDialog({super.key});
 
   Future<void> _changeLanguage(BuildContext context, Language language) async {
-    Locale _locale = Locale(language.languagCode);
+    Locale locale = Locale(language.languagCode);
     GonaVendor.setLocale(
-        context, _locale); // Ensure you have this method to update the locale
+        context, locale); 
     Navigator.of(context).pop(); // Close the dialog
   }
 
