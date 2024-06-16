@@ -78,25 +78,25 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
               switch (day) {
                 case 0:
                   return Text(AppLocalizations.of(context)!.mon,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 case 1:
                   return Text(AppLocalizations.of(context)!.tue,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 case 2:
                   return Text(AppLocalizations.of(context)!.wed,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 case 3:
                   return Text(AppLocalizations.of(context)!.thu,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 case 4:
                   return Text(AppLocalizations.of(context)!.fri,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 case 5:
                   return Text(AppLocalizations.of(context)!.sat,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 case 6:
                   return Text(AppLocalizations.of(context)!.sun,
-                      style: TextStyle(color: Colors.black));
+                      style: const TextStyle(color: Colors.black));
                 default:
                   return const SizedBox();
               }
