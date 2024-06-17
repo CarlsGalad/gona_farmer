@@ -9,7 +9,7 @@ class SelectLang extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _getLanguageName(Locale locale) {
+    String getLanguageName(Locale locale) {
       switch (locale.languageCode) {
         case 'en':
           return 'English';
@@ -28,7 +28,7 @@ class SelectLang extends StatelessWidget {
       }
     }
 
-    void _showLocaleDialog(BuildContext context) {
+    void showLocaleDialog(BuildContext context) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -84,7 +84,7 @@ class SelectLang extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                  child: Text(_getLanguageName(currentLocale)),
+                  child: Text(getLanguageName(currentLocale)),
                 ),
               ],
             ),
@@ -93,7 +93,7 @@ class SelectLang extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: GestureDetector(
                 onTap: () {
-                  _showLocaleDialog(context);
+                  showLocaleDialog(context);
                 },
                 child: const Icon(
                   CupertinoIcons.forward,
