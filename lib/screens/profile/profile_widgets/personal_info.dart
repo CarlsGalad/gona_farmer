@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../models/usermodel.dart';
 
 class PersonalInfo extends StatefulWidget {
@@ -21,7 +22,8 @@ class _PersonalInfoState extends State<PersonalInfo> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError || snapshot.data == null) {
-          return const Center(child: Text('Error: User not found'));
+          return Center(
+              child: Text(AppLocalizations.of(context)!.error_user_not_found));
         }
         var user = snapshot.data!;
         return StreamBuilder<DocumentSnapshot>(
@@ -37,7 +39,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (!snapshot.hasData || !snapshot.data!.exists) {
-              return const Center(child: Text('User data not found.'));
+              return Center(
+                  child:
+                      Text(AppLocalizations.of(context)!.user_data_not_found));
             }
             var farmData = snapshot.data!.data() as Map<String, dynamic>;
             var farmProfile = FarmProfile(
@@ -77,11 +81,11 @@ class _PersonalInfoState extends State<PersonalInfo> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //person info Text
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Personal Info',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.personal_info,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
                             fontSize: 20),
@@ -113,7 +117,7 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Email',
+                                          AppLocalizations.of(context)!.email,
                                           style: GoogleFonts.sansita(
                                             fontSize: 17,
                                           ),
@@ -140,7 +144,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('Phone Number',
+                                        Text(
+                                            AppLocalizations.of(context)!
+                                                .phone_number,
                                             style: GoogleFonts.sansita(
                                               fontSize: 17,
                                             )),
@@ -166,7 +172,9 @@ class _PersonalInfoState extends State<PersonalInfo> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('Farm owner',
+                                        Text(
+                                            AppLocalizations.of(context)!
+                                                .farm_owner,
                                             style: GoogleFonts.sansita(
                                               fontSize: 17,
                                             )),
