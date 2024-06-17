@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../models/usermodel.dart';
 
 class AddressInfo extends StatefulWidget {
@@ -23,7 +23,8 @@ class _AddressInfoState extends State<AddressInfo> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError || snapshot.data == null) {
-          return const Center(child: Text('Error: User not found'));
+          return Center(
+              child: Text(AppLocalizations.of(context)!.error_user_not_found));
         }
         var user = snapshot.data!;
         return StreamBuilder<DocumentSnapshot>(
@@ -39,7 +40,9 @@ class _AddressInfoState extends State<AddressInfo> {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (!snapshot.hasData || !snapshot.data!.exists) {
-              return const Center(child: Text('User data not found.'));
+              return Center(
+                  child:
+                      Text(AppLocalizations.of(context)!.user_data_not_found));
             }
             var farmData = snapshot.data!.data() as Map<String, dynamic>;
             var farmProfile = FarmProfile(
@@ -79,11 +82,11 @@ class _AddressInfoState extends State<AddressInfo> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Address',
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.address,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
                             fontSize: 20),
@@ -107,7 +110,7 @@ class _AddressInfoState extends State<AddressInfo> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Address',
+                                    AppLocalizations.of(context)!.address,
                                     style: GoogleFonts.sansita(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
@@ -142,7 +145,7 @@ class _AddressInfoState extends State<AddressInfo> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'City',
+                                    AppLocalizations.of(context)!.city,
                                     style: GoogleFonts.sansita(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
@@ -178,7 +181,7 @@ class _AddressInfoState extends State<AddressInfo> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'State',
+                                    AppLocalizations.of(context)!.state,
                                     style: GoogleFonts.sansita(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
