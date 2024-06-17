@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'change_pass_dialog.dart';
-
-
 
 class ChangePass extends StatelessWidget {
   const ChangePass({super.key});
@@ -47,7 +45,7 @@ class ChangePass extends StatelessWidget {
                 ),
               ),
               Text(
-                'Change Password',
+                AppLocalizations.of(context)!.change_password,
                 style: GoogleFonts.sansita(fontSize: 18),
               ),
               const Spacer(),
