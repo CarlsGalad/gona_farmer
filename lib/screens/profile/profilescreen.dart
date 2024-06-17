@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/usermodel.dart';
+import 'profile_widgets/account_info.dart';
 import 'profile_widgets/address_info.dart';
 
 import 'profile_widgets/personal_info.dart';
@@ -172,7 +173,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   const PersonalInfo(),
 
                                   const AddressInfo(),
-
+                                  AccountDetailWidget(
+                                    farmId:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.all(15.0),
                                     child: Container(
