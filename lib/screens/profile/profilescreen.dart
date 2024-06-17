@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -72,7 +72,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           icon: const Icon(CupertinoIcons.back),
         ),
         title: Text(
-          'Profile',
+          AppLocalizations.of(context)!.profile,
           style: GoogleFonts.aboreto(fontSize: 25),
         ),
         centerTitle: true,
@@ -87,8 +87,10 @@ class ProfileScreenState extends State<ProfileScreen> {
             return Center(
                 child: Column(
               children: [
-                const Text('Error: User not found'),
-                GestureDetector(onTap: () {}, child: const Text('Sign In'))
+                Text(AppLocalizations.of(context)!.userNotFound),
+                GestureDetector(
+                    onTap: () {},
+                    child: Text(AppLocalizations.of(context)!.signIn))
               ],
             ));
           }
@@ -106,7 +108,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
               if (!snapshot.hasData || !snapshot.data!.exists) {
-                return const Center(child: Text('User data not found.'));
+                return Center(
+                    child: Text(
+                        AppLocalizations.of(context)!.user_data_not_found));
               }
               var farmData = snapshot.data!.data() as Map<String, dynamic>;
               var farmProfile = FarmProfile(
