@@ -6,10 +6,10 @@ class UserCityWidget extends StatefulWidget {
   const UserCityWidget({super.key});
 
   @override
-  _UserCityWidgetState createState() => _UserCityWidgetState();
+  UserCityWidgetState createState() => UserCityWidgetState();
 }
 
-class _UserCityWidgetState extends State<UserCityWidget> {
+class UserCityWidgetState extends State<UserCityWidget> {
   String _userCity = '';
 
   @override
