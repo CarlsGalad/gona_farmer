@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -16,8 +17,8 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
   final _confirmNewPasswordController = TextEditingController();
 
   Future<void> _changePassword(BuildContext context) async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final User? user = _auth.currentUser;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
 
     if (user != null) {
       try {
@@ -28,14 +29,18 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
           ),
         );
         await user.updatePassword(_newPasswordController.text);
-
+        if (!context.mounted) return;
         Navigator.of(context).pop(); // Close the dialog
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password changed successfully')),
+          SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.password_changed_successfully)),
         );
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to change password')),
+          SnackBar(
+              content:
+                  Text(AppLocalizations.of(context)!.password_change_failed)),
         );
       }
     }
@@ -46,7 +51,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
     return AlertDialog(
       title: Center(
         child: Text(
-          'Change Password',
+          AppLocalizations.of(context)!.change_password,
           style: GoogleFonts.bebasNeue(),
         ),
       ),
@@ -59,7 +64,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
               TextFormField(
                 controller: _oldPasswordController,
                 decoration: InputDecoration(
-                    labelText: 'Old Password',
+                    labelText: AppLocalizations.of(context)!.old_password,
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(15),
@@ -69,7 +74,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your old password';
+                    return AppLocalizations.of(context)!.enter_old_password;
                   }
                   return null;
                 },
@@ -80,7 +85,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
               TextFormField(
                 controller: _newPasswordController,
                 decoration: InputDecoration(
-                    labelText: 'New Password',
+                    labelText: AppLocalizations.of(context)!.new_password,
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(15),
@@ -90,7 +95,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a new password';
+                    return AppLocalizations.of(context)!.new_password;
                   }
                   return null;
                 },
@@ -101,7 +106,8 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
               TextFormField(
                 controller: _confirmNewPasswordController,
                 decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
+                    labelText:
+                        AppLocalizations.of(context)!.confirm_new_password,
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(15),
@@ -111,10 +117,11 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please confirm your new password';
+                    return AppLocalizations.of(context)!
+                        .confirm_new_password_instruction;
                   }
                   if (value != _newPasswordController.text) {
-                    return 'Passwords do not match';
+                    return AppLocalizations.of(context)!.passwords_do_not_match;
                   }
                   return null;
                 },
@@ -128,7 +135,7 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         const Spacer(),
         InkWell(
@@ -144,12 +151,12 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 )),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Change Password',
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                AppLocalizations.of(context)!.change_password,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
           ),
