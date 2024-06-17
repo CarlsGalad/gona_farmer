@@ -86,6 +86,11 @@ class _SingUpPageState extends State<SingUpPage> {
           'farmName': farmNameController.text,
           'userId': user.uid,
           'createdAt': Timestamp.now(),
+          'accountDetails': {
+            'accountName': '',
+            'bankName': '',
+            'accountNumber': '',
+          }
         });
         if (!mounted) return;
         // Pop the progress indicator
