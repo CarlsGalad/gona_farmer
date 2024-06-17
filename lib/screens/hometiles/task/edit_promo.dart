@@ -273,6 +273,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                               _downloadURL = downloadURL;
                             });
                           } else {
+                            if (!context.mounted) return;
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -285,7 +286,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                           setState(() {
                             uploadingImage = false;
                           }); // Handle error uploading image
-
+                          if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(AppLocalizations.of(context)!
