@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AccountDetailWidget extends StatefulWidget {
   final String farmId;
@@ -46,9 +47,12 @@ class AccountDetailWidgetState extends State<AccountDetailWidget> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return const Center(child: Text('Error fetching account details '));
+          return Center(
+              child:
+                  Text(AppLocalizations.of(context)!.error_fetching_details));
         } else if (!snapshot.hasData || snapshot.data == null) {
-          return const Center(child: Text('No account details found'));
+          return Center(
+              child: Text(AppLocalizations.of(context)!.no_details_found));
         }
 
         var accountDetails = snapshot.data!;
@@ -79,8 +83,8 @@ class AccountDetailWidgetState extends State<AccountDetailWidget> {
                 Icons.payment,
                 color: Colors.green,
               ),
-              title: Text(
-                  accountDetails['accountName'] ?? 'No account details found'),
+              title: Text(accountDetails['accountName'] ??
+                  AppLocalizations.of(context)!.no_details_found),
               subtitle: Text(accountDetails['bankName'] ?? ''),
               trailing: IconButton(
                 icon: const Icon(CupertinoIcons.forward),
@@ -159,15 +163,18 @@ class UpdateAccountDialogState extends State<UpdateAccountDialog> {
         children: [
           TextField(
             controller: _accountNameController,
-            decoration: const InputDecoration(labelText: 'Account Name'),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.account_name),
           ),
           TextField(
             controller: _bankNameController,
-            decoration: const InputDecoration(labelText: 'Bank Name'),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.bank_name),
           ),
           TextField(
             controller: _accountNumberController,
-            decoration: const InputDecoration(labelText: 'Account Number'),
+            decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.account_number),
             keyboardType: TextInputType.number,
           ),
         ],
@@ -177,11 +184,11 @@ class UpdateAccountDialogState extends State<UpdateAccountDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: _updateAccountDetails,
-          child: const Text('Update'),
+          child: Text(AppLocalizations.of(context)!.update),
         ),
       ],
     );
