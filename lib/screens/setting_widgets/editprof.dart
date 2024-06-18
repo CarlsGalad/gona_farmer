@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'edit_profile_screen.dart';
@@ -46,11 +46,12 @@ class EditProfile extends StatelessWidget {
                 ),
               ),
               Text(
-                'Edit Profile',
+                AppLocalizations.of(context)!.edit_profile,
                 style: GoogleFonts.sansita(fontSize: 18),
               ),
               const Spacer(),
-              GestureDetector(
+              InkWell(
+                  splashColor: Colors.grey,
                   onTap: () {
                     Navigator.push(
                       context,
