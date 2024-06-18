@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotificationSetting extends StatefulWidget {
   const NotificationSetting({super.key});
@@ -70,7 +71,7 @@ class NotificationSettingState extends State<NotificationSetting> {
         return AlertDialog(
           title: Center(
             child: Text(
-              'Get notified about',
+              AppLocalizations.of(context)!.get_notified_about,
               style: GoogleFonts.bebasNeue(),
             ),
           ),
@@ -81,7 +82,7 @@ class NotificationSettingState extends State<NotificationSetting> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Close'),
+              child: Text(AppLocalizations.of(context)!.close),
             ),
           ],
         );
@@ -126,7 +127,7 @@ class NotificationSettingState extends State<NotificationSetting> {
                 ),
               ),
               Text(
-                'Manage Notifications',
+                AppLocalizations.of(context)!.manage_notifications,
                 style: GoogleFonts.sansita(fontSize: 18),
               ),
               const Spacer(),
