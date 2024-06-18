@@ -19,6 +19,7 @@ class DropdownMenuWidget extends StatelessWidget {
         icon: const Icon(
           Icons.menu,
           size: 40,
+          color: Colors.white,
         ),
         onSelected: (String result) {
           // Handle menu item selection here
