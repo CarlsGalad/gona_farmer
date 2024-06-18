@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ServiceTerms extends StatelessWidget {
   const ServiceTerms({super.key});
@@ -45,7 +46,7 @@ class ServiceTerms extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              Text('Terms of Service',
+              Text(AppLocalizations.of(context)!.terms_of_service,
                   style: GoogleFonts.sansita(fontSize: 18)),
               const Spacer(),
               GestureDetector(
@@ -55,66 +56,59 @@ class ServiceTerms extends StatelessWidget {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text(
-                          'Terms of Service',
+                          AppLocalizations.of(context)!.terms_of_service,
                           style: GoogleFonts.bebasNeue(fontSize: 20),
                         ),
                         content: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                '''Welcome to the Gona Vendor Marketplace! By using our app, you agree to comply with and be bound by the following terms and conditions''',
+                              Text(
+                                AppLocalizations.of(context)!.intro,
                                 textAlign: TextAlign.justify,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  '1. Purchases and Deliveries',
+                                  AppLocalizations.of(context)!.section1_title,
                                   style: GoogleFonts.sansita(fontSize: 15),
                                 ),
                               ),
-                              const Text(
-                                '''- Consumers place orders through our platform, and payment is processed immediately. We operate an escrow system where funds are held until delivery confirmation.
-- Vendors are responsible for timely and accurate order fulfillment, ensuring that products are delivered in good condition and meet customer expectations.
-- Payment is released to vendors upon successful delivery confirmation by the customer. We accept various payment methods, including credit/debit cards, mobile wallets, and cash on delivery where available.
-- Vendors must adhere to the return and refund policy outlined in our terms of service, providing refunds or exchanges as required.''',
+                              Text(
+                                AppLocalizations.of(context)!.section2_content,
                                 textAlign: TextAlign.justify,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  '2. Vendor Responsibilities',
+                                  AppLocalizations.of(context)!.section2_title,
                                   style: GoogleFonts.sansita(fontSize: 15),
                                 ),
                               ),
-                              const Text(
-                                '''- Vendors are responsible for accurately listing their products and ensuring that product descriptions are detailed and informative.
-- It's important to promptly update product availability and inventory to prevent overselling or stockouts.
-- Vendors should respond promptly to customer inquiries and feedback to maintain a positive reputation and customer satisfaction.''',
+                              Text(
+                                AppLocalizations.of(context)!.section2_content,
                                 textAlign: TextAlign.justify,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  '''3. Liability and Dispute Resolution''',
+                                  AppLocalizations.of(context)!.section3_title,
                                   style: GoogleFonts.sansita(fontSize: 15),
                                 ),
                               ),
-                              const Text(
-                                '''- While we strive to ensure the quality and accuracy of product listings, we cannot guarantee the availability or quality of products offered by vendors.
-- Disputes between vendors and customers should be resolved amicably and in accordance with our dispute resolution process outlined in our terms of service.
-- Our platform reserves the right to suspend or terminate vendor accounts that violate our terms of service or engage in fraudulent or deceptive practices.''',
+                              Text(
+                                AppLocalizations.of(context)!.section3_content,
                                 textAlign: TextAlign.justify,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Contact Us',
+                                  AppLocalizations.of(context)!.contact_us,
                                   style: GoogleFonts.sansita(fontSize: 15),
                                 ),
                               ),
-                              const Text(
-                                '''If you have any questions or concerns about our terms of service, please contact us at support@gona.com.''',
+                              Text(
+                                AppLocalizations.of(context)!.contact_detailst,
                                 textAlign: TextAlign.justify,
                               )
                             ],
@@ -125,7 +119,7 @@ class ServiceTerms extends StatelessWidget {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: const Text('Close'),
+                            child: Text(AppLocalizations.of(context)!.close),
                           ),
                         ],
                       );
