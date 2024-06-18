@@ -58,7 +58,9 @@ class _HomepageState extends State<Homepage> {
     String? uid = user?.uid;
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 39, 78, 40),
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 39, 78, 40),
         leading: Padding(
           padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
           child: ClipRRect(
@@ -109,14 +111,15 @@ class _HomepageState extends State<Homepage> {
         ),
         title: Text(
           AppLocalizations.of(context)!.appName,
-          style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 30),
+          style: GoogleFonts.abel(
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
         ),
         actions: const [DropdownMenuWidget()],
         centerTitle: true,
       ),
       body: _isConnected
           ? Container(
-              color: Colors.white,
+              color: const Color.fromARGB(255, 39, 78, 40),
               child: SingleChildScrollView(
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -124,8 +127,16 @@ class _HomepageState extends State<Homepage> {
                       border: Border.all(color: Colors.grey),
                       color: Colors.white,
                       borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30))),
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                      gradient: const SweepGradient(colors: [
+                        Color.fromARGB(255, 222, 245, 222),
+                        Color.fromARGB(255, 224, 240, 87),
+                        Color.fromARGB(255, 222, 245, 222),
+                        Color.fromARGB(255, 101, 128, 57),
+                        Color.fromARGB(255, 222, 245, 222),
+                      ])),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -190,9 +201,19 @@ class _HomepageState extends State<Homepage> {
                           width: MediaQuery.of(context).size.width - 30,
                           height: 270,
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 137, 247, 143),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                              color: const Color.fromARGB(255, 137, 247, 143),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 39, 78, 40),
+                              ),
+                              gradient: const LinearGradient(colors: [
+                                Color.fromARGB(255, 39, 78, 40),
+                                Color.fromARGB(255, 101, 128, 57),
+                                Color.fromARGB(255, 224, 240, 87),
+                                Color.fromARGB(255, 224, 240, 87),
+                                Color.fromARGB(255, 101, 128, 57),
+                                Color.fromARGB(255, 39, 78, 40),
+                              ])),
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 left: 15, right: 15, top: 30),
