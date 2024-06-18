@@ -87,9 +87,17 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
           width: 240,
           height: 120,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 137, 247, 143),
-            borderRadius: BorderRadius.circular(10),
-          ),
+              color: const Color.fromARGB(255, 137, 247, 143),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: const Color.fromARGB(255, 39, 78, 40),
+              ),
+              gradient: const LinearGradient(colors: [
+                Color.fromARGB(255, 39, 78, 40),
+                Color.fromARGB(255, 101, 128, 57),
+                Color.fromARGB(255, 224, 240, 87),
+                Color.fromARGB(255, 222, 245, 222),
+              ])),
           child: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: Column(
