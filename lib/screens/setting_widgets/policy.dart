@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Policy extends StatelessWidget {
   const Policy({super.key});
@@ -43,7 +44,8 @@ class Policy extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              Text('Privacy Policy', style: GoogleFonts.sansita(fontSize: 18)),
+              Text(AppLocalizations.of(context)!.privacy_policy,
+                  style: GoogleFonts.sansita(fontSize: 18)),
               const Spacer(),
               GestureDetector(
                   onTap: () {
@@ -53,51 +55,53 @@ class Policy extends StatelessWidget {
                         return AlertDialog(
                           title: Center(
                               child: Text(
-                            'Privacy Policy',
+                            AppLocalizations.of(context)!.privacy_policy,
                             style: GoogleFonts.bebasNeue(),
                           )),
                           content: SingleChildScrollView(
                             child: Column(
                               children: [
-                                const Text(
-                                    '''This privacy policy governs the use of Gona Vendor Marketplace'''),
+                                Text(
+                                    AppLocalizations.of(context)!.policy_intro),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    'Information we collect',
+                                    AppLocalizations.of(context)!
+                                        .info_we_collect,
                                     style: GoogleFonts.sansita(fontSize: 20),
                                   ),
                                 ),
-                                const Text(
-                                    '''We collect information you provide to us directly, such as your business name, contact person's name, email address, and business details when you register for a vendor account.'''),
+                                Text(AppLocalizations.of(context)!
+                                    .collect_details),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    'How We Use Your Information',
+                                    AppLocalizations.of(context)!
+                                        .how_we_use_info,
                                     style: GoogleFonts.sansita(fontSize: 20),
                                   ),
                                 ),
-                                const Text(
-                                    '''We use the information we collect to facilitate your use of our services, to communicate with you regarding your vendor account and activities, and to personalize your experience on the platform.'''),
+                                Text(
+                                    ''' ${AppLocalizations.of(context)!.use_details}'''),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    'Sharing of Information',
+                                    AppLocalizations.of(context)!.sharing_info,
                                     style: GoogleFonts.sansita(fontSize: 20),
                                   ),
                                 ),
-                                const Text(
-                                    '''We do not share your personal or business information with third parties unless necessary for the operation of our services or as required by law.'''),
+                                Text(
+                                    ''''${AppLocalizations.of(context)!.sharing_details}'''),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    'Contact Us',
+                                    AppLocalizations.of(context)!.contact_us,
                                     style: GoogleFonts.sansita(fontSize: 20),
                                   ),
                                 ),
-                                const Text(
+                                Text(
                                   ''
-                                  'If you have any questions or concerns about our privacy policy, please contact us at yelsgink@gmail.com.'
+                                  '${AppLocalizations.of(context)!.contact_details}'
                                   '',
                                 ),
                               ],
@@ -108,7 +112,7 @@ class Policy extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: const Text('Close'),
+                              child: Text(AppLocalizations.of(context)!.close),
                             ),
                           ],
                         );
