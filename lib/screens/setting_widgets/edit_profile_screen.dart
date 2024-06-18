@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -37,6 +37,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   void _submitChanges() {
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      //TODO: add custom email action handler
       // Update update email address
       user.verifyBeforeUpdateEmail(_emailController.text);
 
@@ -47,12 +48,13 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         'email': _emailController.text,
         'moblle': _mobileController,
         'address': _addressController,
-        // Add phone number if needed
       });
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
+        SnackBar(
+            content: Text(
+                AppLocalizations.of(context)!.profile_updated_successfully)),
       );
     }
   }
@@ -67,7 +69,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
             },
             icon: const Icon(CupertinoIcons.back)),
         title: Text(
-          'Edit Profile',
+          AppLocalizations.of(context)!.update_profile,
           style: GoogleFonts.aboreto(fontSize: 25),
         ),
         centerTitle: true,
@@ -106,7 +108,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     child: TextFormField(
                       controller: _farmNameController,
                       decoration: InputDecoration(
-                        labelText: 'Farm Name',
+                        labelText: AppLocalizations.of(context)!.farm_name,
                         labelStyle: GoogleFonts.sansita(),
                       ),
                     ),
@@ -142,7 +144,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     child: TextFormField(
                       controller: _ownersNameController,
                       decoration: InputDecoration(
-                        labelText: 'Farm owner',
+                        labelText: AppLocalizations.of(context)!.farm_owner,
                         labelStyle: GoogleFonts.sansita(),
                       ),
                     ),
@@ -178,7 +180,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     child: TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
-                        labelText: 'Email Address',
+                        labelText: AppLocalizations.of(context)!.email_address,
                         labelStyle: GoogleFonts.sansita(),
                       ),
                       keyboardType: TextInputType.emailAddress,
@@ -214,7 +216,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     child: TextFormField(
                       controller: _mobileController,
                       decoration: InputDecoration(
-                        labelText: 'Phone Number',
+                        labelText: AppLocalizations.of(context)!.email_address,
                         labelStyle: GoogleFonts.sansita(),
                       ),
                       keyboardType: TextInputType.phone,
@@ -250,7 +252,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     child: TextFormField(
                       controller: _addressController,
                       decoration: InputDecoration(
-                        labelText: 'Address',
+                        labelText: AppLocalizations.of(context)!.address,
                         labelStyle: GoogleFonts.sansita(),
                       ),
                       keyboardType: TextInputType.phone,
@@ -295,7 +297,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Update Profile',
+                              AppLocalizations.of(context)!.update_profile,
                               style: GoogleFonts.sansita(color: Colors.white),
                             ),
                             const SizedBox(
