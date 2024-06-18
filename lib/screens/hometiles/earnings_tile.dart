@@ -19,9 +19,20 @@ class TotalEarningsDisplay extends StatelessWidget {
           width: MediaQuery.of(context).size.width - 30,
           height: 150,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 137, 247, 143),
-            borderRadius: BorderRadius.circular(10),
-          ),
+              color: const Color.fromARGB(255, 137, 247, 143),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: const Color.fromARGB(255, 224, 240, 87),
+              ),
+              gradient: const LinearGradient(colors: [
+                Color.fromARGB(255, 39, 78, 40),
+                Color.fromARGB(255, 101, 128, 57),
+                // Color.fromARGB(255, 224, 240, 87),
+                // Color.fromARGB(255, 222, 245, 222),
+                // Color.fromARGB(255, 224, 240, 87),
+                Color.fromARGB(255, 101, 128, 57),
+                Color.fromARGB(255, 39, 78, 40),
+              ])),
           child: FutureBuilder<DocumentSnapshot>(
             future: _fetchTotalEarnings(),
             builder: (context, snapshot) {
@@ -47,7 +58,10 @@ class TotalEarningsDisplay extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 30.0),
                         child: Text(
                           '${AppLocalizations.of(context)!.currency_symbol}$formattedTotalEarnings',
-                          style: const TextStyle(fontSize: 45),
+                          style: const TextStyle(
+                            fontSize: 45,
+                            color: Color.fromARGB(255, 224, 240, 87),
+                          ),
                           textAlign: TextAlign.start,
                         ),
                       ),
