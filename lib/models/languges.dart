@@ -10,9 +10,9 @@ class Language {
       Language(1, "English", "en"),
       Language(2, "Hausa", "ha"),
       Language(3, "Arabic", "ar"),
-      Language(4, "Yoruba", "yo"), 
+      Language(4, "Yoruba", "yo"),
       Language(5, "Igbo", "ig"),
-      Language(6, "French", "fr"),
+      Language(6, "Français", "fr"),
     ];
   }
 }
