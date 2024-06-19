@@ -20,7 +20,6 @@ class OrderCountTileState extends State<OrderCountTile> {
     _ordersFuture = _fetchOrderCount();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>?>(
@@ -29,7 +28,9 @@ class OrderCountTileState extends State<OrderCountTile> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError || snapshot.data == null) {
-          return  Center(child: Text(AppLocalizations.of(context)!.order_count_tile_error));
+          return Center(
+              child:
+                  Text(AppLocalizations.of(context)!.order_count_tile_error));
         } else {
           int ordersCount = snapshot.data!.length;
           return GestureDetector(
@@ -45,9 +46,16 @@ class OrderCountTileState extends State<OrderCountTile> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 137, 247, 143),
-                borderRadius: BorderRadius.circular(10),
-              ),
+                  color: const Color.fromARGB(255, 137, 247, 143),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color.fromARGB(255, 39, 78, 40),
+                  ),
+                  gradient: const LinearGradient(colors: [
+                    Color.fromARGB(255, 39, 78, 40),
+                    Color.fromARGB(255, 101, 128, 57),
+                    Color.fromARGB(255, 224, 240, 87),
+                  ])),
               child: Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Column(
@@ -62,7 +70,7 @@ class OrderCountTileState extends State<OrderCountTile> {
                         textAlign: TextAlign.start,
                       ),
                     ),
-                   Text(
+                    Text(
                       AppLocalizations.of(context)!.orders_label,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     )
