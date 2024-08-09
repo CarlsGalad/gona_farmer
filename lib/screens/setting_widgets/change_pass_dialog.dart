@@ -33,12 +33,14 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
         Navigator.of(context).pop(); // Close the dialog
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+              backgroundColor: Colors.green.shade100,
               content: Text(
                   AppLocalizations.of(context)!.password_changed_successfully)),
         );
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+              backgroundColor: Colors.red,
               content:
                   Text(AppLocalizations.of(context)!.password_change_failed)),
         );
@@ -49,10 +51,11 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       title: Center(
         child: Text(
           AppLocalizations.of(context)!.change_password,
-          style: GoogleFonts.bebasNeue(),
+          style: GoogleFonts.sansita(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),
       content: Form(
@@ -61,70 +64,83 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
-                controller: _oldPasswordController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.old_password,
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                    ),
-                    labelStyle: GoogleFonts.sansita()),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.enter_old_password;
-                  }
-                  return null;
-                },
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _oldPasswordController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.old_password,
+                        border: InputBorder.none,
+                        labelStyle: GoogleFonts.sansita()),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.enter_old_password;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 8,
               ),
-              TextFormField(
-                controller: _newPasswordController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.new_password,
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                    ),
-                    labelStyle: GoogleFonts.sansita()),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.new_password;
-                  }
-                  return null;
-                },
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _newPasswordController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.new_password,
+                        border: InputBorder.none,
+                        labelStyle: GoogleFonts.sansita()),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.new_password;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 8,
               ),
-              TextFormField(
-                controller: _confirmNewPasswordController,
-                decoration: InputDecoration(
-                    labelText:
-                        AppLocalizations.of(context)!.confirm_new_password,
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                    ),
-                    labelStyle: GoogleFonts.sansita()),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!
-                        .confirm_new_password_instruction;
-                  }
-                  if (value != _newPasswordController.text) {
-                    return AppLocalizations.of(context)!.passwords_do_not_match;
-                  }
-                  return null;
-                },
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _confirmNewPasswordController,
+                    decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.confirm_new_password,
+                        border: InputBorder.none,
+                        labelStyle: GoogleFonts.sansita()),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!
+                            .confirm_new_password_instruction;
+                      }
+                      if (value != _newPasswordController.text) {
+                        return AppLocalizations.of(context)!
+                            .passwords_do_not_match;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
               ),
             ],
           ),
@@ -135,29 +151,27 @@ class ChangePasswordDialogState extends State<ChangePasswordDialog> {
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: const TextStyle(color: Colors.black),
+          ),
         ),
         const Spacer(),
-        InkWell(
-          onTap: () {
+        MaterialButton(
+          color: Colors.green.shade100,
+          elevation: 18,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          onPressed: () {
             if (_formKey.currentState!.validate()) {
               _changePassword(context);
             }
           },
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                color: Colors.green,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                )),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                AppLocalizations.of(context)!.change_password,
-                style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold),
-              ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              AppLocalizations.of(context)!.change_password,
+              style: const TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold),
             ),
           ),
         )
