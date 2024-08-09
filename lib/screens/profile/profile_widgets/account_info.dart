@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AccountDetailWidget extends StatefulWidget {
   final String farmId;
@@ -45,7 +46,9 @@ class AccountDetailWidgetState extends State<AccountDetailWidget> {
       future: _accountDetails,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.green.shade100, size: 50));
         } else if (snapshot.hasError) {
           return Center(
               child:
@@ -56,42 +59,36 @@ class AccountDetailWidgetState extends State<AccountDetailWidget> {
         }
 
         var accountDetails = snapshot.data!;
-        return Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                    color: Color.fromRGBO(184, 181, 181, 1),
-                    offset: Offset(2, 2),
-                    blurRadius: 4.0,
-                    spreadRadius: 1.0,
-                    blurStyle: BlurStyle.normal),
-                BoxShadow(
-                  color: Color.fromRGBO(255, 255, 255, 0.9),
-                  offset: Offset(-0, -1),
-                  blurRadius: 5.0,
-                  spreadRadius: 1.0,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 20.0),
+              child: Text(
+                'Account Details',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 20),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8),
+              child: ListTile(
+                leading: Icon(
+                  Icons.payment,
+                  color: Colors.green.shade300,
                 ),
-              ],
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.green),
-            ),
-            child: ListTile(
-              leading: const Icon(
-                Icons.payment,
-                color: Colors.green,
-              ),
-              title: Text(accountDetails['accountName'] ??
-                  AppLocalizations.of(context)!.no_details_found),
-              subtitle: Text(accountDetails['bankName'] ?? ''),
-              trailing: IconButton(
-                icon: const Icon(CupertinoIcons.forward),
-                onPressed: () => _showUpdateDialog(accountDetails),
+                title: Text(accountDetails['accountName'] ??
+                    AppLocalizations.of(context)!.no_details_found),
+                subtitle: Text(accountDetails['bankName'] ?? ''),
+                trailing: IconButton(
+                  icon: const Icon(CupertinoIcons.forward),
+                  onPressed: () => _showUpdateDialog(accountDetails),
+                ),
               ),
             ),
-          ),
+          ],
         );
       },
     );
@@ -186,7 +183,10 @@ class UpdateAccountDialogState extends State<UpdateAccountDialog> {
           },
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        TextButton(
+        MaterialButton(
+          color: Colors.green.shade100,
+          elevation: 18,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           onPressed: _updateAccountDetails,
           child: Text(AppLocalizations.of(context)!.update),
         ),
