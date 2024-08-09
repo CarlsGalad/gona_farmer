@@ -204,7 +204,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                                         ],
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: Colors.green),
+                                        border: Border.all(
+                                            color: Colors.green.shade300),
                                       ),
                                       child: GestureDetector(
                                         onTap: () {
@@ -243,8 +244,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 width: 135,
                                 decoration: BoxDecoration(
                                   color: Colors.grey[200],
-                                  border:
-                                      Border.all(color: Colors.green, width: 2),
+                                  border: Border.all(
+                                      color: Colors.green.shade300, width: 2),
                                   borderRadius: BorderRadius.circular(90),
                                 ),
                                 child: ClipRRect(
@@ -268,7 +269,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                               onTap: () => _uploadImage(user),
                               child: CircleAvatar(
                                 radius: 18,
-                                backgroundColor: Colors.green,
+                                backgroundColor: Colors.green.shade300,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     border: Border.all(
