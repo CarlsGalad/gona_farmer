@@ -82,34 +82,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(184, 181, 181, 1),
-                        offset: Offset(5, 2),
-                        blurRadius: 6.0,
-                        spreadRadius: 3.0,
-                        blurStyle: BlurStyle.normal,
-                      ),
-                      BoxShadow(
-                        color: Color.fromRGBO(255, 255, 255, 0.9),
-                        offset: Offset(-6, -2),
-                        blurRadius: 5.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _farmNameController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.farm_name,
-                        labelStyle: GoogleFonts.sansita(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.grey.shade200,
+                    elevation: 2,
+                    shape: const BeveledRectangleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _farmNameController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: AppLocalizations.of(context)!.farm_name,
+                          labelStyle: GoogleFonts.sansita(),
+                        ),
                       ),
                     ),
                   ),
@@ -118,34 +105,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                   height: 10,
                 ),
                 // Last name
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(184, 181, 181, 1),
-                        offset: Offset(5, 2),
-                        blurRadius: 6.0,
-                        spreadRadius: 3.0,
-                        blurStyle: BlurStyle.normal,
-                      ),
-                      BoxShadow(
-                        color: Color.fromRGBO(255, 255, 255, 0.9),
-                        offset: Offset(-6, -2),
-                        blurRadius: 5.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _ownersNameController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.farm_owner,
-                        labelStyle: GoogleFonts.sansita(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.grey.shade200,
+                    elevation: 2,
+                    shape: const BeveledRectangleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _ownersNameController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: AppLocalizations.of(context)!.farm_owner,
+                          labelStyle: GoogleFonts.sansita(),
+                        ),
                       ),
                     ),
                   ),
@@ -154,108 +128,72 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                   height: 10,
                 ),
                 //edit email field
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(184, 181, 181, 1),
-                        offset: Offset(5, 2),
-                        blurRadius: 6.0,
-                        spreadRadius: 3.0,
-                        blurStyle: BlurStyle.normal,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.grey.shade200,
+                    elevation: 2,
+                    shape: const BeveledRectangleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText:
+                              AppLocalizations.of(context)!.email_address,
+                          labelStyle: GoogleFonts.sansita(),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
                       ),
-                      BoxShadow(
-                        color: Color.fromRGBO(255, 255, 255, 0.9),
-                        offset: Offset(-6, -2),
-                        blurRadius: 5.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email_address,
-                        labelStyle: GoogleFonts.sansita(),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(184, 181, 181, 1),
-                        offset: Offset(5, 2),
-                        blurRadius: 6.0,
-                        spreadRadius: 3.0,
-                        blurStyle: BlurStyle.normal,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.grey.shade200,
+                    elevation: 2,
+                    shape: const BeveledRectangleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _mobileController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixText: '+234',
+                          hintText: '80 62 XXX XXX',
+                          labelText: AppLocalizations.of(context)!.phone_hint,
+                          labelStyle: GoogleFonts.sansita(),
+                        ),
+                        keyboardType: TextInputType.phone,
                       ),
-                      BoxShadow(
-                        color: Color.fromRGBO(255, 255, 255, 0.9),
-                        offset: Offset(-6, -2),
-                        blurRadius: 5.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _mobileController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.email_address,
-                        labelStyle: GoogleFonts.sansita(),
-                      ),
-                      keyboardType: TextInputType.phone,
                     ),
                   ),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(184, 181, 181, 1),
-                        offset: Offset(5, 2),
-                        blurRadius: 6.0,
-                        spreadRadius: 3.0,
-                        blurStyle: BlurStyle.normal,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.grey.shade200,
+                    elevation: 2,
+                    shape: const BeveledRectangleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        controller: _addressController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: AppLocalizations.of(context)!.address,
+                          labelStyle: GoogleFonts.sansita(),
+                        ),
+                        keyboardType: TextInputType.streetAddress,
                       ),
-                      BoxShadow(
-                        color: Color.fromRGBO(255, 255, 255, 0.9),
-                        offset: Offset(-6, -2),
-                        blurRadius: 5.0,
-                        spreadRadius: 3.0,
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _addressController,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.address,
-                        labelStyle: GoogleFonts.sansita(),
-                      ),
-                      keyboardType: TextInputType.phone,
                     ),
                   ),
                 ),
@@ -264,53 +202,28 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                   height: 35,
                 ),
 
-                GestureDetector(
-                  onTap: () {
+                MaterialButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  color: Colors.green.shade100,
+                  elevation: 18,
+                  onPressed: () {
                     _submitChanges();
                   },
-                  child: Center(
-                    child: Container(
-                      width: 200,
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(184, 181, 181, 1),
-                            offset: Offset(5, 2),
-                            blurRadius: 6.0,
-                            spreadRadius: 3.0,
-                            blurStyle: BlurStyle.normal,
-                          ),
-                          BoxShadow(
-                            color: Color.fromRGBO(255, 255, 255, 0.9),
-                            offset: Offset(-6, -2),
-                            blurRadius: 5.0,
-                            spreadRadius: 3.0,
-                          ),
-                        ],
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.update_profile,
+                        style: GoogleFonts.sansita(fontSize: 18),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.update_profile,
-                              style: GoogleFonts.sansita(color: Colors.white),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            const Icon(
-                              Icons.save,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
+                      const SizedBox(
+                        width: 10,
                       ),
-                    ),
+                      const Icon(
+                        Icons.save,
+                      )
+                    ],
                   ),
                 )
               ],
