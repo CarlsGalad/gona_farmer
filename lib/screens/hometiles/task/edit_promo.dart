@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../methods/add_promo_image.dart';
 import '../../../models/conditional.dart';
 
@@ -149,7 +150,8 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               Center(
                 child: Container(
                   decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
+                      border: Border.all(color: Colors.grey.shade200),
+                      color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(10)),
                   height: 200,
                   width: 200,
@@ -193,11 +195,15 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                                   builder: (context, urlSnapshot) {
                                     if (urlSnapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return const SizedBox(
+                                      return SizedBox(
                                         width: 200,
                                         height: 100,
                                         child: Center(
-                                            child: CircularProgressIndicator()),
+                                            child: LoadingAnimationWidget
+                                                .staggeredDotsWave(
+                                                    color:
+                                                        Colors.green.shade100,
+                                                    size: 50)),
                                       ); // Loading indicator for download URL
                                     } else if (urlSnapshot.hasError) {
                                       return SizedBox(
@@ -245,8 +251,13 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               ),
               // Pick image button for the image to be picked
               Center(
-                child: GestureDetector(
-                  onTap: () async {
+                child: MaterialButton(
+                  color: Colors.green.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  minWidth: 100,
+                  elevation: 18,
+                  onPressed: () async {
                     final files = await imageHelper.pickImage();
                     if (files.isNotEmpty) {
                       final croppedFile = await imageHelper.crop(
@@ -277,6 +288,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
+                                backgroundColor: Colors.green.shade100,
                                 content: Text(AppLocalizations.of(context)!
                                     .error_uploading_image),
                               ),
@@ -297,31 +309,19 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                       }
                     }
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5)),
-                    width: 150,
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                                AppLocalizations.of(context)!.change_image),
-                          ),
-                          const Spacer(),
-                          const Icon(
-                            Icons.image,
-                            color: Colors.green,
-                          ),
-                        ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(AppLocalizations.of(context)!.change_image),
                       ),
-                    ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.image,
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -515,16 +515,19 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.grey[300],
+      bottomNavigationBar: SizedBox(
         height: 70,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          child: GestureDetector(
-            onTap: _updatePromoDetails,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.green, borderRadius: BorderRadius.circular(15)),
+          child: MaterialButton(
+            color: Colors.green.shade100,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            minWidth: 100,
+            elevation: 18,
+            onPressed: _updatePromoDetails,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -548,31 +551,6 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
       ),
     );
   }
-
-  // Future<File?> _pickImage() async {
-  //   final picker = ImagePicker();
-  //   final pickedFile = await picker.pickImage(
-  //     source: ImageSource.gallery,
-  //   );
-  //   if (pickedFile != null) {
-  //     return File(pickedFile.path);
-  //   }
-  //   return null;
-  // }
-
-  // Future<String?> _uploadImage(File imageFile) async {
-  //   try {
-  //     final firebaseStorageRef = FirebaseStorage.instance
-  //         .ref()
-  //         .child('promo_items')
-  //         .child(DateTime.now().millisecondsSinceEpoch.toString());
-  //     await firebaseStorageRef.putFile(imageFile);
-  //     final downloadURL = await firebaseStorageRef.getDownloadURL();
-  //     return downloadURL;
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // }
 
   Future<void> _fetchCategories() async {
     // Fetch categories from Firestore
