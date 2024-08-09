@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ItemDetailPage extends StatelessWidget {
   final String orderId;
@@ -31,7 +32,9 @@ class ItemDetailPage extends StatelessWidget {
               future: _fetchOrderItemsData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                          size: 50, color: Colors.green.shade100));
                 } else if (snapshot.hasError) {
                   return Center(
                       child: Text(
@@ -46,19 +49,23 @@ class ItemDetailPage extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15.0, vertical: 4),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            border: Border.all(color: Colors.grey),
-                          ),
+                        child: Card(
+                          elevation: 5,
+                          color: Colors.green.shade100,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
                           child: ListTile(
                             title: Text(
                               orderItem['item_name'] ?? 'Item Name',
-                              style: const TextStyle(color: Colors.white),
+                              style: GoogleFonts.abel(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
                               '${AppLocalizations.of(context)!.quantity} ${orderItem['quantity']}, Price: \$${orderItem['item_price']}',
-                              style: const TextStyle(color: Colors.white),
+                              style: GoogleFonts.abel(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
