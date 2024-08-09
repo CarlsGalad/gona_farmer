@@ -6,6 +6,7 @@ import 'package:gona_vendor/screens/orders/order_detail.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class OrderListScreen extends StatelessWidget {
   const OrderListScreen({super.key});
@@ -30,13 +31,26 @@ class OrderListScreen extends StatelessWidget {
         future: _fetchOrders(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  size: 50, color: Colors.green.shade100),
+            );
           } else if (snapshot.hasError) {
             return Center(
                 child: Text('${AppLocalizations.of(context)!.error} '
                     '${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Icon(Icons.notifications_none));
+            return const Center(
+                child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.notifications_none,
+                  color: Colors.grey,
+                ),
+                Text('No new Orders'),
+              ],
+            ));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -59,11 +73,11 @@ class OrderListScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15.0, vertical: 4),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        border: Border.all(color: Colors.grey),
-                      ),
+                    child: Card(
+                      elevation: 5,
+                      color: Colors.green.shade100,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -72,14 +86,21 @@ class OrderListScreen extends StatelessWidget {
                             child: Text(
                               '${AppLocalizations.of(context)!.order_id} '
                               ' ${order['order_id']}',
-                              style: GoogleFonts.sansita(fontSize: 17),
+                              style: GoogleFonts.sansita(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                           Padding(
                             padding:
                                 const EdgeInsets.only(left: 8.0, bottom: 8),
                             child: Text(
-                                '${AppLocalizations.of(context)!.order_date} $formattedDate'),
+                              '${AppLocalizations.of(context)!.order_date} $formattedDate',
+                              style: GoogleFonts.abel(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ), // Display formatted date
                         ],
                       ),
