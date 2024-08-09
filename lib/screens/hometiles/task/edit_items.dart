@@ -114,7 +114,6 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
       // Navigate back to the previous screen
       Navigator.pop(context);
     } catch (error) {
-    
       if (!mounted) return;
       // Show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
@@ -250,8 +249,13 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
               ),
               // Pick image button for the image to be picked
               Center(
-                child: GestureDetector(
-                  onTap: () async {
+                child: MaterialButton(
+                  color: Colors.green.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  minWidth: 100,
+                  elevation: 18,
+                  onPressed: () async {
                     final files = await imageHelper.pickImage();
                     if (files.isNotEmpty) {
                       final croppedFile = await imageHelper.crop(
@@ -278,7 +282,6 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                               _downloadURL = downloadURL;
                             });
                           } else {
-                            
                             // Handle error uploading image
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -301,31 +304,19 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                       }
                     }
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5)),
-                    width: 150,
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                                AppLocalizations.of(context)!.change_image),
-                          ),
-                          const Spacer(),
-                          const Icon(
-                            Icons.image,
-                            color: Colors.green,
-                          ),
-                        ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(AppLocalizations.of(context)!.change_image),
                       ),
-                    ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.image,
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -333,6 +324,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                 height: 15,
               ),
               TextField(
+                maxLength: 50,
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.name,
@@ -358,6 +350,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                 height: 15,
               ),
               TextField(
+                maxLength: 500,
                 controller: _descriptionController,
                 decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.description,
@@ -370,6 +363,7 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
                 height: 15,
               ),
               TextField(
+                maxLength: 4,
                 controller: _farmingYearController,
                 decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.farming_year,
@@ -512,33 +506,35 @@ class EditItemDetailsPageState extends State<EditItemDetailsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.grey[300],
+      bottomNavigationBar: SizedBox(
         height: 70,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          child: GestureDetector(
-            onTap: _updateItemDetails,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.green, borderRadius: BorderRadius.circular(15)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.submit_changes,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  const Icon(
-                    Icons.save,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
+          child: MaterialButton(
+            color: Colors.green.shade100,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            minWidth: 100,
+            elevation: 18,
+            onPressed: _updateItemDetails,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.submit_changes,
+                  style: GoogleFonts.abel(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18),
+                ),
+                const SizedBox(
+                  width: 7,
+                ),
+                const Icon(
+                  Icons.save,
+                  color: Colors.black,
+                ),
+              ],
             ),
           ),
         ),
