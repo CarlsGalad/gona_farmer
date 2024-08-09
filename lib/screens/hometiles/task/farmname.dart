@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FarmNameWidget extends StatefulWidget {
   const FarmNameWidget({super.key});
@@ -41,7 +42,7 @@ class FarmNameWidgetState extends State<FarmNameWidget> {
       padding: const EdgeInsets.only(bottom: 10.0, top: 15),
       child: Text(
         _farmName, // Display farm name or loading message
-        style: const TextStyle(
+        style: GoogleFonts.abel(
           fontWeight: FontWeight.bold,
           fontSize: 17,
         ),
