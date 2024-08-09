@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:gona_vendor/screens/analytics/monthlist.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'linechart.dart';
 import 'weekline.dart';
@@ -45,69 +46,93 @@ class AnalyticsScreenState extends State<AnalyticsScreen> {
           padding: const EdgeInsets.all(20.0),
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
               children: [
-                Text(
-                  AppLocalizations.of(context)!.top_ten_sold_items,
-                  style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                FutureBuilder<List<Map<String, dynamic>>>(
-                  future: _fetchTopTenSoldItems(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else {
-                      final List<Map<String, dynamic>>? topTenItems =
-                          snapshot.data;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: topTenItems!.map((item) {
-                          return Text(
-                            '${item['itemName']} - ${item['quantity']} sold',
-                            style: const TextStyle(fontSize: 16),
-                          );
-                        }).toList(),
-                      );
-                    }
-                  },
+                SizedBox(
+                  height: 250,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.top_ten_sold_items,
+                        style: GoogleFonts.abel(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ),
+                      const SizedBox(height: 20),
+                      FutureBuilder<List<Map<String, dynamic>>>(
+                        future: _fetchTopTenSoldItems(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                                child: LoadingAnimationWidget.staggeredDotsWave(
+                                    color: Colors.green.shade100, size: 50));
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else {
+                            final List<Map<String, dynamic>>? topTenItems =
+                                snapshot.data;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: topTenItems!.map((
+                                item,
+                              ) {
+                                return Text(
+                                  '${item['itemName']} - ${item['quantity']} sold',
+                                  style: GoogleFonts.abel(fontSize: 16),
+                                );
+                              }).toList(),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Text(
                   AppLocalizations.of(context)!.performance_chart,
-                  style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.abel(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
                 ),
                 const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: toggleChart,
-                  child: Container(
-                    padding: const EdgeInsets.all(12.0),
-                    alignment: Alignment.center,
-                    color: Colors.blue,
-                    child: Text(
-                      showLastSixMonths
-                          ? AppLocalizations.of(context)!.show_this_week
-                          : AppLocalizations.of(context)!.show_last_six_months,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                SizedBox(
+                  height: 350,
+                  child: Column(
+                    children: [
+                      MaterialButton(
+                        color: Colors.green.shade100,
+                        elevation: 18,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        onPressed: toggleChart,
+                        child: Text(
+                          showLastSixMonths
+                              ? AppLocalizations.of(context)!.show_this_week
+                              : AppLocalizations.of(context)!
+                                  .show_last_six_months,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: showLastSixMonths
+                            ? const LineChartWidget()
+                            : const WeekLineChartWidget(),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: showLastSixMonths
-                      ? const LineChartWidget()
-                      : const WeekLineChartWidget(),
                 ),
                 const SizedBox(height: 15),
                 Text(
                   AppLocalizations.of(context)!.earnings_last_six_months,
-                  style: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.abel(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 400,
