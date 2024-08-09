@@ -39,7 +39,8 @@ class NotificationSettingState extends State<NotificationSetting> {
           return ListTile(
             title: Text(
               notification,
-              style: GoogleFonts.sansita(),
+              style:
+                  GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             trailing: Switch(
               activeColor: Colors.green,
@@ -69,10 +70,12 @@ class NotificationSettingState extends State<NotificationSetting> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           title: Center(
             child: Text(
               AppLocalizations.of(context)!.get_notified_about,
-              style: GoogleFonts.bebasNeue(),
+              style: GoogleFonts.sansita(
+                  fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
           content:
@@ -82,7 +85,10 @@ class NotificationSettingState extends State<NotificationSetting> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(AppLocalizations.of(context)!.close),
+              child: Text(
+                AppLocalizations.of(context)!.close,
+                style: const TextStyle(color: Colors.black),
+              ),
             ),
           ],
         );
@@ -94,58 +100,36 @@ class NotificationSettingState extends State<NotificationSetting> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromRGBO(184, 181, 181, 1),
-              offset: Offset(5, 2),
-              blurRadius: 6.0,
-              spreadRadius: 3.0,
-              blurStyle: BlurStyle.normal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.notifications,
+                color: Colors.green,
+              ),
             ),
-            BoxShadow(
-              color: Color.fromRGBO(255, 255, 255, 0.9),
-              offset: Offset(-6, -2),
-              blurRadius: 5.0,
-              spreadRadius: 3.0,
+            Text(
+              AppLocalizations.of(context)!.manage_notifications,
+              style: GoogleFonts.sansita(fontSize: 18),
             ),
-          ],
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.green),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              const Padding(
+            const Spacer(),
+            GestureDetector(
+              onTap: () {
+                _showNotificationSettingsDialog(context);
+              },
+              child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(
-                  Icons.notifications,
-                  color: Colors.green,
+                  Icons.arrow_forward_ios,
+                  color: Colors.black,
+                  size: 20,
                 ),
               ),
-              Text(
-                AppLocalizations.of(context)!.manage_notifications,
-                style: GoogleFonts.sansita(fontSize: 18),
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () {
-                  _showNotificationSettingsDialog(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.green,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
