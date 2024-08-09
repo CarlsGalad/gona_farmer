@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class UserCityWidget extends StatefulWidget {
   const UserCityWidget({super.key});
@@ -43,7 +44,7 @@ class UserCityWidgetState extends State<UserCityWidget> {
       padding: const EdgeInsets.only(bottom: 10.0, top: 15),
       child: Text(
         _userCity,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+        style: GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 17),
       ),
     );
   }
