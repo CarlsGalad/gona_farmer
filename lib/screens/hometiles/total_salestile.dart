@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -41,42 +42,47 @@ class TotalSalesTileState extends State<TotalSalesTile> {
   @override
   Widget build(BuildContext context) {
     final numberFormatter = NumberFormat('#,###');
-    return Expanded(
-      child: Container(
-        width: 120,
-        height: 120,
-        decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 137, 247, 143),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: const Color.fromARGB(255, 39, 78, 40),
-            ),
-            gradient: const LinearGradient(colors: [
-              Color.fromARGB(255, 222, 245, 222),
-              Color.fromARGB(255, 224, 240, 87),
-              Color.fromARGB(255, 101, 128, 57),
-              Color.fromARGB(255, 39, 78, 40),
-            ])),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  numberFormatter
-                      .format(_totalSales), // Display the total sales count
-                  style: const TextStyle(fontSize: 45),
-                  textAlign: TextAlign.start,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 3.5,
+      child: Card(
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.timer,
+                      color: Colors.lime,
+                    ),
+                  ),
                 ),
-              ),
-              Text(
-                AppLocalizations.of(context)!.total_sales_label,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    numberFormatter
+                        .format(_totalSales), // Display the total sales count
+                    style: GoogleFonts.aboreto(fontSize: 45),
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.total_sales_label,
+                  style: GoogleFonts.abel(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+              ],
+            ),
           ),
         ),
       ),
