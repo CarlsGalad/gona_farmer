@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gona_vendor/screens/hometiles/delivered_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DeliveredCountTile extends StatefulWidget {
   const DeliveredCountTile({super.key});
@@ -61,6 +62,7 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
     String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       // Calculate total earnings from order items
+      // ignore: avoid_types_as_parameter_names
       int totalEarnings = orderItems.fold(0, (sum, orderItem) {
         //The price field is cast to an integer before adding
         return sum + (orderItem['price'] as int? ?? 0);
@@ -75,7 +77,10 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      width: MediaQuery.of(context).size.width -
+          MediaQuery.of(context).size.width / 3.5 -
+          40,
       child: GestureDetector(
         onTap: () => Navigator.push(
           context,
@@ -83,40 +88,47 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
             builder: (context) => const DeliveredOrdersScreen(),
           ),
         ),
-        child: Container(
-          width: 240,
-          height: 120,
-          decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 137, 247, 143),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: const Color.fromARGB(255, 39, 78, 40),
-              ),
-              gradient: const LinearGradient(colors: [
-                Color.fromARGB(255, 39, 78, 40),
-                Color.fromARGB(255, 101, 128, 57),
-                Color.fromARGB(255, 224, 240, 87),
-                Color.fromARGB(255, 222, 245, 222),
-              ])),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                    _deliveredCount.toString(), // Display the delivered count
-                    style: const TextStyle(fontSize: 45),
-                    textAlign: TextAlign.start,
+        child: Card(
+          color: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: SizedBox(
+            width: 240,
+            height: 120,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.handshake,
+                          color: Colors.green,
+                        ),
+                      )),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      _deliveredCount.toString(), // Display the delivered count
+                      style: GoogleFonts.aboreto(fontSize: 45),
+                      textAlign: TextAlign.start,
+                    ),
                   ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.delivered_label,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                )
-              ],
+                  Text(
+                    AppLocalizations.of(context)!.delivered_label,
+                    style: GoogleFonts.abel(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
