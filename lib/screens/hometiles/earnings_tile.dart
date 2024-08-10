@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
+import 'package:gona_vendor/models/helper/currency_formatter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../analytics/analytics.dart';
 
 class TotalEarningsDisplay extends StatelessWidget {
@@ -15,68 +19,86 @@ class TotalEarningsDisplay extends StatelessWidget {
           MaterialPageRoute(builder: (context) => const AnalyticsScreen())),
       child: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 15),
-        child: Container(
-          width: MediaQuery.of(context).size.width - 30,
-          height: 150,
-          decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 137, 247, 143),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: const Color.fromARGB(255, 224, 240, 87),
-              ),
-              gradient: const LinearGradient(colors: [
-                Color.fromARGB(255, 39, 78, 40),
-                Color.fromARGB(255, 101, 128, 57),
-                // Color.fromARGB(255, 224, 240, 87),
-                // Color.fromARGB(255, 222, 245, 222),
-                // Color.fromARGB(255, 224, 240, 87),
-                Color.fromARGB(255, 101, 128, 57),
-                Color.fromARGB(255, 39, 78, 40),
-              ])),
-          child: FutureBuilder<DocumentSnapshot>(
-            future: _fetchTotalEarnings(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Text(
-                        '${AppLocalizations.of(context)!.total_earnings_error} '
-                        ' ${snapshot.error}'));
-              } else {
-                int totalEarnings = snapshot.data?['totalEarnings'] ??
-                    0; // Retrieve total earnings
-                String formattedTotalEarnings =
-                    _formatNumber(totalEarnings); // Format total earnings
-                return Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30.0),
-                        child: Text(
-                          '${AppLocalizations.of(context)!.currency_symbol}$formattedTotalEarnings',
-                          style: const TextStyle(
-                            fontSize: 45,
-                            color: Color.fromARGB(255, 224, 240, 87),
+        child: Card(
+          color: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width - 30,
+            height: 150,
+            child: FutureBuilder<DocumentSnapshot>(
+              future: _fetchTotalEarnings(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                          size: 30, color: Colors.green.shade100));
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Text(
+                          '${AppLocalizations.of(context)!.total_earnings_error} '
+                          ' ${snapshot.error}'));
+                } else {
+                  int totalEarnings = snapshot.data?['totalEarnings'] ??
+                      0; // Retrieve total earnings
+                  // Format total earnings
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.monetization_on,
+                              color: Colors.blue,
+                            ),
                           ),
-                          textAlign: TextAlign.start,
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 25.0),
-                        child: Text(
-                          AppLocalizations.of(context)!.total_earnings_label,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 25.0),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'NGN', // Currency symbol
+                                  style: GoogleFonts.aboreto(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight
+                                          .bold // Smaller font size for the currency symbol
+                                      ),
+                                ),
+                                TextSpan(
+                                  text: CurrencyFormatter.format(totalEarnings)
+                                      .replaceAll('NGN',
+                                          ''), // Remove the currency symbol from the formatted amount
+                                  style: GoogleFonts.aboreto(
+                                    fontSize:
+                                        45, // Larger font size for the amount
+                                  ),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                );
-              }
-            },
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 1.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.total_earnings_label,
+                            style:
+                                GoogleFonts.abel(fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
           ),
         ),
       ),
