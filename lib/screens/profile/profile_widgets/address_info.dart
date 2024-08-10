@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../models/usermodel.dart';
 
 class AddressInfo extends StatefulWidget {
@@ -20,7 +21,9 @@ class _AddressInfoState extends State<AddressInfo> {
       future: FirebaseAuth.instance.authStateChanges().first,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.green.shade100, size: 50));
         }
         if (snapshot.hasError || snapshot.data == null) {
           return Center(
@@ -34,7 +37,9 @@ class _AddressInfoState extends State<AddressInfo> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: Colors.green.shade100, size: 50));
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
@@ -51,7 +56,7 @@ class _AddressInfoState extends State<AddressInfo> {
               address: farmData['address'] ?? '',
               state: farmData['state'] ?? '',
               imagePath: farmData['imagePath'] ?? '',
-              city: farmData['city'] ?? '',
+              city: farmData['lga'] ?? '',
               farmName: '${farmData['farmName']}',
               ownersName: farmData['ownersName'],
             );
