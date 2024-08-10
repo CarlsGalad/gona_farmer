@@ -79,143 +79,79 @@ class HelpCenterScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(184, 181, 181, 1),
-                            offset: Offset(5, 2),
-                            blurRadius: 6.0,
-                            spreadRadius: 3.0,
-                            blurStyle: BlurStyle.normal,
-                          ),
-                          BoxShadow(
-                            color: Color.fromRGBO(255, 255, 255, 0.9),
-                            offset: Offset(-6, -2),
-                            blurRadius: 5.0,
-                            spreadRadius: 3.0,
-                          ),
-                        ],
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.green),
+                    child: ExpansionTile(
+                      title: Text(
+                        faqItems[index].question,
+                        style: GoogleFonts.sansita(fontSize: 18),
                       ),
-                      child: ExpansionTile(
-                        title: Text(
-                          faqItems[index].question,
-                          style: GoogleFonts.sansita(fontSize: 18),
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 8.0),
+                          child: Text(
+                            faqItems[index].answer,
+                            style: GoogleFonts.abel(fontSize: 16.0),
+                            textAlign: TextAlign.justify,
+                          ),
                         ),
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            child: Text(
-                              faqItems[index].answer,
-                              style: const TextStyle(fontSize: 16.0),
-                              textAlign: TextAlign.justify,
-                            ),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   );
                 },
               ),
             ),
             const SizedBox(height: 16.0),
-            Container(
-              decoration: BoxDecoration(
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color.fromRGBO(184, 181, 181, 1),
-                    offset: Offset(5, 2),
-                    blurRadius: 6.0,
-                    spreadRadius: 3.0,
-                    blurStyle: BlurStyle.normal,
-                  ),
-                  BoxShadow(
-                    color: Color.fromRGBO(255, 255, 255, 0.9),
-                    offset: Offset(-6, -2),
-                    blurRadius: 5.0,
-                    spreadRadius: 3.0,
-                  ),
-                ],
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.green),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.app_title,
-                        style: GoogleFonts.abel(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 8, 
+                    left: 8, 
+                    right: 8),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.app_title,
+                      style: GoogleFonts.agbalumo(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     ),
                   ),
-                  const SizedBox(
-                    height: 5,
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.email_support,
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.customer_care,
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                          const SizedBox(
-                            width: 7,
-                          ),
-                          const Icon(
-                            Icons.headset_mic,
-                            color: Colors.redAccent,
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '${AppLocalizations.of(context)!.hotline_number} $hotlineNumber\n'
-                              '${AppLocalizations.of(context)!.email_support} support@gona.com',
-                              style: const TextStyle(
-                                fontSize: 15,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  width: 6,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+              ],
             ),
           ],
         ),
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(
-          bottom: 160.0,
+          bottom: 100.0,
         ),
         child: SizedBox(
           width: 150,
           child: FloatingActionButton(
+            elevation: 18,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             onPressed: () {
               Navigator.push(
                   context,
@@ -223,7 +159,7 @@ class HelpCenterScreen extends StatelessWidget {
                     builder: (context) => const LiveChatScreen(),
                   ));
             },
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.green.shade100,
             tooltip: AppLocalizations.of(context)!.live_chat,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
