@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gona_vendor/models/helper/statesandlg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../services/auth_service.dart';
 
@@ -24,9 +27,11 @@ class _SingUpPageState extends State<SingUpPage> {
   final passwordController = TextEditingController();
   final addressController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final stateController = TextEditingController();
-  final cityController = TextEditingController();
+
+  final townController = TextEditingController();
   final farmNameController = TextEditingController();
+  String? selectedState;
+  String? selectedLga;
 
 // sign user up method
   void signUserUp() async {
@@ -34,8 +39,9 @@ class _SingUpPageState extends State<SingUpPage> {
     showDialog(
         context: context,
         builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.green.shade100, size: 50),
           );
         });
 // Create new user
@@ -81,8 +87,8 @@ class _SingUpPageState extends State<SingUpPage> {
           'ownersName': ownerNameController.text,
           'mobile': mobileController.text,
           'address': addressController.text,
-          'state': stateController.text,
-          'city': cityController.text,
+          'state': selectedState,
+          'lga': selectedLga,
           'farmName': farmNameController.text,
           'userId': user.uid,
           'createdAt': Timestamp.now(),
@@ -90,7 +96,9 @@ class _SingUpPageState extends State<SingUpPage> {
             'accountName': '',
             'bankName': '',
             'accountNumber': '',
-          }
+          },
+          'totalSales': '',
+          'totalEarnings': '',
         });
         if (!mounted) return;
         // Pop the progress indicator
@@ -109,7 +117,7 @@ class _SingUpPageState extends State<SingUpPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 4),
+        duration: const Duration(seconds: 10),
       ),
     );
   }
@@ -289,51 +297,88 @@ class _SingUpPageState extends State<SingUpPage> {
 
                   const SizedBox(height: 15.0),
 
-                  // fields for farm city and state
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
                       children: [
-                        // city field
+                        // State dropdown with search
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
-                              border: Border.all(color: Colors.white),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: TextField(
-                                controller: cityController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText:
-                                      AppLocalizations.of(context)!.city_hint,
+                              padding: const EdgeInsets.only(
+                                  left: 10.0, top: 15.0, right: 10),
+                              child: DropdownSearch<String>(
+                                items: statesAndLgas.keys.toList(),
+                                selectedItem: selectedState,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedState = value;
+                                    selectedLga =
+                                        null; // Reset LGA when state changes
+                                  });
+                                },
+                                popupProps: PopupProps.menu(
+                                    showSelectedItems: true,
+                                    showSearchBox: true,
+                                    searchFieldProps: TextFieldProps(
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.grey[300],
+                                            border: InputBorder.none,
+                                            filled: true))),
+                                dropdownDecoratorProps:
+                                    const DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 10.0),
+                                    hintText: "Select State",
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        // State field
+                        const SizedBox(width: 12),
+                        // LGA dropdown with search
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
-                              border: Border.all(color: Colors.white),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: TextField(
-                                controller: stateController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText:
-                                      AppLocalizations.of(context)!.state_hint,
+                              padding: const EdgeInsets.only(
+                                  left: 10.0, top: 15, right: 10.0),
+                              child: DropdownSearch<String>(
+                                items: selectedState == null
+                                    ? []
+                                    : statesAndLgas[selectedState!]!,
+                                selectedItem: selectedLga,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedLga = value;
+                                  });
+                                },
+                                popupProps: PopupProps.menu(
+                                    showSearchBox: true,
+                                    searchFieldProps: TextFieldProps(
+                                        decoration: InputDecoration(
+                                            fillColor: Colors.grey[300],
+                                            border: InputBorder.none,
+                                            filled: true))),
+                                // ignore: prefer_const_constructors
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration:
+                                      const InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 10.0),
+                                    hintText: "Select LGA",
+                                  ),
                                 ),
                               ),
                             ),
@@ -395,23 +440,23 @@ class _SingUpPageState extends State<SingUpPage> {
                   //sign in button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: GestureDetector(
-                      onTap: () {
+                    child: MaterialButton(
+                      elevation: 18,
+                      color: Colors.green.shade100,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      onPressed: () {
                         signUserUp();
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 49, 105, 11),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Center(
-                          child: Text(
-                            AppLocalizations.of(context)!.sign_up_button,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 80.0, vertical: 20),
+                        child: Text(
+                          AppLocalizations.of(context)!.sign_up_button,
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
                         ),
                       ),
                     ),
@@ -481,6 +526,9 @@ class _SingUpPageState extends State<SingUpPage> {
                         AppLocalizations.of(context)!.already_have_account,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       GestureDetector(
                         onTap: widget.onTap,
