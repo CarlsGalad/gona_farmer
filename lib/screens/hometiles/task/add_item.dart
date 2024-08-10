@@ -38,6 +38,7 @@ class AddItemScreenState extends State<AddItemScreen> {
   String? _selectedSellingMethod;
   String? _userCity;
   String? _farmName;
+  int? _selectedYear;
 
   bool uploadingImage = false;
   File? _image;
@@ -63,6 +64,12 @@ class AddItemScreenState extends State<AddItemScreen> {
       _subcategories.clear();
       _subcategories.add({});
     });
+  }
+
+  List<int> _generateYearList() {
+    int currentYear = DateTime.now().year;
+    return List<int>.generate(
+        10, (index) => currentYear - index); // Last 10 years
   }
 
   Future<void> _fetchSubcategories(int categoryId) async {
@@ -117,8 +124,8 @@ class AddItemScreenState extends State<AddItemScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    color: Colors.grey,
+                    border: Border.all(color: Colors.grey.shade300),
+                    color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(15)),
                 width: 200,
                 height: 200,
@@ -130,14 +137,21 @@ class AddItemScreenState extends State<AddItemScreen> {
                         fit: BoxFit.cover,
                       )
                     : const Center(
-                        child: Icon(Icons.image),
+                        child: Icon(
+                          Icons.image,
+                          size: 50,
+                        ),
                       ),
               ),
               const SizedBox(height: 15.0),
               // Pick image button for the image to be picked
               Center(
-                child: GestureDetector(
-                  onTap: () async {
+                child: MaterialButton(
+                  color: Colors.green.shade100,
+                  elevation: 18,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  onPressed: () async {
                     final files = await imageHelper.pickImage();
                     if (files.isNotEmpty) {
                       final croppedFile = await imageHelper.crop(
@@ -188,228 +202,358 @@ class AddItemScreenState extends State<AddItemScreen> {
                       }
                     }
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5)),
-                    width: 150,
-                    height: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child:
-                                Text(AppLocalizations.of(context)!.add_image),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(AppLocalizations.of(context)!.add_image),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.image,
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
+                    maxLength: 30,
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.name,
+                        border: InputBorder.none),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.please_enter_name;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    maxLength: 8,
+                    controller: _priceController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.price,
+                        border: InputBorder.none),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.please_enter_price;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
+                    maxLength: 300,
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.description,
+                        border: InputBorder.none),
+                    maxLines: null,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!
+                            .please_enter_description;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<int>(
+                    value: _selectedYear,
+                    borderRadius: BorderRadius.circular(5),
+                    style: const TextStyle(color: Colors.black),
+                    dropdownColor: Colors.grey[700],
+                    // Text color for selected year when closed
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.farming_year,
+                      border: InputBorder.none,
+                    ),
+                    items: _generateYearList().map((year) {
+                      return DropdownMenuItem<int>(
+                        alignment: Alignment.center,
+                        value: year,
+                        child: Text(
+                          year.toString(),
+                          style: const TextStyle(
+                              color: Colors
+                                  .white), // Text color for year when open
+                        ),
+                      );
+                    }).toList(),
+                    selectedItemBuilder: (context) {
+                      return _generateYearList().map((year) {
+                        return Text(
+                          year.toString(),
+                          style: const TextStyle(
+                              color: Colors
+                                  .black), // Text color when the dropdown is closed
+                        );
+                      }).toList();
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedYear = value;
+                        _farmingYearController.text = value.toString();
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return AppLocalizations.of(context)!
+                            .please_enter_farming_year;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15.0),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ConditionalWidget(
+                    condition: _categories.isNotEmpty,
+                    fallback: _buildLoadingIndicator(),
+                    child: DropdownButtonFormField<int>(
+                      borderRadius: BorderRadius.circular(5),
+                      value: _selectedCategoryId,
+
+                      dropdownColor: Colors.grey[600],
+                      style: const TextStyle(
+                          color: Colors
+                              .black), // Set the text style for the dropdown menu
+                      padding: const EdgeInsets.all(20),
+                      items: _categories.map((category) {
+                        return DropdownMenuItem<int>(
+                          alignment: Alignment.center,
+                          value: category['id']?.toInt(),
+                          child: Text(
+                            category['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .white), // Text color when dropdown is open
                           ),
-                          const Spacer(),
-                          const Icon(
-                            Icons.image,
-                            color: Colors.green,
+                        );
+                      }).toList(),
+                      selectedItemBuilder: (BuildContext context) {
+                        return _categories.map((category) {
+                          return Text(
+                            category['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .black), // Text color when dropdown is closed
+                          );
+                        }).toList();
+                      },
+                      onChanged: (value) async {
+                        if (value != null) {
+                          await _fetchSubcategories(value);
+                          setState(() {
+                            _selectedCategoryId = value;
+                          });
+                        } else {
+                          setState(() {
+                            _selectedCategoryId = null;
+                            _subcategories.clear();
+                            _subcategories.add({});
+                            _selectedSubcategory = null;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.select_category,
+                        hintStyle: const TextStyle(color: Colors.black),
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null) {
+                          return AppLocalizations.of(context)!
+                              .please_select_category;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 15.0),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ConditionalWidget(
+                    condition: _subcategories.isNotEmpty &&
+                        _selectedCategoryId != null,
+                    fallback: _buildLoadingIndicator(),
+                    child: DropdownButtonFormField<int>(
+                      value: _selectedSubcategory != null
+                          ? _selectedSubcategory!['id']
+                          : null,
+                      dropdownColor: Colors.grey[600],
+                      style: const TextStyle(
+                          color: Colors
+                              .black), // Set the text style for the dropdown menu
+                      padding: const EdgeInsets.all(20),
+                      items: _subcategories.map((subcategory) {
+                        return DropdownMenuItem<int>(
+                          alignment: Alignment.center,
+                          value: subcategory['id'] as int?,
+                          child: Text(
+                            subcategory['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .white), // Text color when dropdown is open
                           ),
-                        ],
+                        );
+                      }).toList(),
+                      selectedItemBuilder: (BuildContext context) {
+                        return _subcategories.map((subcategory) {
+                          return Text(
+                            subcategory['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .black), // Text color when dropdown is closed
+                          );
+                        }).toList();
+                      },
+                      onChanged: (value) {
+                        if (value != null) {
+                          // Find the selected subcategory from the list of subcategories
+                          var selectedSubcategory = _subcategories.firstWhere(
+                            (subcategory) => subcategory['id'] == value,
+                            orElse: () => <String, dynamic>{},
+                          );
+
+                          setState(() {
+                            // Update the selected subcategory with the entire map
+                            _selectedSubcategory = selectedSubcategory;
+                          });
+                        } else {
+                          setState(() {
+                            // If no subcategory is selected, set it to null
+                            _selectedSubcategory = null;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.select_subcategory,
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
                 ),
               ),
+
               const SizedBox(height: 15.0),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.name,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.please_enter_name;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15.0),
-              TextFormField(
-                controller: _priceController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.price,
-                    border: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.please_enter_price;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15.0),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.description,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                  ),
-                ),
-                maxLines: null,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!
-                        .please_enter_description;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15.0),
-              TextFormField(
-                controller: _farmingYearController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.farming_year,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!
-                        .please_enter_farming_year;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15.0),
-              ConditionalWidget(
-                condition: _categories.isNotEmpty,
-                fallback: _buildLoadingIndicator(),
-                child: DropdownButtonFormField<int>(
-                  value: _selectedCategoryId,
-                  items: _categories.map((category) {
-                    return DropdownMenuItem<int>(
-                      value: category['id']?.toInt(),
-                      child: Text(category['name'] as String? ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (value) async {
-                    if (value != null) {
-                      // Perform asynchronous work outside of setState
-                      await _fetchSubcategories(value);
-                      setState(() {
-                        // Update the state synchronously after the asynchronous work is done
-                        _selectedCategoryId = value;
-                      });
-                    } else {
-                      setState(() {
-                        _selectedCategoryId = null;
-                        _subcategories.clear();
-                        _subcategories.add({});
-                        _selectedSubcategory = null;
-                      });
-                    }
-                  },
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: TextFormField(
+                  controller: _quantityController,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.select_category,
-                      border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15)))),
+                      labelText:
+                          AppLocalizations.of(context)!.available_quantity,
+                      border: InputBorder.none),
+                  keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value == null) {
+                    if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!
-                          .please_select_category;
+                          .please_enter_quantity;
                     }
                     return null;
                   },
                 ),
               ),
               const SizedBox(height: 15.0),
-              ConditionalWidget(
-                condition:
-                    _subcategories.isNotEmpty && _selectedCategoryId != null,
-                fallback: _buildLoadingIndicator(),
-                child: DropdownButtonFormField<int>(
-                  value: _selectedSubcategory != null
-                      ? _selectedSubcategory!['id']
-                      : null,
-                  items: _subcategories.map((subcategory) {
-                    return DropdownMenuItem<int>(
-                      value: subcategory['id'] as int?,
-                      child: Text(subcategory['name'] as String? ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      // Find the selected subcategory from the list of subcategories
-                      var selectedSubcategory = _subcategories.firstWhere(
-                        (subcategory) => subcategory['id'] == value,
-                        orElse: () => <String, dynamic>{},
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<String>(
+                    dropdownColor: Colors.grey[700],
+                    value: _selectedSellingMethod,
+                    items: [
+                      AppLocalizations.of(context)!.per_pack,
+                      AppLocalizations.of(context)!.per_gallon,
+                      AppLocalizations.of(context)!.per_head,
+                      AppLocalizations.of(context)!.per_kilo,
+                      AppLocalizations.of(context)!.per_bag,
+                    ].map((method) {
+                      return DropdownMenuItem<String>(
+                        alignment: Alignment.center,
+                        value: method,
+                        child: Text(
+                          method,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       );
-
+                    }).toList(),
+                    onChanged: (value) {
                       setState(() {
-                        // Update the selected subcategory with the entire map
-                        _selectedSubcategory = selectedSubcategory;
+                        _selectedSellingMethod = value;
                       });
-                    } else {
-                      setState(() {
-                        // If no subcategory is selected, set it to null
-                        _selectedSubcategory = null;
-                      });
-                    }
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 15.0),
-              TextFormField(
-                controller: _quantityController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.available_quantity,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!.please_enter_quantity;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15.0),
-              DropdownButtonFormField<String>(
-                value: _selectedSellingMethod,
-                items: [
-                  AppLocalizations.of(context)!.per_pack,
-                  AppLocalizations.of(context)!.per_gallon,
-                  AppLocalizations.of(context)!.per_head,
-                  AppLocalizations.of(context)!.per_kilo,
-                  AppLocalizations.of(context)!.per_bag,
-                ].map((method) {
-                  return DropdownMenuItem<String>(
-                    value: method,
-                    child: Text(method),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedSellingMethod = value;
-                  });
-                },
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.selling_method,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
+                    },
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.selling_method,
+                        border: InputBorder.none),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!
+                            .please_select_selling_method;
+                      }
+                      return null;
+                    },
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!
-                        .please_select_selling_method;
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 20.0),
             ],
@@ -417,10 +561,15 @@ class AddItemScreenState extends State<AddItemScreen> {
         ),
       ),
       bottomNavigationBar: SizedBox(
-        height: 100,
+        height: 80,
         child: Center(
-          child: GestureDetector(
-            onTap: () {
+          child: MaterialButton(
+            color: Colors.green.shade100,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            minWidth: 100,
+            elevation: 18,
+            onPressed: () {
               if (_selectedCategoryId != null && _selectedSubcategory != null) {
                 _addItem(_downloadURL);
               } else {
@@ -433,20 +582,13 @@ class AddItemScreenState extends State<AddItemScreen> {
                 );
               }
             },
-            child: Container(
-              width: 250,
-              height: 60,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 137, 247, 143),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  AppLocalizations.of(context)!.submit,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20),
-                ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 60.0, vertical: 8),
+              child: Text(
+                AppLocalizations.of(context)!.submit,
+                style:
+                    GoogleFonts.abel(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
           ),
@@ -530,7 +672,7 @@ class AddItemScreenState extends State<AddItemScreen> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content:
                 Text(AppLocalizations.of(context)!.item_added_successfully),
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.green.shade100,
           ));
           // Clear text controllers
           _nameController.clear();
