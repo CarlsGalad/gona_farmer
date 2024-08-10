@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../models/usermodel.dart';
 import 'profile_widgets/account_info.dart';
@@ -81,7 +82,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         future: FirebaseAuth.instance.authStateChanges().first,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.green.shade100, size: 50));
           }
           if (snapshot.hasError || snapshot.data == null) {
             return Center(
@@ -102,7 +105,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.green.shade100, size: 50));
               }
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
