@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'add_item.dart';
 import 'edit_items.dart';
 
@@ -88,8 +89,9 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
             );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  size: 50, color: Colors.green.shade100),
             );
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -103,80 +105,82 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> itemData =
                   document.data() as Map<String, dynamic>; // Cast here
-              return GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 4),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(color: Colors.green),
-                      child: ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EditItemDetailsPage(itemId: document.id),
-                            ),
-                          );
-                        },
-                        title: Text(
-                          itemData['name'],
-                          style: const TextStyle(color: Colors.white),
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                child: Card(
+                  elevation: 5,
+                  color: Colors.green.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EditItemDetailsPage(itemId: document.id),
                         ),
-                        subtitle: Row(
-                          children: [
-                            Text(
-                              ' ${AppLocalizations.of(context)!.price_with_column} ${itemData['price']}',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(
-                              width: 6,
-                            ),
-                            Text('${itemData['sellingMethod'] ?? ''}')
-                          ],
+                      );
+                    },
+                    title: Text(
+                      itemData['name'],
+                      style: GoogleFonts.abel(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Row(
+                      children: [
+                        Text(
+                          ' ${AppLocalizations.of(context)!.price_with_column} ${itemData['price']}',
+                          style: GoogleFonts.abel(
+                              color: Colors.black, fontWeight: FontWeight.bold),
                         ),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Color.fromARGB(255, 88, 3, 3),
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(AppLocalizations.of(context)!
-                                      .confirm_delete),
-                                  content: Text(AppLocalizations.of(context)!
-                                      .confirm_delete_question),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                          AppLocalizations.of(context)!.cancel),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Perform delete operation
-                                        _deleteItem(document.id);
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                          AppLocalizations.of(context)!.delete),
-                                    ),
-                                  ],
-                                );
-                              },
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Text('${itemData['sellingMethod'] ?? ''}')
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Color.fromARGB(255, 88, 3, 3),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                  AppLocalizations.of(context)!.confirm_delete),
+                              content: Text(AppLocalizations.of(context)!
+                                  .confirm_delete_question),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                      AppLocalizations.of(context)!.cancel),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // Perform delete operation
+                                    _deleteItem(document.id);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                      AppLocalizations.of(context)!.delete),
+                                ),
+                              ],
                             );
                           },
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                  ));
+                  ),
+                ),
+              );
             }).toList(),
           );
         },
@@ -192,6 +196,7 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
             ),
           );
         },
+        backgroundColor: Colors.green.shade100,
         child: const Icon(Icons.add),
       ),
     );
