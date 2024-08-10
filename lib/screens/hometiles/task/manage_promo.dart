@@ -6,7 +6,7 @@ import 'package:gona_vendor/screens/hometiles/task/add_promo.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'edit_items.dart';
+import 'edit_promo.dart';
 
 class PromoManagementPage extends StatefulWidget {
   const PromoManagementPage({super.key});
@@ -103,24 +103,24 @@ class PromoManagementPageState extends State<PromoManagementPage> {
             );
           }
           // Display inventory items
-          return Card(
-            elevation: 5,
-            color: Colors.green.shade100,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
             child: ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic> itemData =
                     document.data() as Map<String, dynamic>; // Cast here
-                return GestureDetector(
-                  onTap: () {},
+                return Card(
+                  elevation: 5,
+                  color: Colors.green.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)),
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              EditItemDetailsPage(itemId: document.id),
+                              EditPromoDetailsPage(itemId: document.id),
                         ),
                       );
                     },
