@@ -13,6 +13,7 @@ import 'package:gona_vendor/screens/hometiles/welcomemsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'help_center/animation.dart';
 import 'hometiles/appbaritems.dart';
 import 'hometiles/task/add_item.dart';
 import 'hometiles/earnings_tile.dart';
@@ -28,14 +29,35 @@ class Homepage extends StatefulWidget {
   State<Homepage> createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isConnected = true;
+  late AnimationController _leftController;
+  late AnimationController _rightController;
+  late AnimationController _upwardController;
 
   @override
   void initState() {
     super.initState();
+
+    _leftController = AnimationController(
+      duration: const Duration(seconds: 4),
+      vsync: this,
+    );
+    _rightController = AnimationController(
+      duration: const Duration(seconds: 4),
+      vsync: this,
+    );
+    _upwardController = AnimationController(
+      duration: const Duration(seconds: 6),
+      vsync: this,
+    );
+
+    // Start animations
+    _leftController.forward();
+    _rightController.forward();
+    _upwardController.forward();
 
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen((result) {
@@ -58,15 +80,15 @@ class _HomepageState extends State<Homepage> {
     String? uid = user?.uid;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 39, 78, 40),
+      backgroundColor: Colors.lightGreen.shade100,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 39, 78, 40),
+        backgroundColor: Colors.lightGreen.shade100,
         leading: Padding(
           padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(30)),
             child: Container(
-              color: Colors.green,
+              color: Colors.green.shade100,
               child: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('farms')
@@ -74,7 +96,11 @@ class _HomepageState extends State<Homepage> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Icon(
+                      Icons.person,
+                      size: 30,
+                      color: Colors.grey,
+                    );
                   }
                   if (snapshot.hasError) {
                     return const Icon(
@@ -95,8 +121,8 @@ class _HomepageState extends State<Homepage> {
                   return imagePath.isNotEmpty
                       ? Image.network(
                           imagePath,
-                          width: 60, // Adjust the width as needed
-                          height: 60, // Adjust the height as needed
+                          width: 60,
+                          height: 60,
                           fit: BoxFit.cover,
                         )
                       : const Icon(
@@ -112,243 +138,161 @@ class _HomepageState extends State<Homepage> {
         title: Text(
           AppLocalizations.of(context)!.appName,
           style: GoogleFonts.abel(
-              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.black87),
         ),
         actions: const [DropdownMenuWidget()],
         centerTitle: true,
       ),
       body: _isConnected
           ? Container(
-              color: const Color.fromARGB(255, 39, 78, 40),
-              child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      ),
-                      gradient: const SweepGradient(colors: [
-                        Color.fromARGB(255, 222, 245, 222),
-                        Color.fromARGB(255, 224, 240, 87),
-                        Color.fromARGB(255, 222, 245, 222),
-                        Color.fromARGB(255, 101, 128, 57),
-                        Color.fromARGB(255, 222, 245, 222),
-                      ])),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // welcome msg
-                      const WelcomeBackWidget(),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 15),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Orders count Tile
-                            OrderCountTile(),
-                            SizedBox(
-                              width: 8,
-                            ),
-
-                            // Processed orders tile
-                            ProcessedTile()
-                          ],
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: ListView(
+                children: [
+                  // welcome msg
+                  const WelcomeBackWidget(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Orders count Tile
+                        SlideTransition(
+                          position:
+                              CustomAnimations.slideFromLeft(_leftController),
+                          child: const OrderCountTile(),
                         ),
-                      ),
-
-                      const SizedBox(
-                        height: 8,
-                      ),
-
-                      //////////// Wildfire
-                      const Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 15),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Delivered items tile
-                            DeliveredCountTile(),
-                            SizedBox(
-                              width: 8,
-                            ),
-
-                            // total sales Tile
-                            TotalSalesTile(),
-                          ],
+                        const SizedBox(
+                          width: 8,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
 
-                      const TotalEarningsDisplay(),
-// Todays Task
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        // Processed orders tile
+                        SlideTransition(
+                          position:
+                              CustomAnimations.slideFromRight(_rightController),
+                          child: const ProcessedTile(),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 8,
+                  ),
+
+                  //////////// Wildfire
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Delivered items tile
+
+                        SlideTransition(
+                          position:
+                              CustomAnimations.slideFromLeft(_leftController),
+                          child: const DeliveredCountTile(),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+
+                        // total sales Tile
+                        SlideTransition(
+                          position:
+                              CustomAnimations.slideFromRight(_rightController),
+                          child: const TotalSalesTile(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+
+                  FadeTransition(
+                    opacity: CustomAnimations.fadeIn(_upwardController),
+                    child: const TotalEarningsDisplay(),
+                  ),
+                  // Todays Task
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: FadeTransition(
+                      opacity: CustomAnimations.fadeIn(_upwardController),
+                      child: SlideTransition(
+                        position: CustomAnimations.slideUp(_upwardController),
                         child: Text(
                           AppLocalizations.of(context)!.todays_task,
                           style: GoogleFonts.sansita(fontSize: 20),
                           textAlign: TextAlign.start,
                         ),
                       ),
-// the task
-                      Padding(
+                    ),
+                  ),
+                  // the task
+                  FadeTransition(
+                    opacity: CustomAnimations.fadeIn(_upwardController),
+                    child: SlideTransition(
+                      position: CustomAnimations.slideUp(_upwardController),
+                      child: Padding(
                         padding: const EdgeInsets.only(left: 20.0, right: 15),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width - 30,
-                          height: 270,
-                          decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 137, 247, 143),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: const Color.fromARGB(255, 39, 78, 40),
-                              ),
-                              gradient: const LinearGradient(colors: [
-                                Color.fromARGB(255, 39, 78, 40),
-                                Color.fromARGB(255, 101, 128, 57),
-                                Color.fromARGB(255, 224, 240, 87),
-                                Color.fromARGB(255, 224, 240, 87),
-                                Color.fromARGB(255, 101, 128, 57),
-                                Color.fromARGB(255, 39, 78, 40),
-                              ])),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 15, right: 15, top: 30),
-                            child: Column(
-                              children: [
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const AddItemScreen())),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 5.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: Colors.limeAccent),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              //Add Item
-                                              child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .add_item,
-                                                style: const TextStyle(
-                                                    fontSize: 15),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      const FarmNameWidget(),
-                                    ]),
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const InventoryManagementPage(),
-                                          )),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .inventory,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20),
-                                          ),
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .manage_items_data,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 15.0,
-                                  ),
-                                  child: Row(
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width - 30,
+                            height: 270,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 15, right: 15, top: 30),
+                              child: Column(
+                                children: [
+                                  Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
+                                        MaterialButton(
+                                          color: Colors.green.shade100,
+                                          elevation: 18,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5)),
+                                          onPressed: () => Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const AddPromoScreen(),
-                                              ),
-                                            );
-                                          },
+                                                  builder: (context) =>
+                                                      const AddItemScreen())),
                                           child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 5.0),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Colors.limeAccent),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(4.0),
-                                                child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .add_promo_item,
-                                                  style: const TextStyle(
-                                                      fontSize: 15),
-                                                  textAlign: TextAlign.start,
-                                                ),
-                                              ),
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .add_item,
+                                              style: GoogleFonts.abel(
+                                                  fontSize: 15),
+                                              textAlign: TextAlign.start,
                                             ),
                                           ),
                                         ),
                                         const Spacer(),
-                                        const UserCityWidget(),
+                                        const FarmNameWidget(),
                                       ]),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: Row(
+                                  Row(
                                     children: [
                                       GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const PromoManagementPage()));
-                                        },
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const InventoryManagementPage(),
+                                            )),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
@@ -357,15 +301,15 @@ class _HomepageState extends State<Homepage> {
                                           children: [
                                             Text(
                                               AppLocalizations.of(context)!
-                                                  .promotions,
-                                              style: const TextStyle(
+                                                  .inventory,
+                                              style: GoogleFonts.abel(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 20),
                                             ),
                                             Text(
                                               AppLocalizations.of(context)!
-                                                  .manage_promotions_data,
-                                              style: const TextStyle(
+                                                  .manage_items_data,
+                                              style: GoogleFonts.abel(
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             )
@@ -374,19 +318,100 @@ class _HomepageState extends State<Homepage> {
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                    ),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          MaterialButton(
+                                            color: Colors.green.shade100,
+                                            elevation: 18,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const AddPromoScreen(),
+                                                ),
+                                              );
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .add_promo_item,
+                                                style: GoogleFonts.abel(
+                                                    fontSize: 15),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          const UserCityWidget(),
+                                        ]),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 15.0),
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const PromoManagementPage()));
+                                          },
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!
+                                                    .promotions,
+                                                style: GoogleFonts.abel(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20),
+                                              ),
+                                              Text(
+                                                AppLocalizations.of(context)!
+                                                    .manage_promotions_data,
+                                                style: GoogleFonts.abel(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-
-                      const SizedBox(
-                        height: 30,
-                      )
-                    ],
+                    ),
                   ),
-                ),
+
+                  const SizedBox(
+                    height: 30,
+                  )
+                ],
               ),
             )
           : ScaffoldMessenger(
