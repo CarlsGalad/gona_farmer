@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MonthlyEarningsWidget extends StatefulWidget {
   const MonthlyEarningsWidget({super.key});
@@ -59,12 +60,15 @@ class MonthlyEarningsWidgetState extends State<MonthlyEarningsWidget> {
       itemCount: monthlyEarnings.length,
       itemBuilder: (context, index) {
         return ListTile(
+          leading: Text('${index + 1}.'),
           title: Text(
-            '${_getMonthName(monthlyEarnings[index].month)} ${monthlyEarnings[index].year}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            ' ${_getMonthName(monthlyEarnings[index].month)} ${monthlyEarnings[index].year}',
+            style: GoogleFonts.abel(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-              '${AppLocalizations.of(context)!.total_earnings}: \$${monthlyEarnings[index].earnings.toStringAsFixed(2)}'),
+            '${AppLocalizations.of(context)!.total_earnings}: \$${monthlyEarnings[index].earnings.toStringAsFixed(2)}',
+            style: GoogleFonts.abel(),
+          ),
         );
       },
     );
