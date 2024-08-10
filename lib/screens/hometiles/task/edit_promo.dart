@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
-// import 'package:image_picker/image_picker.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../methods/add_promo_image.dart';
@@ -42,7 +42,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
   File? _image;
   bool uploadingImage = false;
   String? _downloadURL;
-
+  int? _selectedYear;
   @override
   void initState() {
     super.initState();
@@ -73,6 +73,26 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
     } catch (error) {
       rethrow;
     }
+  }
+
+ bool isValidUrl(String url) {
+    final Uri? uri = Uri.tryParse(url);
+    return uri != null &&
+        uri.isAbsolute &&
+        (uri.scheme == 'http' || uri.scheme == 'https');
+  }
+
+  Future<Reference?> _getItemReference() async {
+    if (itemPath != null && isValidUrl(itemPath!)) {
+      return FirebaseStorage.instance.refFromURL(itemPath!);
+    }
+    return null;
+  }
+
+  List<int> _generateYearList() {
+    int currentYear = DateTime.now().year;
+    return List<int>.generate(
+        10, (index) => currentYear - index); // Last 10 years
   }
 
   Future<void> _updatePromoDetails() async {
@@ -150,9 +170,10 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               Center(
                 child: Container(
                   decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade200),
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10)),
+                    border: Border.all(color: Colors.grey.shade200),
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   height: 200,
                   width: 200,
                   child: _image != null
@@ -162,14 +183,8 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                           height: 200,
                           fit: BoxFit.cover,
                         )
-                      : FutureBuilder(
-                          future: () async {
-                            if (itemPath != null) {
-                              return await FirebaseStorage.instance
-                                  .refFromURL(itemPath!);
-                            }
-                            return null;
-                          }(),
+                      : FutureBuilder<Reference?>(
+                          future: _getItemReference(),
                           builder: (BuildContext context,
                               AsyncSnapshot<Reference?> snapshot) {
                             if (snapshot.connectionState ==
@@ -180,67 +195,53 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                                 child:
                                     Center(child: CircularProgressIndicator()),
                               ); // Loading indicator
-                            } else if (snapshot.hasError) {
+                            } else if (snapshot.hasError ||
+                                snapshot.data == null) {
                               return const SizedBox(
                                 width: 200,
                                 height: 100,
                                 child: Center(
-                                  child: Text('Error!'),
+                                  child: Text('Invalid URL!'),
                                 ),
-                              ); // Error message
+                              ); // Error message for invalid URL
                             } else {
-                              if (snapshot.data != null) {
-                                return FutureBuilder<String>(
-                                  future: snapshot.data!.getDownloadURL(),
-                                  builder: (context, urlSnapshot) {
-                                    if (urlSnapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return SizedBox(
-                                        width: 200,
-                                        height: 100,
-                                        child: Center(
-                                            child: LoadingAnimationWidget
-                                                .staggeredDotsWave(
-                                                    color:
-                                                        Colors.green.shade100,
-                                                    size: 50)),
-                                      ); // Loading indicator for download URL
-                                    } else if (urlSnapshot.hasError) {
-                                      return SizedBox(
-                                        width: 200,
-                                        height: 100,
-                                        child: Center(
-                                          child: Text(
-                                              AppLocalizations.of(context)!
-                                                  .error_fetching_download_url),
-                                        ),
-                                      ); // Error message for download URL
-                                    } else {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width: 200,
-                                        height: 200,
-                                        child: Image.network(
-                                          urlSnapshot.data!,
-                                          fit: BoxFit
-                                              .cover, // Adjust according to your requirement
-                                        ),
-                                      );
-                                    }
-                                  },
-                                );
-                              } else {
-                                return SizedBox(
-                                  width: 200,
-                                  height: 100,
-                                  child: Center(
-                                    child: Text(AppLocalizations.of(context)!
-                                        .invalid_url),
-                                  ),
-                                ); // Error message for invalid URL
-                              }
+                              return FutureBuilder<String>(
+                                future: snapshot.data!.getDownloadURL(),
+                                builder: (context, urlSnapshot) {
+                                  if (urlSnapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return SizedBox(
+                                      width: 200,
+                                      height: 100,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ); // Loading indicator for download URL
+                                  } else if (urlSnapshot.hasError) {
+                                    return SizedBox(
+                                      width: 200,
+                                      height: 100,
+                                      child: Center(
+                                        child: Text(
+                                            'Error fetching download URL!'),
+                                      ),
+                                    ); // Error message for download URL
+                                  } else {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      width: 200,
+                                      height: 200,
+                                      child: Image.network(
+                                        urlSnapshot.data!,
+                                        fit: BoxFit
+                                            .cover, // Adjust according to your requirement
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
                             }
                           },
                         ),
@@ -328,185 +329,343 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
               const SizedBox(
                 height: 15,
               ),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.name,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    maxLength: 30,
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.name,
+                        border: InputBorder.none),
                   ),
                 ),
               ),
               const SizedBox(
                 height: 15,
               ),
-              TextField(
-                controller: _priceController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.price,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    maxLength: 8,
+                    controller: _priceController,
+                    decoration: InputDecoration(
+                        prefixText: 'NGN',
+                        labelText: AppLocalizations.of(context)!.price,
+                        border: InputBorder.none),
+                    keyboardType: TextInputType.number,
                   ),
                 ),
-                keyboardType: TextInputType.number,
               ),
               const SizedBox(
                 height: 15,
               ),
-              TextField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.description,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    maxLength: 300,
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.description,
+                        border: InputBorder.none),
+                    maxLines: null,
                   ),
                 ),
-                maxLines: null,
               ),
               const SizedBox(
                 height: 15,
               ),
-              TextField(
-                controller: _farmingYearController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.farming_year,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                maxLines: null,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              ConditionalWidget(
-                condition: _categories.isNotEmpty,
-                fallback: _buildLoadingIndicator(),
-                child: DropdownButtonFormField<int>(
-                  value: _selectedCategoryId,
-                  items: _categories.map((category) {
-                    return DropdownMenuItem<int>(
-                      value: category['id']?.toInt(),
-                      child: Text(category['name'] as String? ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (value) async {
-                    if (value != null) {
-                      // Perform asynchronous work outside of setState
-                      await _fetchSubcategories(value);
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<int>(
+                    value: _selectedYear,
+                    borderRadius: BorderRadius.circular(5),
+                    style: const TextStyle(color: Colors.black),
+                    dropdownColor: Colors.grey[700],
+                    // Text color for selected year when closed
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.farming_year,
+                      border: InputBorder.none,
+                    ),
+                    items: _generateYearList().map((year) {
+                      return DropdownMenuItem<int>(
+                        alignment: Alignment.center,
+                        value: year,
+                        child: Text(
+                          year.toString(),
+                          style: const TextStyle(
+                              color: Colors
+                                  .white), // Text color for year when open
+                        ),
+                      );
+                    }).toList(),
+                    selectedItemBuilder: (context) {
+                      return _generateYearList().map((year) {
+                        return Text(
+                          year.toString(),
+                          style: const TextStyle(
+                              color: Colors
+                                  .black), // Text color when the dropdown is closed
+                        );
+                      }).toList();
+                    },
+                    onChanged: (value) {
                       setState(() {
-                        // Update the state synchronously after the asynchronous work is done
-                        _selectedCategoryId = value;
+                        _selectedYear = value;
+                        _farmingYearController.text = value.toString();
                       });
-                    } else {
-                      setState(() {
-                        _selectedCategoryId = null;
-                        _subcategories.clear();
-                        _subcategories.add({});
-                        _selectedSubcategory = null;
-                      });
-                    }
-                  },
-                  decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.select_category,
-                      border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15)))),
-                  validator: (value) {
-                    if (value == null) {
-                      return AppLocalizations.of(context)!
-                          .please_select_category;
-                    }
-                    return null;
-                  },
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return AppLocalizations.of(context)!
+                            .please_enter_farming_year;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ConditionalWidget(
+                    condition: _categories.isNotEmpty,
+                    fallback: _buildLoadingIndicator(),
+                    child: DropdownButtonFormField<int>(
+                      borderRadius: BorderRadius.circular(5),
+                      value: _selectedCategoryId,
+
+                      dropdownColor: Colors.grey[600],
+                      style: const TextStyle(
+                          color: Colors
+                              .black), // Set the text style for the dropdown menu
+                      padding: const EdgeInsets.all(20),
+                      items: _categories.map((category) {
+                        return DropdownMenuItem<int>(
+                          alignment: Alignment.center,
+                          value: category['id']?.toInt(),
+                          child: Text(
+                            category['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .white), // Text color when dropdown is open
+                          ),
+                        );
+                      }).toList(),
+                      selectedItemBuilder: (BuildContext context) {
+                        return _categories.map((category) {
+                          return Text(
+                            category['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .black), // Text color when dropdown is closed
+                          );
+                        }).toList();
+                      },
+                      onChanged: (value) async {
+                        if (value != null) {
+                          await _fetchSubcategories(value);
+                          setState(() {
+                            _selectedCategoryId = value;
+                          });
+                        } else {
+                          setState(() {
+                            _selectedCategoryId = null;
+                            _subcategories.clear();
+                            _subcategories.add({});
+                            _selectedSubcategory = null;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.select_category,
+                        hintStyle: const TextStyle(color: Colors.black),
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null) {
+                          return AppLocalizations.of(context)!
+                              .please_select_category;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 15.0),
-              ConditionalWidget(
-                condition:
-                    _subcategories.isNotEmpty && _selectedCategoryId != null,
-                fallback: _buildLoadingIndicator(),
-                // Only show subcategories dropdown and loading indicator if subcategories exist and a category is selected
-                child: DropdownButtonFormField<Map<String, dynamic>>(
-                  value: _selectedSubcategory,
-                  items: _subcategories.map((subcategory) {
-                    return DropdownMenuItem<Map<String, dynamic>>(
-                      value: subcategory,
-                      child: Text(subcategory['name'] as String? ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedSubcategory = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                      labelText:
-                          AppLocalizations.of(context)!.select_subcategory,
-                      border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15)))),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return AppLocalizations.of(context)!
-                          .please_select_subcategory;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              TextField(
-                controller: _availQuantityController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.available_quantity,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
-                maxLines: null,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              DropdownButtonFormField<String>(
-                value: _selectedSellingMethod,
-                items: [
-                  AppLocalizations.of(context)!.per_pack,
-                  AppLocalizations.of(context)!.per_gallon,
-                  AppLocalizations.of(context)!.per_head,
-                  AppLocalizations.of(context)!.per_kilo,
-                  AppLocalizations.of(context)!.per_bag,
-                ].map((method) {
-                  return DropdownMenuItem<String>(
-                    value: method,
-                    child: Text(method),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedSellingMethod = value;
-                  });
-                },
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.selling_method,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ConditionalWidget(
+                    condition: _subcategories.isNotEmpty &&
+                        _selectedCategoryId != null,
+                    fallback: _buildLoadingIndicator(),
+                    child: DropdownButtonFormField<int>(
+                      value: _selectedSubcategory != null
+                          ? _selectedSubcategory!['id']
+                          : null,
+                      dropdownColor: Colors.grey[600],
+                      style: const TextStyle(
+                          color: Colors
+                              .black), // Set the text style for the dropdown menu
+                      padding: const EdgeInsets.all(20),
+                      items: _subcategories.map((subcategory) {
+                        return DropdownMenuItem<int>(
+                          alignment: Alignment.center,
+                          value: subcategory['id'] as int?,
+                          child: Text(
+                            subcategory['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .white), // Text color when dropdown is open
+                          ),
+                        );
+                      }).toList(),
+                      selectedItemBuilder: (BuildContext context) {
+                        return _subcategories.map((subcategory) {
+                          return Text(
+                            subcategory['name'] as String? ?? '',
+                            style: const TextStyle(
+                                color: Colors
+                                    .black), // Text color when dropdown is closed
+                          );
+                        }).toList();
+                      },
+                      onChanged: (value) {
+                        if (value != null) {
+                          // Find the selected subcategory from the list of subcategories
+                          var selectedSubcategory = _subcategories.firstWhere(
+                            (subcategory) => subcategory['id'] == value,
+                            orElse: () => <String, dynamic>{},
+                          );
+
+                          setState(() {
+                            // Update the selected subcategory with the entire map
+                            _selectedSubcategory = selectedSubcategory;
+                          });
+                        } else {
+                          setState(() {
+                            // If no subcategory is selected, set it to null
+                            _selectedSubcategory = null;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.select_subcategory,
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return AppLocalizations.of(context)!
-                        .please_select_selling_method;
-                  }
-                  return null;
-                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _availQuantityController,
+                    decoration: InputDecoration(
+                        labelText:
+                            AppLocalizations.of(context)!.available_quantity,
+                        border: InputBorder.none),
+                    maxLines: null,
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Card(
+                color: Colors.grey.shade200,
+                elevation: 2,
+                shape: const BeveledRectangleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<String>(
+                    dropdownColor: Colors.grey[700],
+                    value: _selectedSellingMethod,
+                    items: [
+                      AppLocalizations.of(context)!.per_pack,
+                      AppLocalizations.of(context)!.per_gallon,
+                      AppLocalizations.of(context)!.per_head,
+                      AppLocalizations.of(context)!.per_kilo,
+                      AppLocalizations.of(context)!.per_bag,
+                    ].map((method) {
+                      return DropdownMenuItem<String>(
+                        alignment: Alignment.center,
+                        value: method,
+                        child: Text(
+                          method,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedSellingMethod = value;
+                      });
+                    },
+                    selectedItemBuilder: (BuildContext context) {
+                      return [
+                        AppLocalizations.of(context)!.per_pack,
+                        AppLocalizations.of(context)!.per_gallon,
+                        AppLocalizations.of(context)!.per_head,
+                        AppLocalizations.of(context)!.per_kilo,
+                        AppLocalizations.of(context)!.per_bag,
+                      ].map((method) {
+                        return Text(
+                          method,
+                          style: const TextStyle(
+                              color: Colors
+                                  .black), // Text color when dropdown is closed
+                        );
+                      }).toList();
+                    },
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.selling_method,
+                        border: InputBorder.none),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!
+                            .please_select_selling_method;
+                      }
+                      return null;
+                    },
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 15,
@@ -515,37 +674,29 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        height: 70,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-          child: MaterialButton(
-            color: Colors.green.shade100,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            minWidth: 100,
-            elevation: 18,
-            onPressed: _updatePromoDetails,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.submit_changes,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  const SizedBox(
-                    width: 7,
-                  ),
-                  const Icon(
-                    Icons.save,
-                    color: Colors.white,
-                  ),
-                ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
+        child: MaterialButton(
+          color: Colors.green.shade100,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          minWidth: 100,
+          elevation: 18,
+          onPressed: _updatePromoDetails,
+          child: Row(
+            children: [
+              Text(
+                AppLocalizations.of(context)!.submit_changes,
+                style: GoogleFonts.abel(
+                    fontWeight: FontWeight.bold, color: Colors.black),
               ),
-            ),
+              const SizedBox(
+                width: 7,
+              ),
+              const Icon(
+                Icons.save,
+                color: Colors.black,
+              ),
+            ],
           ),
         ),
       ),
