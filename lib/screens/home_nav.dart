@@ -29,30 +29,22 @@ class _VenGonaHomePageState extends State<VenGonaHomePage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: Container(
-        color: const Color.fromARGB(255, 39, 78, 40),
+        color: Colors.lightGreen.shade100,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: 14.0,
             vertical: 14,
           ),
           child: GNav(
-            tabActiveBorder: Border.all(
-              color: Color.fromARGB(255, 224, 240, 87),
-            ),
             selectedIndex: _selectedIndex,
-            color: const Color.fromARGB(255, 87, 87, 87),
+            color: Colors.grey,
             activeColor: Colors.black,
-            tabBackgroundColor: const Color.fromARGB(255, 137, 247, 143),
+
             // gap: 8,
             tabBorderRadius: 10,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            padding: const EdgeInsets.all(14),
-            tabBackgroundGradient: const LinearGradient(colors: [
-              Color.fromARGB(255, 39, 78, 40),
-              Color.fromARGB(255, 101, 128, 57),
-              Color.fromARGB(255, 224, 240, 87),
-              Color.fromARGB(255, 222, 245, 222),
-            ]),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+
             onTabChange: (index) {
               setState(() {
                 _selectedIndex = index;
