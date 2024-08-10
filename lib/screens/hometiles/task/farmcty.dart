@@ -32,7 +32,7 @@ class UserCityWidgetState extends State<UserCityWidget> {
 
       // Extract the city from the user data
       setState(() {
-        _userCity = userSnapshot['city'] ??
+        _userCity = userSnapshot['lga'] ??
             'Unknown'; // Default to 'Unknown' if city is not found
       });
     }
