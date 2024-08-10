@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gona_vendor/screens/hometiles/proccessed.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ProcessedTile extends StatefulWidget {
   const ProcessedTile({super.key});
@@ -22,12 +24,17 @@ class _ProcessedTileState extends State<ProcessedTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      width: MediaQuery.of(context).size.width -
+          MediaQuery.of(context).size.width / 3.5 -
+          40,
       child: FutureBuilder<List<Map<String, dynamic>>?>(
         future: _processedOrdersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                    size: 30, color: Colors.green.shade100));
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
@@ -40,43 +47,50 @@ class _ProcessedTileState extends State<ProcessedTile> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const ProcessedOrdersScreen())),
-              child: Container(
-                width: 240,
-                height: 120,
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 137, 247, 143),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color.fromARGB(255, 39, 78, 40),
+              child: Card(
+                color: Colors.white,
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: SizedBox(
+                  width: 240,
+                  height: 120,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.access_time,
+                              color: Colors.deepOrange,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            '$processedOrdersCount',
+                            style: GoogleFonts.aboreto(fontSize: 45),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.processed_orders_label,
+                          style: GoogleFonts.abel(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        )
+                      ],
                     ),
-                    gradient: const LinearGradient(colors: [
-                      Color.fromARGB(255, 222, 245, 222),
-                      Color.fromARGB(255, 222, 245, 222),
-                      Color.fromARGB(255, 224, 240, 87),
-                      Color.fromARGB(255, 101, 128, 57),
-                      Color.fromARGB(255, 39, 78, 40),
-                    ])),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Text(
-                          '$processedOrdersCount',
-                          style: const TextStyle(fontSize: 45),
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.processed_orders_label,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
