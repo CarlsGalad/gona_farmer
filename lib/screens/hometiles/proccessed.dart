@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ProcessedOrdersScreen extends StatefulWidget {
   const ProcessedOrdersScreen({super.key});
@@ -58,8 +59,9 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
         future: _processedOrdersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  size: 50, color: Colors.green.shade100),
             );
           } else if (snapshot.hasError) {
             return Center(
@@ -80,17 +82,21 @@ class ProcessedOrdersScreenState extends State<ProcessedOrdersScreen> {
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(color: Colors.green),
+                  child: Card(
+                    elevation: 5,
+                    color: Colors.green.shade100,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
                     child: ListTile(
                       title: Text(
                         orderData['item_name'] ?? '',
-                        style: const TextStyle(color: Colors.white),
+                        style: GoogleFonts.abel(
+                            color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         'Price: ${orderData['item_price'] ?? ''}',
-                        style: const TextStyle(color: Colors.white),
+                        style: GoogleFonts.abel(
+                            color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
