@@ -16,14 +16,19 @@ class DropdownMenuWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 20.0),
       child: PopupMenuButton<String>(
+        color: Colors.white,
+        popUpAnimationStyle: AnimationStyle(
+            curve: Curves.easeIn,
+            duration: const Duration(milliseconds: 500),
+            reverseDuration: const Duration(milliseconds: 300),
+            reverseCurve: Curves.easeOut),
         icon: const Icon(
           Icons.menu,
-          size: 40,
-          color: Colors.white,
+          size: 30,
+          color: Colors.black87,
         ),
         onSelected: (String result) {
-          // Handle menu item selection here
-          // You can navigate to different screens based on the selected item
+// screen navigation
           switch (result) {
             case 'Profile':
               Navigator.push(
@@ -131,7 +136,10 @@ class DropdownMenuWidget extends StatelessWidget {
                   children: [
                     Text(AppLocalizations.of(context)!.about),
                     const Spacer(),
-                    const Icon(Icons.info),
+                    const Icon(
+                      Icons.info,
+                      color: Colors.redAccent,
+                    ),
                   ],
                 ),
               ),
