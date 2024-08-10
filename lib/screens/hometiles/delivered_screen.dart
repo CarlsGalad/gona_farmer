@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DeliveredOrdersScreen extends StatefulWidget {
   const DeliveredOrdersScreen({super.key});
@@ -58,8 +59,9 @@ class DeliveredOrdersScreenState extends State<DeliveredOrdersScreen> {
         future: _deliveredOrdersFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  size: 50, color: Colors.green.shade100),
             );
           } else if (snapshot.hasError) {
             return Center(
@@ -81,18 +83,23 @@ class DeliveredOrdersScreenState extends State<DeliveredOrdersScreen> {
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(color: Colors.green),
+                  child: Card(
+                    elevation: 5,
+                    color: Colors.green.shade100,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
                     child: ListTile(
                       title: Text(
                         orderData['item_mame'] ?? '',
-                        style: const TextStyle(color: Colors.white),
+                        style: GoogleFonts.abel(
+                            color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                          '${AppLocalizations.of(context)!.price_with_column} '
-                          ' ${orderData['item_price'] ?? ''}',
-                          style: const TextStyle(color: Colors.white)),
+                        '${AppLocalizations.of(context)!.price_with_column} '
+                        ' ${orderData['item_price'] ?? ''}',
+                        style: GoogleFonts.abel(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      ),
                       // Add more details as needed
                     ),
                   ),
