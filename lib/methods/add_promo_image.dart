@@ -51,9 +51,9 @@ class ImageHelperPromo {
         uiSettings: [
           AndroidUiSettings(
             cropStyle: cropStyle,
-            toolbarColor: Colors.green,
+            toolbarColor: Colors.green.shade100,
             toolbarTitle: 'Crop Image',
-            statusBarColor: Colors.green.shade900,
+            statusBarColor: Colors.green.shade100,
             backgroundColor: Colors.white,
           ),
           IOSUiSettings(
