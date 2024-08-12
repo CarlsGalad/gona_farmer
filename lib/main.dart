@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/language_const.dart';
 import 'services/auth_service.dart';
 import 'services/firebase_options.dart';
@@ -13,16 +14,25 @@ import 'services/watcher.dart';
 import 'services/notificationservice.dart';
 import 'screens/notifications.dart';
 import 'services/auth_page.dart';
+import 'welcomepages/welcome.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // instance of shared preferences
+  final prefs = await SharedPreferences.getInstance();
+  // check if its users first time
+  final isFirstTime = prefs.getBool('isFirstTime') ?? true;
+
+//initialize firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final FirebaseApi firebaseApi = FirebaseApi();
   await firebaseApi.initNotifications();
 
+// watch for changes in order collection
   final orderItemWatcher = OrderItemWatcher();
   orderItemWatcher.startWatching();
 
@@ -50,13 +60,16 @@ void main() async {
           },
         ),
       ],
-      child: const GonaVendor(),
+      child: GonaVendor(
+        isFirstTime: isFirstTime,
+      ),
     ),
   );
 }
 
 class GonaVendor extends StatefulWidget {
-  const GonaVendor({super.key});
+  final bool isFirstTime;
+  const GonaVendor({super.key, required this.isFirstTime});
 
   @override
   State<GonaVendor> createState() => _GonaVendorState();
@@ -99,7 +112,7 @@ class _GonaVendorState extends State<GonaVendor> {
 
       locale: _locale,
       debugShowCheckedModeBanner: false,
-      home: const AuthPage(),
+      home: widget.isFirstTime ? const WelcomePage() : const AuthPage(),
       routes: {
         '/notification_screen': (context) => const NotificationScreen(),
       },
