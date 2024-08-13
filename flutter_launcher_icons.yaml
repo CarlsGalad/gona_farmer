@@ -4,17 +4,17 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "lib/images/AppIcon.jpeg"
+  image_path: "lib/images/logo_plain.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
-    image_path: "lib/images/AppIcon.jpeg"
-    background_color: "#55bf51"
-    theme_color: " #FFFFFF"
+    image_path: "lib/images/logo_plain.png"
+    background_color: "##C8E6C9"
+    theme_color: "#FFFFFF"
   windows:
     generate: true
-    image_path: "lib/images/AppIcon.jpeg"
+    image_path: "lib/images/logo_plain.png"
     icon_size: 48 # min:48, max:256, default: 48
   macos:
     generate: true
-    image_path: "lib/images/AppIcon.jpeg"
+    image_path: "lib/images/logo_plain.png"
