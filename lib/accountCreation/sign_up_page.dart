@@ -131,419 +131,450 @@ class _SingUpPageState extends State<SingUpPage> {
           height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("lib/images/Generated.jpeg"),
+              image: AssetImage("lib/images/singupbg.jpg"),
               fit: BoxFit.cover,
             ),
           ),
           child: SingleChildScrollView(
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
 
-                  // app logo
-                  Center(
-                    child: Container(
-                      height: 150,
-                      width: 150,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(30)),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          'lib/images/Gona logo.jpeg',
-                          fit: BoxFit.cover,
+                    // app logo
+                    Center(
+                      child: Image.asset(
+                        'lib/images/logo_plain.png',
+                        fit: BoxFit.cover,
+                        height: 120,
+                      ),
+                    ),
+
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Gona Market Africa \n',
+                            style: GoogleFonts.agbalumo(
+                                fontSize: 28.0, fontWeight: FontWeight.w700),
+                          ),
+                          TextSpan(
+                            text: 'Vendor',
+                            style: GoogleFonts.abel(
+                                fontSize: 24.0, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      textAlign:
+                          TextAlign.center, // Optional: Center-align the text
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.sign_up_title,
+                      style: GoogleFonts.abel(
+                          fontWeight: FontWeight.bold, fontSize: 30),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+
+                    //Email textfield
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2),
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: TextField(
+                            controller: emailController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText:
+                                    AppLocalizations.of(context)!.emailHint),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Text(AppLocalizations.of(context)!.sign_up_title,
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 30, color: Colors.white)),
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  //Email textfield
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: TextField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText:
-                                  AppLocalizations.of(context)!.emailHint),
-                        ),
-                      ),
+                    const SizedBox(
+                      height: 8,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      children: [
-                        // farm name field
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        children: [
+                          // farm name field
+                          Expanded(
+                            child: Card(
+                              elevation: 2,
                               color: Colors.grey[200],
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: TextField(
-                                controller: farmNameController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: AppLocalizations.of(context)!
-                                      .farm_name_hint,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                                side: const BorderSide(color: Colors.white),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: TextField(
+                                  controller: farmNameController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: AppLocalizations.of(context)!
+                                        .farm_name_hint,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          // farm owners name
+                          Expanded(
+                            child: Card(
+                              elevation: 2,
+                              color: Colors.grey[200],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                                side: const BorderSide(color: Colors.white),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: TextField(
+                                  controller: ownerNameController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: AppLocalizations.of(context)!
+                                        .owner_name_hint,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 8.0),
+
+                    // Phone number filed
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2),
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: TextField(
+                            keyboardType: TextInputType.phone,
+                            controller: mobileController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText:
+                                  AppLocalizations.of(context)!.phone_hint,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+
+                    // Farm address filed
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2),
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: TextField(
+                            keyboardType: TextInputType.streetAddress,
+                            controller: addressController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText:
+                                    AppLocalizations.of(context)!.address_hint),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 8.0),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        children: [
+                          // State dropdown with search
+                          Expanded(
+                            child: Card(
+                              elevation: 2,
+                              color: Colors.grey[200],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                                side: const BorderSide(color: Colors.white),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, top: 15.0, right: 10),
+                                child: DropdownSearch<String>(
+                                  items: statesAndLgas.keys.toList(),
+                                  selectedItem: selectedState,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedState = value;
+                                      selectedLga =
+                                          null; // Reset LGA when state changes
+                                    });
+                                  },
+                                  popupProps: PopupProps.menu(
+                                      showSelectedItems: true,
+                                      showSearchBox: true,
+                                      searchFieldProps: TextFieldProps(
+                                          decoration: InputDecoration(
+                                              fillColor: Colors.grey[300],
+                                              border: InputBorder.none,
+                                              filled: true))),
+                                  dropdownDecoratorProps:
+                                      const DropDownDecoratorProps(
+                                    dropdownSearchDecoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      hintText: "Select State",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          // LGA dropdown with search
+                          Expanded(
+                            child: Card(
+                              elevation: 2,
+                              color: Colors.grey[200],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                                side: const BorderSide(color: Colors.white),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, top: 15, right: 10.0),
+                                child: DropdownSearch<String>(
+                                  items: selectedState == null
+                                      ? []
+                                      : statesAndLgas[selectedState!]!,
+                                  selectedItem: selectedLga,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedLga = value;
+                                    });
+                                  },
+                                  popupProps: PopupProps.menu(
+                                      showSearchBox: true,
+                                      searchFieldProps: TextFieldProps(
+                                          decoration: InputDecoration(
+                                              fillColor: Colors.grey[300],
+                                              border: InputBorder.none,
+                                              filled: true))),
+                                  // ignore: prefer_const_constructors
+                                  dropdownDecoratorProps:
+                                      const DropDownDecoratorProps(
+                                    dropdownSearchDecoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.0),
+                                      hintText: "Select LGA",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 8.0),
+
+                    //Password textfield
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2),
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: TextField(
+                            controller: passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText:
+                                    AppLocalizations.of(context)!.passwordHint),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    // confirm Password textfield
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Card(
+                        elevation: 2,
+                        color: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2),
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: TextField(
+                            controller: confirmPasswordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: AppLocalizations.of(context)!
+                                    .confirm_password_hint),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15.0),
+
+                    const SizedBox(height: 15.0),
+
+                    //sign in button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: MaterialButton(
+                        elevation: 18,
+                        color: Colors.green.shade100,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        onPressed: () {
+                          signUserUp();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 80.0, vertical: 20),
+                          child: Text(
+                            AppLocalizations.of(context)!.sign_up_button,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    // continue with
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey[400],
+                              thickness: 0.6,
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.orContinueWith,
+                              style: GoogleFonts.abel(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.grey[400],
+                              thickness: 0.6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 30,
+                    ),
+
+                    // google sign in
+                    MaterialButton(
+                      padding: EdgeInsets.all(5),
+                      elevation: 2,
+                      color: Colors.grey[200],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(color: Colors.white),
+                      ),
+                      onPressed: () => AuthService().signInWithGoogle(),
+                      child: Image.asset(
+                        'lib/images/g_icon.png',
+                        height: 35,
+                        width: 35,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.already_have_account,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
                         ),
                         const SizedBox(
-                          width: 12,
+                          width: 10,
                         ),
-                        // farm owners name
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: TextField(
-                                controller: ownerNameController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: AppLocalizations.of(context)!
-                                      .owner_name_hint,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 15.0),
-
-                  // Phone number filed
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: TextField(
-                          keyboardType: TextInputType.phone,
-                          controller: mobileController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: AppLocalizations.of(context)!.phone_hint,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15.0),
-
-                  // Farm address filed
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: TextField(
-                          keyboardType: TextInputType.streetAddress,
-                          controller: addressController,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText:
-                                  AppLocalizations.of(context)!.address_hint),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 15.0),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Row(
-                      children: [
-                        // State dropdown with search
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, top: 15.0, right: 10),
-                              child: DropdownSearch<String>(
-                                items: statesAndLgas.keys.toList(),
-                                selectedItem: selectedState,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedState = value;
-                                    selectedLga =
-                                        null; // Reset LGA when state changes
-                                  });
-                                },
-                                popupProps: PopupProps.menu(
-                                    showSelectedItems: true,
-                                    showSearchBox: true,
-                                    searchFieldProps: TextFieldProps(
-                                        decoration: InputDecoration(
-                                            fillColor: Colors.grey[300],
-                                            border: InputBorder.none,
-                                            filled: true))),
-                                dropdownDecoratorProps:
-                                    const DropDownDecoratorProps(
-                                  dropdownSearchDecoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10.0),
-                                    hintText: "Select State",
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        // LGA dropdown with search
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, top: 15, right: 10.0),
-                              child: DropdownSearch<String>(
-                                items: selectedState == null
-                                    ? []
-                                    : statesAndLgas[selectedState!]!,
-                                selectedItem: selectedLga,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedLga = value;
-                                  });
-                                },
-                                popupProps: PopupProps.menu(
-                                    showSearchBox: true,
-                                    searchFieldProps: TextFieldProps(
-                                        decoration: InputDecoration(
-                                            fillColor: Colors.grey[300],
-                                            border: InputBorder.none,
-                                            filled: true))),
-                                // ignore: prefer_const_constructors
-                                dropdownDecoratorProps: DropDownDecoratorProps(
-                                  dropdownSearchDecoration:
-                                      const InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 10.0),
-                                    hintText: "Select LGA",
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 15.0),
-
-                  //Password textfield
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText:
-                                  AppLocalizations.of(context)!.passwordHint),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15.0),
-                  // confirm Password textfield
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: TextField(
-                          controller: confirmPasswordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: AppLocalizations.of(context)!
-                                  .confirm_password_hint),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15.0),
-
-                  const SizedBox(height: 15.0),
-
-                  //sign in button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: MaterialButton(
-                      elevation: 18,
-                      color: Colors.green.shade100,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      onPressed: () {
-                        signUserUp();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 80.0, vertical: 20),
-                        child: Text(
-                          AppLocalizations.of(context)!.sign_up_button,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  // continue with
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey[400],
-                            thickness: 0.6,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        GestureDetector(
+                          onTap: widget.onTap,
                           child: Text(
-                            AppLocalizations.of(context)!.orContinueWith,
-                            style: const TextStyle(color: Colors.white),
+                            AppLocalizations.of(context)!.sign_in_now,
+                            style: const TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Colors.grey[400],
-                            thickness: 0.6,
-                          ),
-                        ),
+                        )
                       ],
                     ),
-                  ),
-
-                  const SizedBox(
-                    height: 30,
-                  ),
-
-                  // google sign in
-                  GestureDetector(
-                    onTap: () => AuthService().signInWithGoogle(),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 30),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Center(
-                        child: Image.asset(
-                          'lib/images/g_icon.png',
-                          height: 65,
-                        ),
-                      ),
+                    const SizedBox(
+                      height: 30,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.already_have_account,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      GestureDetector(
-                        onTap: widget.onTap,
-                        child: Text(
-                          AppLocalizations.of(context)!.sign_in_now,
-                          style: const TextStyle(
-                              color: Colors.blue, fontWeight: FontWeight.bold),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
