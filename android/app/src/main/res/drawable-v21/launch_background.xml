@@ -9,8 +9,8 @@
         <bitmap
             android:gravity="center"
             android:src="@drawable/logo_plain" 
-            android:width="150dp" 
-            android:height="150dp" 
+            android:width="100dp" 
+            android:height="100dp" 
             /> <!-- Reference the logo -->
     </item>
 
