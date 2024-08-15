@@ -24,8 +24,14 @@ class OrderCountTileState extends State<OrderCountTile> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final tileWidth = MediaQuery.of(context).size.width / 3.5;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final tileHeight = screenHeight * 0.17;
+
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 3.5,
+      width: tileWidth,
       child: FutureBuilder<List<Map<String, dynamic>>?>(
         future: _ordersFuture,
         builder: (context, snapshot) {
@@ -54,6 +60,8 @@ class OrderCountTileState extends State<OrderCountTile> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
                 child: SizedBox(
+                  height: tileHeight,
+                  width: tileWidth,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Column(
@@ -70,16 +78,22 @@ class OrderCountTileState extends State<OrderCountTile> {
                               ),
                             )),
                         Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
+                          padding: EdgeInsets.only(top: screenHeight * 0.02),
                           child: Text(
                             '$ordersCount', // Display the order count
-                            style: GoogleFonts.aboreto(fontSize: 45),
+                            style: GoogleFonts.aboreto(
+                              fontSize: screenWidth *
+                                  0.1, // Adjust font size based on screen width
+                            ),
                             textAlign: TextAlign.start,
                           ),
                         ),
                         Text(
                           AppLocalizations.of(context)!.orders_label,
-                          style: GoogleFonts.abel(fontWeight: FontWeight.bold),
+                          style: GoogleFonts.abel(
+                            fontWeight: FontWeight.bold,
+                            fontSize: screenWidth * 0.04,
+                          ),
                         ),
                         const SizedBox(
                           height: 4,
