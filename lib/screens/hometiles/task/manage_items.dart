@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,23 +28,48 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
 
   Future<void> _deleteItem(String itemId) async {
     try {
-      await FirebaseFirestore.instance.collection('Items').doc(itemId).delete();
-      if (!mounted) return;
-      // Show success message or navigate to a different screen if needed
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(AppLocalizations.of(context)!.item_deleted_successfully),
-          backgroundColor: Colors.green,
-        ),
-      );
+      // Step 1: Get the document to retrieve the image URL
+      DocumentSnapshot itemDoc = await FirebaseFirestore.instance
+          .collection('Items')
+          .doc(itemId)
+          .get();
+
+      if (itemDoc.exists) {
+        String? imagePath = itemDoc['imagePath'];
+
+        // Step 2: Delete the file from Firebase Storage if imagePath is not null
+        if (imagePath != null && imagePath.isNotEmpty) {
+          final storageRef = FirebaseStorage.instance.refFromURL(imagePath);
+          await storageRef.delete();
+        }
+
+        // Step 3: Delete the Firestore document
+        await FirebaseFirestore.instance
+            .collection('Items')
+            .doc(itemId)
+            .delete();
+
+        if (!mounted) return;
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.item_deleted_successfully),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        throw Exception('Document does not exist');
+      }
     } catch (error) {
       if (!mounted) return;
+
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${AppLocalizations.of(context)!.error_deleting_item} '
-              ' $error'),
+          content: Text(
+              '${AppLocalizations.of(context)!.error_deleting_item} $error'),
           backgroundColor: Colors.red,
         ),
       );
