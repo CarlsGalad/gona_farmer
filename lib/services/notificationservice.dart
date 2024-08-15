@@ -1,50 +1,81 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import '../local_db.dart';
 import '../main.dart';
 
 class FirebaseApi {
-  // Create an instance of Firebase Messaging
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  final LocalDb _localDb = LocalDb(); // Create an instance of LocalDb
 
-  // Create a list to store received notifications
-  List<RemoteMessage> notifications = [];
+  FirebaseApi() {
+    _initializeLocalNotifications();
+  }
 
-  // Function to initialize notifications
-  Future<void> initNotifications() async {
-    // Request permission if not granted already
-    await _firebaseMessaging.requestPermission();
+  // Initialize local notifications
+  void _initializeLocalNotifications() {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/launcher_icon');
 
-    // Get the installation ID (also known as Instance ID)
-    String? installationId = await _firebaseMessaging.getToken();
-    print('Installation ID: $installationId');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
 
-    // Initialize further settings for push notification
-    initPushNotifications();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  // Show local notification and save to database
+  void _showLocalNotification(Map<String, dynamic> orderData) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+      'channelId',
+      'channelName',
+      channelDescription: 'channelDescription',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      orderData['status'] == 'prepared' ? 'Order Prepared' : 'Order Delivered',
+      'Item: ${orderData['item_name']}\nOrder ID: ${orderData['order_id']}',
+      notificationDetails,
+    );
+
+    // Save notification to the local database
+    await _localDb.insertNotification({
+      'title': orderData['status'] == 'prepared'
+          ? 'You have a New Order'
+          : 'Order Delivered',
+      'body':
+          'Item: ${orderData['item_name']}\nOrder ID: ${orderData['order_id']}',
+    });
   }
 
   // Function to handle received messages
   void handleMessage(RemoteMessage? message) {
-    // If the message is null, do nothing
     if (message == null) return;
 
-    // Add the received message to the list
-    notifications.add(message);
+    final orderData = message.data;
 
-    // Navigate to a new screen when the message is tapped
+    if (orderData['status'] == 'prepared' ||
+        orderData['status'] == 'delivered') {
+      _showLocalNotification(orderData);
+    }
+
     navigatorKey.currentState?.pushNamed(
       '/notification_screen',
       arguments: message,
     );
   }
 
-  // Function to initialize background settings
-  Future initPushNotifications() async {
-    // Handle notification if the app was terminated and now opened
+  // Initialize Firebase Messaging
+  Future<void> initPushNotifications() async {
     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    // Attach event listeners for when a notification opens the app
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-
-    // Handling messages when the app is in the foreground
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       handleMessage(message);
     });
