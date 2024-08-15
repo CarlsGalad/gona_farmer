@@ -41,14 +41,22 @@ class TotalSalesTileState extends State<TotalSalesTile> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final tileWidth = MediaQuery.of(context).size.width / 3.5;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final tileHeight = screenHeight * 0.17;
+
     final numberFormatter = NumberFormat('#,###');
+
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 3.5,
+      width: tileWidth,
       child: Card(
         color: Colors.white,
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: SizedBox(
+          width: tileWidth,
+          height: tileHeight,
           child: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: Column(
@@ -66,17 +74,22 @@ class TotalSalesTileState extends State<TotalSalesTile> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: EdgeInsets.only(top: screenHeight * 0.02),
                   child: Text(
                     numberFormatter
                         .format(_totalSales), // Display the total sales count
-                    style: GoogleFonts.aboreto(fontSize: 45),
+                    style: GoogleFonts.aboreto(
+                      fontSize: screenWidth * 0.1,
+                    ),
                     textAlign: TextAlign.start,
                   ),
                 ),
                 Text(
                   AppLocalizations.of(context)!.total_sales_label,
-                  style: GoogleFonts.abel(fontWeight: FontWeight.bold),
+                  style: GoogleFonts.abel(
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenWidth * 0.04,
+                  ),
                 ),
                 SizedBox(
                   height: 8,
