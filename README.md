@@ -1,16 +1,19 @@
 # gona_vendor
 
-A new Flutter project.
+#Gona Vendor
+# email: grace@mail.com
+# pass: test123
 
-## Getting Started
+Gona is a flutter mobile app designed for Gona Market Africa e-commerce vendors 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+#features include
+1. Managing inventory(create, read, update, delete)
+2. Managing promotions discounts(create, read, update, delete).
+3. Order Processing.
+4. Order monitoring.
+5. Performance chart(Last Six Months and This Week)
+6. Local notifications
+7. App localizations( English, Hausa, French, Arabic, Yoruba, Igbo)
+8. Blog for News.
+9. Live chat with customer care.
+10. and more.
