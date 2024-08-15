@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LineChartWidget extends StatefulWidget {
   const LineChartWidget({super.key});
@@ -71,9 +72,11 @@ class LineChartWidgetState extends State<LineChartWidget> {
       future: fetchMonthlySalesData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-              child:
-                  CircularProgressIndicator()); // Show a loading indicator while data is being fetched
+          return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.green.shade100,
+                  size:
+                      50)); // Show a loading indicator while data is being fetched
         } else if (snapshot.hasError) {
           return Text(
               'Error: ${snapshot.error}'); // Show an error message if fetching data fails
@@ -160,7 +163,7 @@ class LineChartWidgetState extends State<LineChartWidget> {
           (index) => FlSpot(index.toDouble() + 1, monthlySales[index]),
         ),
         isCurved: true,
-        color: Colors.green,
+        color: Colors.green.shade100,
         barWidth: 3,
         isStrokeCapRound: true,
         belowBarData: BarAreaData(show: false),
