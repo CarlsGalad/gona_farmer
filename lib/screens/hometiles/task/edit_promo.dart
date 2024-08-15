@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../methods/add_promo_image.dart';
 import '../../../models/conditional.dart';
 
@@ -59,6 +59,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
           .get();
 
       Map<String, dynamic> promoData = snapshot.data() ?? {};
+      print("Fetched promo data: $promoData");
 
       setState(() {
         _nameController.text = promoData['name'] ?? '';
@@ -68,14 +69,81 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
             (promoData['farmingYear'] ?? 0).toString();
         _availQuantityController.text =
             (promoData['availQuantity'] ?? 0).toString();
-        itemPath = promoData['itemPath'];
+
+        itemPath = promoData['imagePath'] as String? ?? '';
+        print("Set itemPath to: $itemPath");
       });
     } catch (error) {
       rethrow;
     }
   }
 
- bool isValidUrl(String url) {
+  Widget _buildImageWidget() {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.green.shade200),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        height: 200,
+        width: 200,
+        child: _image != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(
+                  _image!,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : itemPath != null && itemPath!.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      imageUrl: itemPath!,
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => const Center(
+                        child: LinearProgressIndicator(
+                          color: Colors.green,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.error, color: Colors.red),
+                            SizedBox(height: 8),
+                            const Text(
+                              'Image not found',
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.image_not_supported,
+                            color: Colors.grey),
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.pick_image,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+      ),
+    );
+  }
+
+  bool isValidUrl(String url) {
     final Uri? uri = Uri.tryParse(url);
     return uri != null &&
         uri.isAbsolute &&
@@ -167,86 +235,17 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade200),
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 200,
-                  width: 200,
-                  child: _image != null
-                      ? Image.file(
-                          _image!,
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        )
-                      : FutureBuilder<Reference?>(
-                          future: _getItemReference(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Reference?> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const SizedBox(
-                                width: 200,
-                                height: 100,
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              ); // Loading indicator
-                            } else if (snapshot.hasError ||
-                                snapshot.data == null) {
-                              return const SizedBox(
-                                width: 200,
-                                height: 100,
-                                child: Center(
-                                  child: Text('Invalid URL!'),
-                                ),
-                              ); // Error message for invalid URL
-                            } else {
-                              return FutureBuilder<String>(
-                                future: snapshot.data!.getDownloadURL(),
-                                builder: (context, urlSnapshot) {
-                                  if (urlSnapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return SizedBox(
-                                      width: 200,
-                                      height: 100,
-                                      child: Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    ); // Loading indicator for download URL
-                                  } else if (urlSnapshot.hasError) {
-                                    return SizedBox(
-                                      width: 200,
-                                      height: 100,
-                                      child: Center(
-                                        child: Text(
-                                            'Error fetching download URL!'),
-                                      ),
-                                    ); // Error message for download URL
-                                  } else {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      width: 200,
-                                      height: 200,
-                                      child: Image.network(
-                                        urlSnapshot.data!,
-                                        fit: BoxFit
-                                            .cover, // Adjust according to your requirement
-                                      ),
-                                    );
-                                  }
-                                },
-                              );
-                            }
-                          },
-                        ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildImageWidget(),
+                    // ... (rest of the widgets remain the same)
+                  ],
                 ),
               ),
+
               const SizedBox(
                 height: 15,
               ),
