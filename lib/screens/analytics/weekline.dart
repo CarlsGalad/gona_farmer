@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WeekLineChartWidget extends StatefulWidget {
   const WeekLineChartWidget({super.key});
@@ -69,7 +70,10 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
-          axisNameWidget: Text(AppLocalizations.of(context)!.this_week),
+          axisNameWidget: Text(
+            AppLocalizations.of(context)!.this_week,
+            style: GoogleFonts.abel(),
+          ),
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, _) {
@@ -78,25 +82,25 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
               switch (day) {
                 case 0:
                   return Text(AppLocalizations.of(context)!.mon,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 case 1:
                   return Text(AppLocalizations.of(context)!.tue,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 case 2:
                   return Text(AppLocalizations.of(context)!.wed,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 case 3:
                   return Text(AppLocalizations.of(context)!.thu,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 case 4:
                   return Text(AppLocalizations.of(context)!.fri,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 case 5:
                   return Text(AppLocalizations.of(context)!.sat,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 case 6:
                   return Text(AppLocalizations.of(context)!.sun,
-                      style: const TextStyle(color: Colors.black));
+                      style: GoogleFonts.abel(color: Colors.black));
                 default:
                   return const SizedBox();
               }
@@ -104,8 +108,10 @@ class WeekLineChartWidgetState extends State<WeekLineChartWidget> {
           ),
         ),
         leftTitles: AxisTitles(
-          axisNameWidget:
-              Text(AppLocalizations.of(context)!.this_weeks_earnings),
+          axisNameWidget: Text(
+            AppLocalizations.of(context)!.this_weeks_earnings,
+            style: GoogleFonts.abel(fontStyle: FontStyle.italic),
+          ),
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (double value, _) {
