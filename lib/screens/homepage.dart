@@ -13,7 +13,7 @@ import 'package:gona_vendor/screens/hometiles/welcomemsg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'help_center/animation.dart';
+import '../models/helper/animation.dart';
 import 'hometiles/appbaritems.dart';
 import 'hometiles/task/add_item.dart';
 import 'hometiles/earnings_tile.dart';
