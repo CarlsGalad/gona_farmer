@@ -77,10 +77,13 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final tileWidth = screenWidth - (screenWidth / 3.5) - 40;
+    final tileHeight = screenHeight * 0.17;
+
     return SizedBox(
-      width: MediaQuery.of(context).size.width -
-          MediaQuery.of(context).size.width / 3.5 -
-          40,
+      width: tileWidth,
       child: GestureDetector(
         onTap: () => Navigator.push(
           context,
@@ -95,10 +98,10 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
             borderRadius: BorderRadius.circular(5),
           ),
           child: SizedBox(
-            width: 240,
-            height: 120,
+            width: tileWidth,
+            height: tileHeight,
             child: Padding(
-              padding: const EdgeInsets.only(left: 15),
+              padding: EdgeInsets.only(left: screenWidth * 0.03),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,16 +116,21 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
                         ),
                       )),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
+                    padding: EdgeInsets.only(top: screenHeight * 0.02),
                     child: Text(
                       _deliveredCount.toString(), // Display the delivered count
-                      style: GoogleFonts.aboreto(fontSize: 45),
+                      style: GoogleFonts.aboreto(
+                        fontSize: screenWidth * 0.1,
+                      ),
                       textAlign: TextAlign.start,
                     ),
                   ),
                   Text(
                     AppLocalizations.of(context)!.delivered_label,
-                    style: GoogleFonts.abel(fontWeight: FontWeight.bold),
+                    style: GoogleFonts.abel(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.04,
+                    ),
                   ),
                   const SizedBox(
                     height: 8,
