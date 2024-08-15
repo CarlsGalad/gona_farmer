@@ -16,27 +16,35 @@ class Blog extends StatefulWidget {
 class _BlogState extends State<Blog> {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.green.shade100,
       appBar: AppBar(
         title: Text(
           'News',
-          style: GoogleFonts.abhayaLibre(fontSize: 30),
+          style: GoogleFonts.abhayaLibre(fontSize: screenWidth * 0.08),
         ),
         centerTitle: true,
         backgroundColor: Colors.green.shade100,
       ),
       body: Container(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(screenWidth * 0.04),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
         child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('news').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                      color: Colors.green.shade100, size: 50));
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.green.shade100,
+                  size: screenWidth * 0.1,
+                ),
+              );
             }
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
@@ -46,61 +54,66 @@ class _BlogState extends State<Blog> {
               itemCount: newsDocs.length,
               itemBuilder: (context, index) {
                 final newsItem = NewsItem.fromMap(
-                    newsDocs[index].data() as Map<String, dynamic>);
+                  newsDocs[index].data() as Map<String, dynamic>,
+                );
 
                 return Card(
                   elevation: 5,
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: ListTile(
                     leading: SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: newsItem.image.isNotEmpty
-                            ? Image.network(
-                                newsItem.image,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Display a placeholder image if there's an error loading the image
-                                  return const Icon(
-                                    Icons.newspaper_sharp,
-                                    size: 50,
-                                  );
-                                },
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Center(
-                                    child: LinearProgressIndicator(
-                                      color: Colors.green,
-                                      value:
-                                          loadingProgress.expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                              : null,
-                                    ),
-                                  );
-                                },
-                              )
-                            : const Center(
-                                child: Icon(
+                      width: screenWidth * 0.3,
+                      height: screenHeight * 0.15,
+                      child: newsItem.image.isNotEmpty
+                          ? Image.network(
+                              newsItem.image,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Display a placeholder image if there's an error loading the image
+                                return const Icon(
+                                  Icons.newspaper_sharp,
+                                  size: 50,
+                                );
+                              },
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return Center(
+                                  child: LinearProgressIndicator(
+                                    color: Colors.green,
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            (loadingProgress
+                                                    .expectedTotalBytes ??
+                                                1)
+                                        : null,
+                                  ),
+                                );
+                              },
+                            )
+                          : const Center(
+                              child: Icon(
                                 Icons.newspaper_sharp,
                                 size: 50,
-                              ))),
+                              ),
+                            ),
+                    ),
                     title: Text(
                       newsItem.title,
-                      style: const TextStyle(fontSize: 25),
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     subtitle: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
                           Icons.person_2_rounded,
@@ -108,8 +121,11 @@ class _BlogState extends State<Blog> {
                         ),
                         Text(
                           ' ${newsItem.publisher}',
-                          style:
-                              const TextStyle(fontSize: 15, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.02,
+                            color: Colors.grey,
+                          ),
+                          overflow: TextOverflow.fade,
                         ),
                         const Text(
                           ' • ',
@@ -121,9 +137,12 @@ class _BlogState extends State<Blog> {
                         ),
                         Text(
                           newsItem.datePublished,
-                          style:
-                              const TextStyle(fontSize: 15, color: Colors.grey),
-                        )
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.02,
+                            color: Colors.grey,
+                          ),
+                          overflow: TextOverflow.fade,
+                        ),
                       ],
                     ),
                     onTap: () {
