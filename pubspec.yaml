@@ -59,6 +59,10 @@ dependencies:
   dropdown_search: ^5.0.6
   flutter_launcher_icons: ^0.13.1
   carousel_slider: ^5.0.0
+  flutter_native_splash: ^2.4.1
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  flutter_local_notifications: ^17.2.2
 
 dev_dependencies:
   flutter_test:
