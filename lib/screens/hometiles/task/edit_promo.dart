@@ -9,10 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../../../methods/add_promo_image.dart';
+
+import '../../../methods/add_item_image_methods.dart';
 import '../../../models/conditional.dart';
 
-final imageHelper = ImageHelperPromo();
+final imageHelper = ImageHelper();
 
 class EditPromoDetailsPage extends StatefulWidget {
   final String itemId;
@@ -54,7 +55,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
     try {
       DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
           .instance
-          .collection('promotions')
+          .collection('Items')
           .doc(widget.itemId)
           .get();
 
