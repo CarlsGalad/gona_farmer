@@ -28,6 +28,7 @@ class AddItemScreenState extends State<AddItemScreen> {
 
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _farmingYearController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
 
   bool isLoading = false;
   int? _selectedCategoryId;
@@ -38,6 +39,7 @@ class AddItemScreenState extends State<AddItemScreen> {
   String? _selectedSellingMethod;
   String? _userCity;
   String? _farmName;
+  String? _userState;
   int? _selectedYear;
 
   bool uploadingImage = false;
@@ -264,6 +266,7 @@ class AddItemScreenState extends State<AddItemScreen> {
                           maxLength: 8,
                           controller: _priceController,
                           decoration: InputDecoration(
+                              prefixText: 'NGN',
                               labelText: AppLocalizations.of(context)!.price,
                               border: InputBorder.none),
                           keyboardType: TextInputType.number,
@@ -286,7 +289,7 @@ class AddItemScreenState extends State<AddItemScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           textCapitalization: TextCapitalization.sentences,
-                          maxLength: 300,
+                          maxLength: 600,
                           controller: _descriptionController,
                           decoration: InputDecoration(
                               labelText:
@@ -373,15 +376,12 @@ class AddItemScreenState extends State<AddItemScreen> {
                           child: DropdownButtonFormField<int>(
                             borderRadius: BorderRadius.circular(5),
                             value: _selectedCategoryId,
-
                             dropdownColor: Colors.grey[600],
-                            style: const TextStyle(
-                                color: Colors
-                                    .black), // Set the text style for the dropdown menu
+                            style: const TextStyle(color: Colors.black),
                             padding: const EdgeInsets.all(20),
                             items: _categories.map((category) {
                               int? id =
-                                  category['id'] is int ? category['id'] : null;
+                                  int.tryParse(category['id'].toString()) ?? 0;
                               return DropdownMenuItem<int>(
                                 alignment: Alignment.center,
                                 value: id,
@@ -391,18 +391,8 @@ class AddItemScreenState extends State<AddItemScreen> {
                                 ),
                               );
                             }).toList(),
-                            selectedItemBuilder: (BuildContext context) {
-                              return _categories.map((category) {
-                                return Text(
-                                  category['name'] as String? ?? '',
-                                  style: const TextStyle(
-                                      color: Colors
-                                          .black), // Text color when dropdown is closed
-                                );
-                              }).toList();
-                            },
                             onChanged: (value) async {
-                              if (value != null) {
+                              if (value != null && value != 0) {
                                 await _fetchSubcategories(value);
                                 setState(() {
                                   _selectedCategoryId = value;
@@ -411,21 +401,21 @@ class AddItemScreenState extends State<AddItemScreen> {
                                 setState(() {
                                   _selectedCategoryId = null;
                                   _subcategories.clear();
-                                  _subcategories.add({});
+                                  _subcategories.add({
+                                    'id': 0,
+                                    'name': 'Select a Subcategory'
+                                  });
                                   _selectedSubcategoryId = null;
                                 });
                               }
                             },
-                            decoration: InputDecoration(
-                              labelText:
-                                  AppLocalizations.of(context)!.select_category,
-                              hintStyle: const TextStyle(color: Colors.black),
+                            decoration: const InputDecoration(
+                              labelText: 'Select a Category',
                               border: InputBorder.none,
                             ),
                             validator: (value) {
-                              if (value == null) {
-                                return AppLocalizations.of(context)!
-                                    .please_select_category;
+                              if (value == null || value == 0) {
+                                return 'Please select a category';
                               }
                               return null;
                             },
@@ -433,8 +423,8 @@ class AddItemScreenState extends State<AddItemScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 15.0),
+                    // Subcategory Dropdown
                     Card(
                       color: Colors.grey.shade200,
                       elevation: 2,
@@ -451,10 +441,9 @@ class AddItemScreenState extends State<AddItemScreen> {
                             style: const TextStyle(color: Colors.black),
                             padding: const EdgeInsets.all(20),
                             items: _subcategories.map((subcategory) {
-                              // Safely get the id as an int
-                              int? id = subcategory['id'] is int
-                                  ? subcategory['id']
-                                  : null;
+                              int? id =
+                                  int.tryParse(subcategory['id'].toString()) ??
+                                      0;
                               return DropdownMenuItem<int>(
                                 value: id,
                                 child: Text(
@@ -463,24 +452,21 @@ class AddItemScreenState extends State<AddItemScreen> {
                                 ),
                               );
                             }).toList(),
-                            selectedItemBuilder: (BuildContext context) {
-                              return _subcategories.map((subcategory) {
-                                return Text(
-                                  subcategory['name'] as String? ?? '',
-                                  style: const TextStyle(color: Colors.black),
-                                );
-                              }).toList();
-                            },
                             onChanged: (value) {
                               setState(() {
                                 _selectedSubcategoryId = value;
                               });
                             },
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!
-                                  .select_subcategory,
+                            decoration: const InputDecoration(
+                              labelText: 'Select a Subcategory',
                               border: InputBorder.none,
                             ),
+                            validator: (value) {
+                              if (value == null || value == 0) {
+                                return 'Please select a subcategory';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ),
@@ -504,6 +490,32 @@ class AddItemScreenState extends State<AddItemScreen> {
                             if (value == null || value.isEmpty) {
                               return AppLocalizations.of(context)!
                                   .please_enter_quantity;
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 15.0),
+                    Card(
+                      color: Colors.grey.shade200,
+                      elevation: 2,
+                      shape: const BeveledRectangleBorder(),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: TextFormField(
+                          controller: _weightController,
+                          decoration: const InputDecoration(
+                              suffix: Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Text('KG'),
+                              ),
+                              labelText: 'Weight',
+                              border: InputBorder.none),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter item weight';
                             }
                             return null;
                           },
@@ -598,7 +610,7 @@ class AddItemScreenState extends State<AddItemScreen> {
     );
   }
 
-  Future<void> _fetchUserCity() async {
+  Future<void> _fetchUserDetails() async {
     // Get the current user's UID from Firebase Authentication
     String? userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
@@ -609,27 +621,12 @@ class AddItemScreenState extends State<AddItemScreen> {
               .doc(userId)
               .get();
 
-      // Extract the city from the user data
+      // Extract the deails from the user data
       setState(() {
+        _userState = userSnapshot['state'];
         _userCity = userSnapshot['lga'] ??
             'Unknown'; // Default to 'Unknown' if city is not found
-      });
-    }
-  }
-
-  Future<void> _fetchFarmName() async {
-    // Get the current user's UID from Firebase Authentication
-    String? userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId != null) {
-      // Fetch farm name from Firestore for the current user's farm
-      DocumentSnapshot farmSnapshot = await FirebaseFirestore.instance
-          .collection('farms')
-          .doc(userId)
-          .get();
-
-      // Get the farm name from the document snapshot
-      setState(() {
-        _farmName = farmSnapshot['farmName'] ?? 'Farm Name Not Found';
+        _farmName = userSnapshot['farmName'] ?? 'Farm Name Not Found';
       });
     }
   }
@@ -643,8 +640,7 @@ class AddItemScreenState extends State<AddItemScreen> {
       String? userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId != null) {
         try {
-          await _fetchUserCity();
-          await _fetchFarmName();
+          await _fetchUserDetails();
 
           DocumentReference newItemRef =
               FirebaseFirestore.instance.collection('Items').doc();
@@ -666,6 +662,7 @@ class AddItemScreenState extends State<AddItemScreen> {
             'price': int.parse(_priceController.text.trim()),
             'description': _descriptionController.text.trim(),
             'itemLocation': _userCity,
+            'state': _userState,
             'categoryId': categoryId,
             'subcategoryId': subcategoryId,
             'availQuantity': int.parse(_quantityController.text.trim()),
@@ -674,14 +671,17 @@ class AddItemScreenState extends State<AddItemScreen> {
             'farmId': userId,
             'itemPath': _downloadURL ?? imageURL,
             'id': newItemRef.id,
+            'weight': _weightController.text.trim(),
             'itemFarm': _farmName,
           });
 
           if (!mounted) return;
 
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-                Text(AppLocalizations.of(context)!.item_added_successfully),
+            content: Text(
+              AppLocalizations.of(context)!.item_added_successfully,
+              style: const TextStyle(color: Colors.black),
+            ),
             backgroundColor: Colors.green.shade100,
           ));
 
@@ -689,7 +689,6 @@ class AddItemScreenState extends State<AddItemScreen> {
           _clearForm();
           Navigator.pop(context);
         } catch (error) {
-          print("Error adding item: $error");
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(AppLocalizations.of(context)!
