@@ -5,7 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'models/language_const.dart';
 import 'services/auth_service.dart';
-import 'providers/item_provider.dart';
+
 import 'services/firestore_service.dart';
 import 'screens/notifications.dart';
 
@@ -26,19 +26,7 @@ void main() async {
         Provider<FirestoreService>(
           create: (_) => FirestoreService(),
         ),
-        ChangeNotifierProxyProvider<FirestoreService, ItemProvider>(
-          create: (_) => ItemProvider(),
-          update: (_, firestoreService, itemProvider) {
-            if (itemProvider != null) {
-              itemProvider.updateFromFirestore(firestoreService);
-              return itemProvider;
-            } else {
-              final newItemProvider = ItemProvider();
-              newItemProvider.updateFromFirestore(firestoreService);
-              return newItemProvider;
-            }
-          },
-        ),
+       
       ],
       child: GonaVendor(),
     ),
