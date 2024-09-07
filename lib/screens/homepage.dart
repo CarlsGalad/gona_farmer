@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:gona_vendor/screens/hometiles/task/add_promo.dart';
 import 'package:gona_vendor/screens/hometiles/deliveredtile.dart';
 import 'package:gona_vendor/screens/hometiles/task/manage_items.dart';
@@ -20,7 +19,6 @@ import 'hometiles/earnings_tile.dart';
 import 'hometiles/task/farmcty.dart';
 import 'hometiles/task/farmname.dart';
 import 'hometiles/total_salestile.dart';
-import 'package:connectivity/connectivity.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -30,8 +28,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
-  final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+ 
   bool _isConnected = true;
   late AnimationController _leftController;
   late AnimationController _rightController;
@@ -59,19 +56,9 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
     _rightController.forward();
     _upwardController.forward();
 
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen((result) {
-      setState(() {
-        _isConnected = result != ConnectivityResult.none;
-      });
-    });
+    
   }
 
-  @override
-  void dispose() {
-    _connectivitySubscription.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
