@@ -58,7 +58,7 @@ class TotalSalesTileState extends State<TotalSalesTile> {
           width: tileWidth,
           height: tileHeight,
           child: Padding(
-            padding: const EdgeInsets.only(left: 15),
+            padding: const EdgeInsets.only(left: 15, right: 15),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +66,7 @@ class TotalSalesTileState extends State<TotalSalesTile> {
                 const Align(
                   alignment: Alignment.topRight,
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
                     child: Icon(
                       Icons.timer,
                       color: Colors.lime,
@@ -77,7 +77,7 @@ class TotalSalesTileState extends State<TotalSalesTile> {
                   padding: EdgeInsets.only(top: screenHeight * 0.02),
                   child: Text(
                     numberFormatter
-                        .format(_totalSales), // Display the total sales count
+                        .format(_totalSales), 
                     style: GoogleFonts.aboreto(
                       fontSize: screenWidth * 0.1,
                     ),
@@ -90,6 +90,7 @@ class TotalSalesTileState extends State<TotalSalesTile> {
                     fontWeight: FontWeight.bold,
                     fontSize: screenWidth * 0.04,
                   ),
+                  overflow: TextOverflow.fade,
                 ),
                 SizedBox(
                   height: 8,
