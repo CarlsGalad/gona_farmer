@@ -157,7 +157,7 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
                     subtitle: Row(
                       children: [
                         Text(
-                          ' ${AppLocalizations.of(context)!.price_with_column} ${itemData['price']}',
+                          ' ${AppLocalizations.of(context)!.price_with_column}NGN ${itemData['price']}',
                           style: GoogleFonts.abel(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
@@ -211,10 +211,10 @@ class InventoryManagementPageState extends State<InventoryManagementPage> {
           );
         },
       ),
-      // Add FloatingActionButton to add new inventory items
+      // Button to add new inventory items
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to a screen to add new inventory items
+          // Navigate to add new inventory items
           Navigator.push(
             context,
             MaterialPageRoute(
