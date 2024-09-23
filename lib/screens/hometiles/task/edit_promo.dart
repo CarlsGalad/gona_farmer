@@ -374,7 +374,7 @@ class EditPromoDetailsPageState extends State<EditPromoDetailsPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    maxLength: 300,
+                    maxLength: 800,
                     controller: _descriptionController,
                     decoration: InputDecoration(
                         labelText: AppLocalizations.of(context)!.description,
