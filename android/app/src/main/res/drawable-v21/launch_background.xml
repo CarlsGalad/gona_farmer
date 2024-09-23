@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Modify this file to customize your launch splash screen -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-     <!-- Background color -->
-    <item android:drawable="@color/flutter_background" />  <!-- Use the color defined in colors.xml -->
+    <item android:drawable="@color/flutter_background" />
 
-    <!-- Logo -->
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/logo_plain" 
-            android:width="100dp" 
-            android:height="100dp" 
-            /> <!-- Reference the logo -->
+            android:src="@drawable/launcher_icon" 
+            android:width="60dp" 
+            android:height="60dp" />
     </item>
 
-    <!-- Loading indicator
-    <item android:bottom="100dp">
+<!--    
+    <item android:bottom="50dp" android:gravity="bottom|center_horizontal">
         <bitmap
-            android:gravity="bottom|center_horizontal"
-            android:src="@drawable/launch_loading" />
+            android:src="@drawable/custom_loading_indicator"
+            android:gravity="center" />
     </item> -->
+   
 </layer-list>
