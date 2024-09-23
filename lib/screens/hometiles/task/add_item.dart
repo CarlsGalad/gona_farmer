@@ -289,7 +289,7 @@ class AddItemScreenState extends State<AddItemScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           textCapitalization: TextCapitalization.sentences,
-                          maxLength: 600,
+                          maxLength: 800,
                           controller: _descriptionController,
                           decoration: InputDecoration(
                               labelText:
@@ -671,7 +671,7 @@ class AddItemScreenState extends State<AddItemScreen> {
             'farmId': userId,
             'itemPath': _downloadURL ?? imageURL,
             'id': newItemRef.id,
-            'weight': _weightController.text.trim(),
+            'weight': double.parse(_weightController.text.trim()),
             'itemFarm': _farmName,
           });
 
