@@ -1,10 +1,61 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../main.dart';
 import '../screens/setting_widgets/showlang.dart';
 
-class Lang extends StatelessWidget {
+class Lang extends StatefulWidget {
   const Lang({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LangState createState() => _LangState();
+}
+
+
+class _LangState extends State<Lang> {
+
+   @override
+  void initState() {
+    super.initState();
+    _loadSavedLanguage();
+  }
+
+   Future<void> _loadSavedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    // ignore: unused_local_variable
+    final String languageCode = prefs.getString('languageCode') ?? 'en';
+    setState(() {
+    });
+  }
+
+  String getLanguageName(Locale locale) {
+    switch (locale.languageCode) {
+      case 'en':
+        return 'English';
+      case 'fr':
+        return 'Français';
+      case 'ar':
+        return 'العربية';
+      case 'af':
+        return 'Hausa';
+      case 'zu':
+        return 'Yoruba';
+      case 'sw':
+        return 'Igbo';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  void _changeLanguage(Locale newLocale) async {
+    setState(() {
+    });
+    GonaVendor.setLocale(context, newLocale);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('languageCode', newLocale.languageCode);
+  }
 
   @override
   Widget build(BuildContext context) {
