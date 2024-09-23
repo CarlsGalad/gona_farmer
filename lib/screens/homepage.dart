@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
- 
   bool _isConnected = true;
   late AnimationController _leftController;
   late AnimationController _rightController;
@@ -55,10 +55,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
     _leftController.forward();
     _rightController.forward();
     _upwardController.forward();
-
-    
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +68,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
       appBar: AppBar(
         backgroundColor: Colors.lightGreen.shade100,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(30)),
             child: Container(
@@ -83,40 +80,19 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Icon(
-                      Icons.person,
-                      size: 30,
-                      color: Colors.grey,
-                    );
+                    return _buildPlaceholder();
                   }
                   if (snapshot.hasError) {
-                    return const Icon(
-                      Icons.person,
-                      size: 30,
-                      color: Colors.grey,
-                    );
+                    return _buildErrorWidget(snapshot.error.toString());
                   }
                   if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const Icon(
-                      Icons.person,
-                      size: 30,
-                      color: Colors.grey,
-                    );
+                    return _buildPlaceholder();
                   }
                   var farmData = snapshot.data!.data() as Map<String, dynamic>;
-                  var imagePath = farmData['imagePath'] ?? '';
+                  var imagePath = farmData['imagePath'] as String? ?? '';
                   return imagePath.isNotEmpty
-                      ? Image.network(
-                          imagePath,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(
-                          Icons.person,
-                          size: 30,
-                          color: Colors.white,
-                        );
+                      ? _buildNetworkImage(imagePath)
+                      : _buildPlaceholder();
                 },
               ),
             ),
@@ -211,10 +187,13 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
                       opacity: CustomAnimations.fadeIn(_upwardController),
                       child: SlideTransition(
                         position: CustomAnimations.slideUp(_upwardController),
-                        child: Text(
-                          AppLocalizations.of(context)!.todays_task,
-                          style: GoogleFonts.sansita(fontSize: 20),
-                          textAlign: TextAlign.start,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.todays_task,
+                            style: GoogleFonts.sansita(fontSize: 20),
+                            textAlign: TextAlign.start,
+                          ),
                         ),
                       ),
                     ),
@@ -431,6 +410,36 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin {
                 ),
               ),
             ),
+    );
+  }
+
+  Widget _buildNetworkImage(String imagePath) {
+    return CachedNetworkImage(
+      imageUrl: imagePath,
+      width: 60,
+      height: 60,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => _buildPlaceholder(),
+      errorWidget: (context, url, error) => _buildErrorWidget(error.toString()),
+    );
+  }
+
+  Widget _buildPlaceholder() {
+    return const Icon(
+      Icons.person,
+      size: 30,
+      color: Colors.grey,
+    );
+  }
+
+  Widget _buildErrorWidget(String error) {
+    return Tooltip(
+      message: 'Error loading image: $error',
+      child: const Icon(
+        Icons.error,
+        size: 30,
+        color: Colors.red,
+      ),
     );
   }
 }
