@@ -67,8 +67,8 @@ class _ProcessedTileState extends State<ProcessedTile> {
                   height: tileHeight,
                   child: Padding(
                     padding: EdgeInsets.only(
-                        left: screenWidth *
-                            0.03), // Adjust padding based on screen width
+                        left: screenWidth * 0.03,
+                        right: 15), // Adjust padding based on screen width
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
