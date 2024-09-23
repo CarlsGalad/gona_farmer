@@ -101,7 +101,7 @@ class DeliveredCountTileState extends State<DeliveredCountTile> {
             width: tileWidth,
             height: tileHeight,
             child: Padding(
-              padding: EdgeInsets.only(left: screenWidth * 0.03),
+              padding: EdgeInsets.only(left: screenWidth * 0.03, right: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
