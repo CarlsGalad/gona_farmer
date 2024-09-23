@@ -81,13 +81,17 @@ class PromoManagementPageState extends State<PromoManagementPage> {
       setState(() {
         _farmId = userId;
       });
-      // Fetch inventory items for the current user's farmId
+      // Fetch inventory items where label is 'promo', label is not null, and oldPrice is greater than 0
       _promoStream = FirebaseFirestore.instance
-          .collection('promotions')
+          .collection('Items')
           .where('farmId', isEqualTo: _farmId)
+          .where('label', isEqualTo: 'promo')
+          .where('label', isNotEqualTo: null)
+          .where('oldPrice', isGreaterThan: 0)
           .snapshots();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
