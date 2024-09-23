@@ -317,7 +317,7 @@ class AddPromoScreenState extends State<AddPromoScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           textCapitalization: TextCapitalization.sentences,
-                          maxLength: 500,
+                          maxLength: 800,
                           controller: _descriptionController,
                           decoration: InputDecoration(
                               labelText:
@@ -728,8 +728,8 @@ class AddPromoScreenState extends State<AddPromoScreen> {
             'itemPath': _downloadURL ?? imageURL,
             'id': newItemRef.id,
             'state': _userState,
-            'weight': int.parse(_weightController.text.trim()),
-            'promotionFarm': _farmName!,
+            'weight': double.parse(_weightController.text.trim()),
+            'itemFarm': _farmName!,
             'label': 'promo',
           });
 
