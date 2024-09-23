@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/language_const.dart';
 import 'services/auth_service.dart';
 
@@ -50,12 +51,32 @@ class GonaVendor extends StatefulWidget {
 }
 
 class _GonaVendorState extends State<GonaVendor> {
-  Locale? _locale = const Locale('en');
+  Locale? _locale;
 
-  setLocale(Locale locale) {
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedLocale();
+  }
+
+  Future<void> _loadSavedLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? languageCode = prefs.getString('languageCode');
+    if (languageCode != null) {
+      setState(() {
+        _locale = Locale(languageCode);
+      });
+    } else {
+      _locale = const Locale('en');
+    }
+  }
+
+  Future<void> setLocale(Locale locale) async {
     setState(() {
       _locale = locale;
     });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('languageCode', locale.languageCode);
   }
 
   @override
