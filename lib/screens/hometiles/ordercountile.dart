@@ -63,7 +63,7 @@ class OrderCountTileState extends State<OrderCountTile> {
                   height: tileHeight,
                   width: tileWidth,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.only(left: 15, right: 15),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
