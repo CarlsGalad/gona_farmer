@@ -1,306 +1,1076 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../../models/usermodel.dart';
-import 'profile_widgets/account_info.dart';
-import 'profile_widgets/address_info.dart';
+import '../../constants/app_colors.dart';
+import '../../models/user_model.dart';
+import '../../provider/farm_provider.dart';
+import '../../services/auth_service.dart';
 
-import 'profile_widgets/personal_info.dart';
-
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => ProfileScreenState();
+  ProfileScreenState createState() => ProfileScreenState();
 }
 
-class ProfileScreenState extends State<ProfileScreen> {
-  late File _imageFile;
+class ProfileScreenState extends ConsumerState<ProfileScreen>
+    with SingleTickerProviderStateMixin {
+  // Removed _imageFile:  Riverpod provider will manage state.
+  bool _isUploading = false;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
-  Future<void> _uploadImage(User user) async {
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _uploadImage() async {
     final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await imagePicker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 85,
+    );
 
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path);
+        _isUploading = true; // Show loading indicator.
       });
 
       try {
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('farms_profile_images')
-            .child('${user.uid}.jpg');
-        await ref.putFile(_imageFile);
-        final imageUrl = await ref.getDownloadURL();
+        // Use the Riverpod provider to upload the image.
+        ref.read(uploadFarmImageProvider(
+            imageFile: File(pickedFile.path).readAsBytesSync()));
 
-        // Update the user's profile with the new image URL
-        await FirebaseFirestore.instance
-            .collection('farms')
-            .doc(user.uid)
-            .update({'imagePath': imageUrl});
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.profile_updated_successfully),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
       } catch (e) {
-        rethrow;
-
-        // Handle the error
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.update_failed),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isUploading = false; // Hide loading indicator.
+          });
+        }
       }
     }
   }
 
-  //sign user out method
   void signUserOut() {
-    FirebaseAuth.instance.signOut();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Logout?',
+          style: GoogleFonts.abel(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: GoogleFonts.abel(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              AppLocalizations.of(context)!.cancel,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              AuthService().signOut();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final farmProfileAsync =
+        ref.watch(currentFarmProfileProvider); // Use the provider
+
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.textPrimary,
+          ),
         ),
         title: Text(
           AppLocalizations.of(context)!.profile,
-          style: GoogleFonts.aboreto(fontSize: 25),
+          style: GoogleFonts.abel(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: signUserOut,
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: AppColors.error,
+            ),
+          ),
+        ],
       ),
-      body: FutureBuilder<User?>(
-        future: FirebaseAuth.instance.authStateChanges().first,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.green.shade100, size: 50));
+      body: farmProfileAsync.when(
+        // Use .when to handle loading, error, and data states
+        data: (farmProfile) {
+          if (farmProfile == null) {
+            return _buildErrorState(AppLocalizations.of(context)!
+                .user_data_not_found); // No farm profile found.
           }
-          if (snapshot.hasError || snapshot.data == null) {
-            return Center(
-                child: Column(
-              children: [
-                Text(AppLocalizations.of(context)!.userNotFound),
-                GestureDetector(
-                    onTap: () {},
-                    child: Text(AppLocalizations.of(context)!.signIn))
-              ],
-            ));
-          }
-          var user = snapshot.data!;
-          return StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('farms')
-                .doc(user.uid)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                    child: LoadingAnimationWidget.staggeredDotsWave(
-                        color: Colors.green.shade100, size: 50));
-              }
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-              if (!snapshot.hasData || !snapshot.data!.exists) {
-                return Center(
-                    child: Text(
-                        AppLocalizations.of(context)!.user_data_not_found));
-              }
-              var farmData = snapshot.data!.data() as Map<String, dynamic>;
-              var farmProfile = FarmProfile(
-                email: farmData['email'],
-                mobile: farmData['mobile'],
-                address: farmData['address'] ?? '',
-                state: farmData['state'] ?? '',
-                imagePath: farmData['imagePath'] ?? '',
-                city: farmData['city'] ?? '',
-                farmName: '${farmData['farmName']}',
-                ownersName: '${farmData['ownersName']}',
-              );
+          return FadeTransition(
+            opacity: _fadeAnimation,
+            child: _buildProfileContent(farmProfile),
+          );
+        },
+        loading: () => _buildLoadingIndicator(),
+        error: (error, stack) =>
+            _buildErrorState('Error: $error'), // Handle errors
+      ),
+    );
+  }
 
-              // starts here
-              return SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 1000,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("lib/images/Generated.jpeg"),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            top: 150,
-                            bottom: 0,
-                            child: Container(
-                              height: MediaQuery.of(context).size.height - 250,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 80,
-                                  ),
-                                  // current user name
-                                  Center(
-                                    child: Text(
-                                      farmProfile.farmName
-                                          .split(' ')
-                                          .map((word) => word.isNotEmpty
-                                              ? '${word[0].toUpperCase()}${word.substring(1)}'
-                                              : '')
-                                          .join(' '),
-                                      style: GoogleFonts.sansita(fontSize: 20),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
+  Widget _buildLoadingIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(
+        color: AppColors.accentColor,
+      ),
+    );
+  }
 
-                                  const PersonalInfo(),
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 60,
+            color: AppColors.error.withAlpha(182),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            style: GoogleFonts.abel(
+              fontSize: 18,
+              color: AppColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
 
-                                  const AddressInfo(),
-                                  AccountDetailWidget(
-                                    farmId:
-                                        FirebaseAuth.instance.currentUser!.uid,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Color.fromRGBO(
-                                                184, 181, 181, 1),
-                                            offset: Offset(2, 2),
-                                            blurRadius: 4.0,
-                                            spreadRadius: 1.0,
-                                            blurStyle: BlurStyle.normal,
-                                          ),
-                                          BoxShadow(
-                                            color: Color.fromRGBO(
-                                                255, 255, 255, 0.9),
-                                            offset: Offset(-0, -1),
-                                            blurRadius: 5.0,
-                                            spreadRadius: 1.0,
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(
-                                            color: Colors.green.shade300),
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          signUserOut();
-                                        },
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(12.0),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.logout,
-                                                color: Colors.red,
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text('Log out')
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 70,
-                            right: 100,
-                            left: 100,
-                            child: CircleAvatar(
-                              radius: 70,
-                              child: Container(
-                                height: 135,
-                                width: 135,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  border: Border.all(
-                                      color: Colors.green.shade300, width: 2),
-                                  borderRadius: BorderRadius.circular(90),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(90),
-                                  child: farmProfile.imagePath.isNotEmpty
-                                      ? Image.network(farmProfile.imagePath)
-                                      : const Icon(
-                                          Icons.person,
-                                          size: 130,
-                                          color: Colors.grey,
-                                        ),
-                                ), // Placeholder for no image )
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 185,
-                            right: 100,
-                            left: 100,
-                            child: GestureDetector(
-                              onTap: () => _uploadImage(user),
-                              child: CircleAvatar(
-                                radius: 18,
-                                backgroundColor: Colors.green.shade300,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.white, width: 2),
-                                    borderRadius: BorderRadius.circular(360),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(3.0),
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+  Widget _buildProfileContent(FarmProfile farmProfile) {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          _buildProfileHeader(farmProfile),
+          _buildProfileBody(farmProfile),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader(FarmProfile farmProfile) {
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.primaryLight,
+            AppColors.scaffoldBackground,
+          ],
+        ),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.accentColor,
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(26),
+                      blurRadius: 10,
+                      spreadRadius: 2,
                     ),
                   ],
                 ),
-              );
-            },
-          );
-        },
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor: AppColors.primaryLight,
+                  child: _isUploading
+                      ? const CircularProgressIndicator(
+                          color: AppColors.accentColor,
+                          strokeWidth: 3,
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: farmProfile.imagePath.isNotEmpty
+                              ? Image.network(
+                                  farmProfile.imagePath,
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: AppColors.textSecondary,
+                                ),
+                        ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: _uploadImage, // Simplified onTap
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.accentColor,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(26),
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _capitalizeEachWord(farmProfile.farmName),
+            style: GoogleFonts.abel(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          Text(
+            _capitalizeEachWord(farmProfile.ownersName),
+            style: GoogleFonts.abel(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileBody(FarmProfile farmProfile) {
+    // No User needed
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionCard(
+            title: AppLocalizations.of(context)!.personal_info,
+            icon: Icons.person_outline,
+            child: PersonalInfoContent(farmProfile: farmProfile),
+          ),
+          const SizedBox(height: 16),
+          _buildSectionCard(
+            title: AppLocalizations.of(context)!.address,
+            icon: Icons.location_on_outlined,
+            child: AddressInfoContent(farmProfile: farmProfile),
+          ),
+          const SizedBox(height: 16),
+          _buildSectionCard(
+            title: 'Account Detail',
+            icon: Icons.account_balance_outlined,
+            child: AccountDetailContent(
+                farmProfile: farmProfile), // Pass Farm Profile
+          ),
+          const SizedBox(height: 16),
+          _buildLogoutButton(),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(13),
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: AppColors.accentColor,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: GoogleFonts.abel(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(13),
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: signUserOut,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withAlpha(26),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.logout_rounded,
+                    color: AppColors.error,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Sign out',
+                  style: GoogleFonts.abel(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.error,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _capitalizeEachWord(String text) {
+    if (text.isEmpty) return '';
+    return text
+        .split(' ')
+        .map((word) => word.isNotEmpty
+            ? '${word[0].toUpperCase()}${word.substring(1)}'
+            : '')
+        .join(' ');
+  }
+}
+
+class PersonalInfoContent extends StatelessWidget {
+  final FarmProfile farmProfile;
+
+  const PersonalInfoContent({super.key, required this.farmProfile});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          _buildInfoRow(
+            context,
+            icon: Icons.email_outlined,
+            title: AppLocalizations.of(context)!.email,
+            value: farmProfile.email,
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context,
+            icon: Icons.phone_outlined,
+            title: AppLocalizations.of(context)!.phone_number,
+            value: farmProfile.mobile,
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context,
+            icon: Icons.person_outline,
+            title: AppLocalizations.of(context)!.farm_owner,
+            value: farmProfile.ownersName,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.primaryLight,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: AppColors.accentColor,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.abel(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value.isNotEmpty ? value : '-',
+                style: GoogleFonts.abel(
+                  fontSize: 16,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AddressInfoContent extends StatelessWidget {
+  final FarmProfile farmProfile;
+
+  const AddressInfoContent({super.key, required this.farmProfile});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          _buildInfoRow(
+            context,
+            icon: Icons.home_outlined,
+            title: AppLocalizations.of(context)!.address,
+            value: farmProfile.address,
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context,
+            icon: Icons.location_city_outlined,
+            title: AppLocalizations.of(context)!.city,
+            value: farmProfile.city,
+          ),
+          const SizedBox(height: 16),
+          _buildInfoRow(
+            context,
+            icon: Icons.map_outlined,
+            title: AppLocalizations.of(context)!.state,
+            value: farmProfile.farmState,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.primaryLight,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: AppColors.accentColor,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.abel(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value.isNotEmpty ? value : '-',
+                style: GoogleFonts.abel(
+                  fontSize: 16,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AccountDetailContent extends ConsumerStatefulWidget {
+  final FarmProfile farmProfile;
+
+  const AccountDetailContent({super.key, required this.farmProfile});
+
+  @override
+  AccountDetailContentState createState() => AccountDetailContentState();
+}
+
+class AccountDetailContentState extends ConsumerState<AccountDetailContent> {
+  // No _accountDetails: Use the Riverpod provider.
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // No _fetchAccountDetails
+
+  void _showUpdateDialog(Map<String, dynamic> accountDetails) {
+    showDialog(
+      context: context,
+      builder: (context) => UpdateAccountDialog(
+        farmProfile: widget.farmProfile, // Pass farmProfile
+        accountDetails: accountDetails,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Use accountDetailsProvider directly:
+    final accountDetailsAsync =
+        ref.watch(accountDetailsProvider(widget.farmProfile.userId));
+
+    return accountDetailsAsync.when(
+      data: (accountDetails) {
+        bool hasAccountDetails =
+            accountDetails['accountName']?.isNotEmpty == true ||
+                accountDetails['bankName']?.isNotEmpty == true ||
+                accountDetails['accountNumber']?.isNotEmpty == true;
+
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              if (hasAccountDetails) ...[
+                _buildAccountInfo(accountDetails),
+              ] else ...[
+                _buildNoAccountInfo(),
+              ],
+              const SizedBox(height: 16),
+              _buildUpdateButton(accountDetails),
+            ],
+          ),
+        );
+      },
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (error, stack) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(
+            AppLocalizations.of(context)!.error_fetching_details,
+            style: const TextStyle(color: AppColors.error),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAccountInfo(Map<String, dynamic> accountDetails) {
+    return Column(
+      children: [
+        _buildInfoRow(
+          icon: Icons.person_outline,
+          title: AppLocalizations.of(context)!.account_name,
+          value: accountDetails['accountName'] ?? '-',
+        ),
+        const SizedBox(height: 16),
+        _buildInfoRow(
+          icon: Icons.account_balance_outlined,
+          title: AppLocalizations.of(context)!.bank_name,
+          value: accountDetails['bankName'] ?? '-',
+        ),
+        const SizedBox(height: 16),
+        _buildInfoRow(
+          icon: Icons.credit_card_outlined,
+          title: AppLocalizations.of(context)!.account_number,
+          value: accountDetails['accountNumber'] ?? '-',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNoAccountInfo() {
+    return Center(
+      child: Column(
+        children: [
+          Icon(
+            Icons.account_balance_wallet_outlined,
+            size: 48,
+            color: AppColors.textSecondary.withAlpha(128),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppLocalizations.of(context)!
+                .userNotFound, // Consider a more descriptive message
+            style: GoogleFonts.abel(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpdateButton(Map<String, dynamic> accountDetails) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () => _showUpdateDialog(accountDetails),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.accentColor,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: Text(
+          AppLocalizations.of(context)!.update_account_details,
+          style: GoogleFonts.abel(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColors.primaryLight,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: AppColors.accentColor,
+            size: 20,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.abel(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: GoogleFonts.abel(
+                  fontSize: 16,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class UpdateAccountDialog extends ConsumerStatefulWidget {
+  // Use ConsumerStatefulWidget
+  final FarmProfile farmProfile; // Now takes farmProfile
+  final Map<String, dynamic> accountDetails;
+
+  const UpdateAccountDialog({
+    super.key,
+    required this.farmProfile, // Update here
+    required this.accountDetails,
+  });
+
+  @override
+  UpdateAccountDialogState createState() => UpdateAccountDialogState();
+}
+
+class UpdateAccountDialogState extends ConsumerState<UpdateAccountDialog> {
+  late TextEditingController _accountNameController;
+  late TextEditingController _bankNameController;
+  late TextEditingController _accountNumberController;
+  bool _isUpdating = false; // For loading indicator in the dialog.
+
+  @override
+  void initState() {
+    super.initState();
+    _accountNameController =
+        TextEditingController(text: widget.accountDetails['accountName'] ?? '');
+    _bankNameController =
+        TextEditingController(text: widget.accountDetails['bankName'] ?? '');
+    _accountNumberController = TextEditingController(
+        text: widget.accountDetails['accountNumber'] ?? '');
+  }
+
+  @override
+  void dispose() {
+    _accountNameController.dispose();
+    _bankNameController.dispose();
+    _accountNumberController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _updateAccountDetails() async {
+    setState(() {
+      _isUpdating = true; // Show loading indicator.
+    });
+
+    try {
+      // Use the Riverpod provider for updating:
+      await ref.read(updateAccountDetailsProvider(
+              accountName: _accountNameController.text.trim(),
+              bankName: _bankNameController.text.trim(),
+              accountNumber: _accountNumberController.text.trim())
+          .future);
+
+      if (!mounted) return;
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .update_failed), // Correct success message
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!
+              .save_details_failed), // Correct error message
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUpdating = false; // Hide loading indicator.
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        AppLocalizations.of(context)!.update_account_details,
+        style: GoogleFonts.abel(
+          fontWeight: FontWeight.bold,
+          color: AppColors.textPrimary,
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTextField(
+              controller: _accountNameController,
+              label: AppLocalizations.of(context)!.account_name,
+              icon: Icons.person_outline,
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
+              controller: _bankNameController,
+              label: AppLocalizations.of(context)!.bank_name,
+              icon: Icons.account_balance_outlined,
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
+              controller: _accountNumberController,
+              label: AppLocalizations.of(context)!.account_number,
+              icon: Icons.credit_card_outlined,
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isUpdating ? null : () => Navigator.of(context).pop(),
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: _isUpdating ? null : _updateAccountDetails,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.accentColor,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: _isUpdating
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Text(AppLocalizations.of(context)!.update),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: AppColors.accentColor),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.accentColor, width: 2),
+        ),
+        filled: true,
+        fillColor: Colors.white,
       ),
     );
   }
