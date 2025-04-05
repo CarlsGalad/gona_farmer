@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/language_const.dart';
-import 'services/auth_service.dart';
 
-import 'services/firestore_service.dart';
 import 'screens/notifications.dart';
 
-import 'welcomepages/splashscreen.dart';
+import 'screens/welcomepages/splash_screen.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -19,20 +18,8 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runApp(
-    MultiProvider(
-      providers: [
-        Provider<AuthService>(
-          create: (_) => AuthService(),
-        ),
-        Provider<FirestoreService>(
-          create: (_) => FirestoreService(),
-        ),
-       
-      ],
-      child: GonaVendor(),
-    ),
+    const ProviderScope(child: GonaVendor()),
   );
-  
 }
 
 class GonaVendor extends StatefulWidget {
@@ -98,7 +85,7 @@ class _GonaVendorState extends State<GonaVendor> {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: _locale,
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: const SplashScreen(),
       routes: {
         '/notification_screen': (context) => const NotificationScreen(),
       },
