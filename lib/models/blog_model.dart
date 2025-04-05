@@ -8,12 +8,19 @@ class NewsItem {
   final String content;
   final String image;
 
+  final String category;
+  final String categoryID;
+  final bool isFeature;
+
   NewsItem({
     required this.title,
     required this.publisher,
     required this.datePublished,
     required this.content,
     required this.image,
+    required this.category,
+    required this.categoryID,
+    required this.isFeature,
   });
 
   factory NewsItem.fromMap(Map<String, dynamic> map) {
@@ -28,6 +35,9 @@ class NewsItem {
         publisher: map['publisher'],
         datePublished: formattedDate,
         image: map['image_url'],
-        content: map['content']);
+        content: map['content'],
+        category: map['category'],
+        categoryID: map['category_id'],
+        isFeature: map['is_feature']);
   }
 }
